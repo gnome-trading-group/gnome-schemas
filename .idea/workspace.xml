@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="65477f97-96a7-45bf-a3cc-c7b575447e97" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/bump-and-deploy.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Statics.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/sbe.xsd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/schema.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/SchemaType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/schema.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/schema.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,17 +18,21 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Enum" />
+        <option value="AnnotationType" />
+        <option value="Interface" />
+        <option value="Kotlin Class" />
+        <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2tJ3Xeh23KUH6bRcGNsFl4kUmRh" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -46,10 +43,29 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "JUnit.MBP10ToMBP1ConverterTest.testConverter (1).executor": "Run",
+    "JUnit.MBP10ToMBP1ConverterTest.testConverter.executor": "Run",
+    "JUnit.MBP1ToBBO1SConverterTest.executor": "Run",
+    "JUnit.MBP1ToBBO1SConverterTest.testBasicConverter.executor": "Run",
+    "JUnit.MBP1ToTradesConverterTest.testConverter.executor": "Run",
+    "JUnit.SamplingSchemaConverterTest.executor": "Run",
+    "JUnit.SamplingSchemaConverterTest.testBasicSampling.executor": "Run",
+    "JUnit.SamplingSchemaConverterTest.testMissingSamples.executor": "Run",
+    "JUnit.SchemaConversionRegistryTest.executor": "Run",
+    "JUnit.SchemaConversionRegistryTest.testInvalidConverter.executor": "Run",
+    "JUnit.SchemaConversionRegistryTest.testValidConverter.executor": "Run",
+    "JUnit.TradesToOHLCV1HConverterTest.testBasicConverter.executor": "Run",
+    "JUnit.TradesToOHLCV1MConverterTest.testBasicConverter.executor": "Run",
+    "JUnit.TradesToOHLCV1SConverterTest.testBasicConverter.executor": "Run",
+    "JUnit.WaterfallConverterTest.testInvalidWaterfall.executor": "Run",
+    "JUnit.WaterfallConverterTest.testValidWaterfall.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/mprey/Programming/gnome-trading-group/gnome-schemas/src/main/resources"
+    "last_opened_file_path": "/Users/mprey/Programming/gnome-trading-group/gnome-schemas/src/main/resources",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -57,6 +73,110 @@
       <recent name="$PROJECT_DIR$/src/main/resources" />
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="group.gnometrading.schemas.converters.mbp1" />
+      <recent name="group.gnometrading.schemas.converters.mbp10" />
+      <recent name="group.gnometrading.schemas.converters.trades" />
+      <recent name="group.gnometrading.schemas.converters" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="group.gnometrading.schemas.converters.trades" />
+      <recent name="group.gnometrading.schemas.converters.mbp1" />
+      <recent name="group.gnometrading.schemas" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.MBP1ToBBO1SConverterTest.testBasicConverter">
+    <configuration name="MBP10ToMBP1ConverterTest.testConverter (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gnome-schemas" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="group.gnometrading.schemas.converters.mbp10.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="group.gnometrading.schemas.converters.mbp10" />
+      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.converters.mbp10.MBP10ToMBP1ConverterTest" />
+      <option name="METHOD_NAME" value="testConverter(java.util.function.Supplier,java.util.function.Supplier,boolean)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MBP10ToMBP1ConverterTest.testConverter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gnome-schemas" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="group.gnometrading.schemas.converters.mbp10.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="group.gnometrading.schemas.converters.mbp10" />
+      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.converters.mbp10.MBP10ToMBP1ConverterTest" />
+      <option name="METHOD_NAME" value="testConverter(java.util.function.Supplier,java.util.function.Supplier)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MBP1ToBBO1SConverterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gnome-schemas" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="group.gnometrading.schemas.converters.mbp1.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="group.gnometrading.schemas.converters.mbp1" />
+      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.converters.mbp1.MBP1ToBBO1SConverterTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MBP1ToBBO1SConverterTest.testBasicConverter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gnome-schemas" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="group.gnometrading.schemas.converters.mbp1.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="group.gnometrading.schemas.converters.mbp1" />
+      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.converters.mbp1.MBP1ToBBO1SConverterTest" />
+      <option name="METHOD_NAME" value="testBasicConverter" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MBP1ToTradesConverterTest.testConverter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gnome-schemas" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="group.gnometrading.schemas.converters.mbp1.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="group.gnometrading.schemas.converters.mbp1" />
+      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.converters.mbp1.MBP1ToTradesConverterTest" />
+      <option name="METHOD_NAME" value="testConverter(java.util.function.Supplier,java.util.function.Supplier,boolean)" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.MBP1ToBBO1SConverterTest.testBasicConverter" />
+        <item itemvalue="JUnit.MBP1ToBBO1SConverterTest" />
+        <item itemvalue="JUnit.MBP1ToTradesConverterTest.testConverter" />
+        <item itemvalue="JUnit.MBP10ToMBP1ConverterTest.testConverter (1)" />
+        <item itemvalue="JUnit.MBP10ToMBP1ConverterTest.testConverter" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

@@ -1,24 +1,35 @@
 package group.gnometrading.schemas;
 
-public enum Schema {
-    MBO("mbo"),
-    MBP_10("mbp-10"),
-    MBP_1("mbp-1"),
-    BBO_1S("bbo-1s"),
-    BBO_1M("bbo-1m"),
-    TRADES("trades"),
-    OHLCV_1S("ohlcv-1s"),
-    OHLCV_1M("ohlcv-1m"),
-    OHLCV_1H("ohlcv-1h"),
-    ;
+import org.agrona.concurrent.UnsafeBuffer;
 
-    private final String identifier;
+import java.nio.ByteBuffer;
 
-    Schema(String identifier) {
-        this.identifier = identifier;
+public abstract class Schema<E, D> {
+
+    public final SchemaType schemaType;
+    public final E encoder;
+    public final D decoder;
+    public final UnsafeBuffer buffer;
+    public final MessageHeaderEncoder messageHeaderEncoder;
+    public final MessageHeaderDecoder messageHeaderDecoder;
+
+    public Schema(SchemaType schemaType, E encoder, D decoder) {
+        this.schemaType = schemaType;
+        this.encoder = encoder;
+        this.decoder = decoder;
+        this.messageHeaderDecoder = new MessageHeaderDecoder();
+        this.messageHeaderEncoder = new MessageHeaderEncoder();
+
+        this.buffer = new UnsafeBuffer(ByteBuffer.allocateDirect(this.totalMessageSize()));
+        this.wrap();
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public int totalMessageSize() {
+        return MessageHeaderEncoder.ENCODED_LENGTH + this.getEncodedBlockLength();
     }
+
+    protected abstract int getEncodedBlockLength();
+
+    protected abstract void wrap();
+
 }

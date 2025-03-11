@@ -253,7 +253,6 @@
         <field name="high" id="8" type="price" />
         <field name="low" id="9" type="price" />
         <field name="close" id="10" type="price" />
-        <field name="price" id="11" type="price" />
         <field name="volume" id="12" type="uint64" />
     </sbe:message>
     <sbe:message name="OHLCV1M" id="8" description="OHLCV sampled at 1 minute">
@@ -265,7 +264,6 @@
         <field name="high" id="8" type="price" />
         <field name="low" id="9" type="price" />
         <field name="close" id="10" type="price" />
-        <field name="price" id="11" type="price" />
         <field name="volume" id="12" type="uint64" />
     </sbe:message>
     <sbe:message name="OHLCV1H" id="9" description="OHLCV sampled at 1 hour">
@@ -277,7 +275,6 @@
         <field name="high" id="8" type="price" />
         <field name="low" id="9" type="price" />
         <field name="close" id="10" type="price" />
-        <field name="price" id="11" type="price" />
         <field name="volume" id="12" type="uint64" />
     </sbe:message>
 
