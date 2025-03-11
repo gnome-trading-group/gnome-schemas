@@ -21,4 +21,13 @@ public enum SchemaType {
     public String getIdentifier() {
         return this.identifier;
     }
+
+    public static SchemaType findById(final String id) {
+        for (SchemaType type : SchemaType.values()) {
+            if (type.getIdentifier().equals(id)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Invalid schema ID provided: %s".formatted(id));
+    }
 }

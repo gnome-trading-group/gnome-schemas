@@ -6,9 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="65477f97-96a7-45bf-a3cc-c7b575447e97" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/SchemaType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/schema.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/schema.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/SchemaType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/SchemaType.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
