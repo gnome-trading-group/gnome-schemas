@@ -61,7 +61,7 @@ class SamplingSchemaConverterTest {
         result = sampler.convert(new DummySchema(2));
         assertEquals(3, calls[0]);
         assertEquals(1, calls[1]);
-        assertEquals(1, result.id);
+        assertNull(result); // Ignore the first, incomplete interval
 
         clock.time = 1001;
         result = sampler.convert(new DummySchema(3));
@@ -110,7 +110,7 @@ class SamplingSchemaConverterTest {
         assertEquals(2, calls[0]);
         assertEquals(1, calls[1]);
         assertEquals(500, sampler.getLastSampleTimeMillis());
-        assertEquals(0, result.id);
+        assertNull(result); // Ignore the first interval
 
         clock.time = 1499;
         result = sampler.convert(new DummySchema(2));
@@ -125,5 +125,12 @@ class SamplingSchemaConverterTest {
         assertEquals(2, calls[1]);
         assertEquals(1000, sampler.getLastSampleTimeMillis());
         assertEquals(2, result.id);
+
+        clock.time = 4050;
+        result = sampler.convert(new DummySchema(4));
+        assertEquals(5, calls[0]);
+        assertEquals(3, calls[1]);
+        assertEquals(2000, sampler.getLastSampleTimeMillis());
+        assertEquals(3, result.id);
     }
 }

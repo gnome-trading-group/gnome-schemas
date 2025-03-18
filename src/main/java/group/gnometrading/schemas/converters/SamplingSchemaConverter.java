@@ -10,11 +10,13 @@ public abstract class SamplingSchemaConverter<I extends Schema<?, ?>, O extends 
     private final long sampleIntervalMillis;
 
     private long lastSampleTimeMillis, nextSampleTimeMillis;
+    private boolean ignoreFirstInterval;
 
     public SamplingSchemaConverter(EpochClock clock, long sampleIntervalMillis) {
         this.clock = clock;
         this.sampleIntervalMillis = sampleIntervalMillis;
         this.lastSampleTimeMillis = this.nextSampleTimeMillis = -1;
+        this.ignoreFirstInterval = true;
     }
 
     private long getNextInterval() {
@@ -47,6 +49,11 @@ public abstract class SamplingSchemaConverter<I extends Schema<?, ?>, O extends 
         this.nextSampleTimeMillis = this.getNextInterval();
         final O result = sample();
         updateState(source);
+
+        if (this.ignoreFirstInterval) {
+            this.ignoreFirstInterval = false;
+            return null;
+        }
         return result;
     }
 

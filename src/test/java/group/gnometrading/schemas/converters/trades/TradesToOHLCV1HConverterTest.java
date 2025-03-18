@@ -23,7 +23,7 @@ class TradesToOHLCV1HConverterTest {
 
         clock.time = TimeUnit.HOURS.toMillis(1);
         result = converter.convert(genTrade(101, 10));
-        assertSchema(result, 0, 100, 100, 100, 100, 1);
+        assertNull(result); // Ignore first interval
 
         clock.time += 1;
         result = converter.convert(genTrade(105, 5));

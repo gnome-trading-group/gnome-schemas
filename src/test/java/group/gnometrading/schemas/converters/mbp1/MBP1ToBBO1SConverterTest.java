@@ -25,7 +25,7 @@ class MBP1ToBBO1SConverterTest {
         clock.time = 2000;
         var input1 = generate();
         result = converter.convert(input1);
-        assertSchema(result, input, 1000);
+        assertNull(result); // Ignore first interval
 
         clock.time = 2001;
         converter.convert(generate());
