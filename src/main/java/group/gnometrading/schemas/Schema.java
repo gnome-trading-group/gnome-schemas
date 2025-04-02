@@ -1,5 +1,6 @@
 package group.gnometrading.schemas;
 
+import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
 import java.nio.ByteBuffer;
@@ -21,7 +22,7 @@ public abstract class Schema<E, D> {
         this.messageHeaderEncoder = new MessageHeaderEncoder();
 
         this.buffer = new UnsafeBuffer(ByteBuffer.allocateDirect(this.totalMessageSize()));
-        this.wrap();
+        this.wrap(this.buffer);
     }
 
     public int totalMessageSize() {
@@ -30,6 +31,14 @@ public abstract class Schema<E, D> {
 
     protected abstract int getEncodedBlockLength();
 
-    protected abstract void wrap();
+    public abstract void wrap(MutableDirectBuffer buffer);
+
+    /**
+     * Retrieve the event timestamp for the record. Note, the decoder *must*
+     * be wrapped around a valid byte buffer for this to work.
+     *
+     * @return the event timestamp
+     */
+    public abstract long getEventTimestamp();
 
 }

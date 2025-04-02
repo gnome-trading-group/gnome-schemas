@@ -2,6 +2,7 @@ package group.gnometrading.schemas.converters;
 
 import group.gnometrading.schemas.Schema;
 import group.gnometrading.schemas.SchemaType;
+import org.agrona.MutableDirectBuffer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +24,9 @@ class SamplingSchemaConverterTest {
         }
 
         @Override
-        protected void wrap() {}
+        public void wrap(MutableDirectBuffer buffer) {}
+        @Override
+        public long getEventTimestamp() { return 0; }
     }
 
     @Test

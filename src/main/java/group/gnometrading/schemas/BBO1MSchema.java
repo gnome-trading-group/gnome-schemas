@@ -1,5 +1,7 @@
 package group.gnometrading.schemas;
 
+import org.agrona.MutableDirectBuffer;
+
 public class BBO1MSchema extends Schema<BBO1MEncoder, BBO1MDecoder> {
 
     public BBO1MSchema() {
@@ -12,8 +14,13 @@ public class BBO1MSchema extends Schema<BBO1MEncoder, BBO1MDecoder> {
     }
 
     @Override
-    public void wrap() {
-        this.encoder.wrapAndApplyHeader(this.buffer, 0, this.messageHeaderEncoder);
-        this.decoder.wrapAndApplyHeader(this.buffer, 0, this.messageHeaderDecoder);
+    public void wrap(MutableDirectBuffer buffer) {
+        this.encoder.wrapAndApplyHeader(buffer, 0, this.messageHeaderEncoder);
+        this.decoder.wrapAndApplyHeader(buffer, 0, this.messageHeaderDecoder);
+    }
+
+    @Override
+    public long getEventTimestamp() {
+        return this.decoder.timestampEvent();
     }
 }
