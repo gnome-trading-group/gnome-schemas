@@ -68,4 +68,8 @@ public class SchemaConversionRegistry {
         return availableConverters.get(target).get();
     }
 
+    public static boolean hasConverter(SchemaType source, SchemaType target) {
+        return converters.get(source).containsKey(target);
+    }
+
 }
