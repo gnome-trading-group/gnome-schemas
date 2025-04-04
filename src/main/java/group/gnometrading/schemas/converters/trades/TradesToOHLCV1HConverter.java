@@ -15,7 +15,7 @@ public class TradesToOHLCV1HConverter extends SamplingSchemaConverter<TradesSche
     private final OHLCV1HSchema state, output;
 
     public TradesToOHLCV1HConverter(EpochClock clock) {
-        super(clock, TimeUnit.MINUTES.toMillis(1));
+        super(clock, TimeUnit.HOURS.toMillis(1));
         this.state = new OHLCV1HSchema();
         this.output = new OHLCV1HSchema();
         reset();
