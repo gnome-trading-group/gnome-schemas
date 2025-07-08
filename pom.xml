@@ -26,11 +26,24 @@
         </repository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>Internal Projects</name>
+            <url>https://maven.pkg.github.com/gnome-trading-group/*</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.agrona</groupId>
             <artifactId>agrona</artifactId>
             <version>1.20.0</version>
+        </dependency>
+        <dependency>
+            <groupId>group.gnometrading</groupId>
+            <artifactId>gnome-core</artifactId>
+            <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

@@ -1,9 +1,8 @@
 package group.gnometrading.schemas;
 
+import group.gnometrading.utils.ByteBufferUtils;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
-
-import java.nio.ByteBuffer;
 
 public abstract class Schema<E, D> {
 
@@ -21,7 +20,7 @@ public abstract class Schema<E, D> {
         this.messageHeaderDecoder = new MessageHeaderDecoder();
         this.messageHeaderEncoder = new MessageHeaderEncoder();
 
-        this.buffer = new UnsafeBuffer(ByteBuffer.allocateDirect(this.totalMessageSize()));
+        this.buffer = ByteBufferUtils.createAlignedUnsafeBuffer(this.totalMessageSize());
         this.wrap(this.buffer);
     }
 
