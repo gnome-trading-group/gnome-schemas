@@ -20,7 +20,7 @@ public class OHLCV1MSchema extends Schema<OHLCV1MEncoder, OHLCV1MDecoder> {
     }
 
     @Override
-    public long getEventTimestamp() {
-        return this.decoder.timestampEvent();
+    public long getSequenceNumber() {
+        return 0;
     }
 }

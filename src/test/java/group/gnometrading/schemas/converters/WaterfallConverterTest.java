@@ -20,7 +20,7 @@ class WaterfallConverterTest {
         @Override
         public void wrap(MutableDirectBuffer buffer) {}
         @Override
-        public long getEventTimestamp() { return 0; }
+        public long getSequenceNumber() { return 0; }
     }
 
     private static class DummySchema2 extends Schema<Boolean, String> {
@@ -34,7 +34,7 @@ class WaterfallConverterTest {
         @Override
         public void wrap(MutableDirectBuffer buffer) {}
         @Override
-        public long getEventTimestamp() { return 0; }
+        public long getSequenceNumber() { return 0; }
     }
 
     private static class DummySchema3 extends Schema<String, Long> {
@@ -48,7 +48,7 @@ class WaterfallConverterTest {
         @Override
         public void wrap(MutableDirectBuffer buffer) {}
         @Override
-        public long getEventTimestamp() { return 0; }
+        public long getSequenceNumber() { return 0; }
     }
 
     private static class Converter1 implements SchemaConverter<DummySchema1, DummySchema2> {

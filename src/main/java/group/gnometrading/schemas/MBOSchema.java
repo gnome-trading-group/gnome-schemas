@@ -19,7 +19,7 @@ public class MBOSchema extends Schema<MBOEncoder, MBODecoder> {
     }
 
     @Override
-    public long getEventTimestamp() {
-        return this.decoder.timestampEvent();
+    public long getSequenceNumber() {
+        return this.decoder.sequence();
     }
 }

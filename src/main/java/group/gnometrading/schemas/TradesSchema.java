@@ -20,7 +20,7 @@ public class TradesSchema extends Schema<TradesEncoder, TradesDecoder> {
     }
 
     @Override
-    public long getEventTimestamp() {
-        return this.decoder.timestampEvent();
+    public long getSequenceNumber() {
+        return this.decoder.sequence();
     }
 }

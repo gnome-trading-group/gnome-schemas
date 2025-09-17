@@ -19,7 +19,7 @@ public class MBP10Schema extends Schema<MBP10Encoder, MBP10Decoder> {
     }
 
     @Override
-    public long getEventTimestamp() {
-        return this.decoder.timestampEvent();
+    public long getSequenceNumber() {
+        return this.decoder.sequence();
     }
 }

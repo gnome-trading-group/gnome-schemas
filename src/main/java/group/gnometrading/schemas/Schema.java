@@ -33,11 +33,11 @@ public abstract class Schema<E, D> {
     public abstract void wrap(MutableDirectBuffer buffer);
 
     /**
-     * Retrieve the event timestamp for the record. Note, the decoder *must*
+     * Retrieve the sequence number for the record. Note, the decoder *must*
      * be wrapped around a valid byte buffer for this to work.
      *
-     * @return the event timestamp
+     * @return the sequence number
      */
-    public abstract long getEventTimestamp();
+    public abstract long getSequenceNumber();
 
 }

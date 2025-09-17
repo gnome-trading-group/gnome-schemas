@@ -6,7 +6,19 @@
   <component name="ChangeListManager">
     <list default="true" id="65477f97-96a7-45bf-a3cc-c7b575447e97" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/BBO1MSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/BBO1MSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/BBO1SSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/BBO1SSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBOSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBOSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBP10Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBP10Schema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBP1Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBP1Schema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1HSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1HSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1MSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1MSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1SSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1SSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Schema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/TradesSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/TradesSchema.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/schema.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/schema.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/converters/SamplingSchemaConverterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/converters/SamplingSchemaConverterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/converters/WaterfallConverterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/converters/WaterfallConverterTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
