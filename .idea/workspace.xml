@@ -6,19 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="65477f97-96a7-45bf-a3cc-c7b575447e97" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/BBO1MSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/BBO1MSchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/BBO1SSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/BBO1SSchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBOSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBOSchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBP10Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBP10Schema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBP1Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/MBP1Schema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1HSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1HSchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1MSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1MSchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1SSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/OHLCV1SSchema.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Schema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/TradesSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/TradesSchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/schema.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/schema.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/converters/SamplingSchemaConverterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/converters/SamplingSchemaConverterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/converters/WaterfallConverterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/converters/WaterfallConverterTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,34 +39,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.MBP10ToMBP1ConverterTest.testConverter (1).executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MBP10ToMBP1ConverterTest.testConverter.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MBP1ToBBO1SConverterTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MBP1ToBBO1SConverterTest.testBasicConverter.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MBP1ToTradesConverterTest.testConverter.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.SamplingSchemaConverterTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.SamplingSchemaConverterTest.testBasicSampling.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.SamplingSchemaConverterTest.testMissingSamples.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.SchemaConversionRegistryTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.SchemaConversionRegistryTest.testInvalidConverter.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.SchemaConversionRegistryTest.testValidConverter.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TradesToOHLCV1HConverterTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TradesToOHLCV1HConverterTest.testBasicConverter.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TradesToOHLCV1MConverterTest.testBasicConverter.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TradesToOHLCV1SConverterTest.testBasicConverter.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.WaterfallConverterTest.testInvalidWaterfall.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.WaterfallConverterTest.testValidWaterfall.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/mprey/Programming/gnome-trading-group/gnome-schemas/src/main/resources&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.MBP10ToMBP1ConverterTest.testConverter (1).executor": "Run",
+    "JUnit.MBP10ToMBP1ConverterTest.testConverter.executor": "Run",
+    "JUnit.MBP1ToBBO1SConverterTest.executor": "Run",
+    "JUnit.MBP1ToBBO1SConverterTest.testBasicConverter.executor": "Run",
+    "JUnit.MBP1ToTradesConverterTest.testConverter.executor": "Run",
+    "JUnit.SamplingSchemaConverterTest.executor": "Run",
+    "JUnit.SamplingSchemaConverterTest.testBasicSampling.executor": "Run",
+    "JUnit.SamplingSchemaConverterTest.testMissingSamples.executor": "Run",
+    "JUnit.SchemaConversionRegistryTest.executor": "Run",
+    "JUnit.SchemaConversionRegistryTest.testInvalidConverter.executor": "Run",
+    "JUnit.SchemaConversionRegistryTest.testValidConverter.executor": "Run",
+    "JUnit.SchemaTest.executor": "Run",
+    "JUnit.TradesToOHLCV1HConverterTest.executor": "Run",
+    "JUnit.TradesToOHLCV1HConverterTest.testBasicConverter.executor": "Run",
+    "JUnit.TradesToOHLCV1MConverterTest.testBasicConverter.executor": "Run",
+    "JUnit.TradesToOHLCV1SConverterTest.testBasicConverter.executor": "Run",
+    "JUnit.WaterfallConverterTest.testInvalidWaterfall.executor": "Run",
+    "JUnit.WaterfallConverterTest.testValidWaterfall.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/mprey/Programming/gnome-trading-group/gnome-schemas/src/main/resources",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources" />
@@ -86,6 +75,9 @@
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="group.gnometrading.schemas" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="group.gnometrading.schemas.converters.mbp1" />
@@ -99,7 +91,7 @@
       <recent name="group.gnometrading.schemas" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.TradesToOHLCV1HConverterTest">
+  <component name="RunManager" selected="JUnit.SchemaTest.testBasicCopy">
     <configuration name="MBP1ToBBO1SConverterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="gnome-schemas" />
       <extension name="coverage">
@@ -115,49 +107,48 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MBP1ToBBO1SConverterTest.testBasicConverter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="gnome-schemas" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="group.gnometrading.schemas.converters.mbp1.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="group.gnometrading.schemas.converters.mbp1" />
-      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.converters.mbp1.MBP1ToBBO1SConverterTest" />
-      <option name="METHOD_NAME" value="testBasicConverter" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MBP1ToTradesConverterTest.testConverter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="gnome-schemas" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="group.gnometrading.schemas.converters.mbp1.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="group.gnometrading.schemas.converters.mbp1" />
-      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.converters.mbp1.MBP1ToTradesConverterTest" />
-      <option name="METHOD_NAME" value="testConverter(java.util.function.Supplier,java.util.function.Supplier,boolean)" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="SamplingSchemaConverterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="gnome-schemas" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="group.gnometrading.schemas.converters.*" />
+          <option name="PATTERN" value="group.gnometrading.schemas.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="group.gnometrading.schemas.converters" />
       <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.converters.SamplingSchemaConverterTest" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SchemaTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gnome-schemas" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="group.gnometrading.schemas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="group.gnometrading.schemas" />
+      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.SchemaTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SchemaTest.testBasicCopy" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gnome-schemas" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="group.gnometrading.schemas.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="group.gnometrading.schemas" />
+      <option name="MAIN_CLASS_NAME" value="group.gnometrading.schemas.SchemaTest" />
+      <option name="METHOD_NAME" value="testBasicCopy" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -179,11 +170,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.SchemaTest.testBasicCopy" />
+        <item itemvalue="JUnit.SchemaTest" />
         <item itemvalue="JUnit.TradesToOHLCV1HConverterTest" />
         <item itemvalue="JUnit.MBP1ToBBO1SConverterTest" />
         <item itemvalue="JUnit.SamplingSchemaConverterTest" />
-        <item itemvalue="JUnit.MBP1ToBBO1SConverterTest.testBasicConverter" />
-        <item itemvalue="JUnit.MBP1ToTradesConverterTest.testConverter" />
       </list>
     </recent_temporary>
   </component>

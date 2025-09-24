@@ -28,6 +28,10 @@ public abstract class Schema<E, D> {
         return MessageHeaderEncoder.ENCODED_LENGTH + this.getEncodedBlockLength();
     }
 
+    public void copyTo(final Schema<E, D> other) {
+        this.buffer.putBytes(0, other.buffer, 0, this.totalMessageSize());
+    }
+
     protected abstract int getEncodedBlockLength();
 
     public abstract void wrap(MutableDirectBuffer buffer);
