@@ -17,7 +17,7 @@ public class SchemaTest {
         schema.encoder.volume(50);
 
         OHLCV1SSchema other = new OHLCV1SSchema();
-        schema.copyTo(other);
+        other.copyFrom(schema);
 
         assertEquals(schema.decoder.open(), other.decoder.open());
         assertEquals(schema.decoder.high(), other.decoder.high());

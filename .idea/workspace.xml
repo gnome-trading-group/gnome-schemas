@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="65477f97-96a7-45bf-a3cc-c7b575447e97" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Schema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/group/gnometrading/schemas/Schema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/SchemaTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/group/gnometrading/schemas/SchemaTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +34,7 @@
   &quot;associatedIndex&quot;: 7
 }</component>
   <component name="ProjectId" id="2tJ3Xeh23KUH6bRcGNsFl4kUmRh" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+  <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -53,6 +55,7 @@
     "JUnit.SchemaConversionRegistryTest.testInvalidConverter.executor": "Run",
     "JUnit.SchemaConversionRegistryTest.testValidConverter.executor": "Run",
     "JUnit.SchemaTest.executor": "Run",
+    "JUnit.SchemaTest.testBasicCopy.executor": "Run",
     "JUnit.TradesToOHLCV1HConverterTest.executor": "Run",
     "JUnit.TradesToOHLCV1HConverterTest.testBasicConverter.executor": "Run",
     "JUnit.TradesToOHLCV1MConverterTest.testBasicConverter.executor": "Run",
@@ -60,6 +63,7 @@
     "JUnit.WaterfallConverterTest.testInvalidWaterfall.executor": "Run",
     "JUnit.WaterfallConverterTest.testValidWaterfall.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
     "git-widget-placeholder": "main",
@@ -91,7 +95,7 @@
       <recent name="group.gnometrading.schemas" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.SchemaTest.testBasicCopy">
+  <component name="RunManager" selected="JUnit.SchemaTest">
     <configuration name="MBP1ToBBO1SConverterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="gnome-schemas" />
       <extension name="coverage">
@@ -170,8 +174,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.SchemaTest.testBasicCopy" />
         <item itemvalue="JUnit.SchemaTest" />
+        <item itemvalue="JUnit.SchemaTest.testBasicCopy" />
         <item itemvalue="JUnit.TradesToOHLCV1HConverterTest" />
         <item itemvalue="JUnit.MBP1ToBBO1SConverterTest" />
         <item itemvalue="JUnit.SamplingSchemaConverterTest" />

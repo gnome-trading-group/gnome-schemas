@@ -1,10 +1,11 @@
 package group.gnometrading.schemas;
 
 import group.gnometrading.utils.ByteBufferUtils;
+import group.gnometrading.utils.Copyable;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
-public abstract class Schema<E, D> {
+public abstract class Schema<E, D> implements Copyable<Schema<E, D>> {
 
     public final SchemaType schemaType;
     public final E encoder;
@@ -28,10 +29,6 @@ public abstract class Schema<E, D> {
         return MessageHeaderEncoder.ENCODED_LENGTH + this.getEncodedBlockLength();
     }
 
-    public void copyTo(final Schema<E, D> other) {
-        this.buffer.putBytes(0, other.buffer, 0, this.totalMessageSize());
-    }
-
     protected abstract int getEncodedBlockLength();
 
     public abstract void wrap(MutableDirectBuffer buffer);
@@ -43,5 +40,10 @@ public abstract class Schema<E, D> {
      * @return the sequence number
      */
     public abstract long getSequenceNumber();
+
+    @Override
+    public void copyFrom(Schema<E, D> other) {
+        other.buffer.putBytes(0, this.buffer, 0, this.totalMessageSize());
+    }
 
 }
