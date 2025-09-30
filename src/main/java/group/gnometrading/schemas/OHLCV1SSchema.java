@@ -2,10 +2,14 @@ package group.gnometrading.schemas;
 
 import org.agrona.MutableDirectBuffer;
 
-public class OHLCV1SSchema extends Schema<OHLCV1SEncoder, OHLCV1SDecoder> {
+public class OHLCV1SSchema extends Schema {
+
+    public final OHLCV1SEncoder encoder = new OHLCV1SEncoder();
+    public final OHLCV1SDecoder decoder = new OHLCV1SDecoder();
 
     public OHLCV1SSchema() {
-        super(SchemaType.OHLCV_1S, new OHLCV1SEncoder(), new OHLCV1SDecoder());
+        super(SchemaType.OHLCV_1S);
+        this.wrap(this.buffer);
     }
 
     @Override

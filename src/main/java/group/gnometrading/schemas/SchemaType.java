@@ -13,9 +13,9 @@ public enum SchemaType {
     ;
 
     private final String identifier;
-    private final Schema<?, ?> instance;
+    private final Schema instance;
 
-    SchemaType(String identifier, Schema<?, ?> instance) {
+    SchemaType(String identifier, Schema instance) {
         this.identifier = identifier;
         this.instance = instance;
     }
@@ -24,7 +24,7 @@ public enum SchemaType {
         return this.identifier;
     }
 
-    public Schema<?, ?> getInstance() {
+    public Schema getInstance() {
         return this.instance;
     }
 

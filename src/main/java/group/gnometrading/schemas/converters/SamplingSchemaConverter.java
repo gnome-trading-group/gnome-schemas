@@ -4,7 +4,7 @@ import group.gnometrading.schemas.Schema;
 import org.agrona.concurrent.EpochClock;
 
 
-public abstract class SamplingSchemaConverter<I extends Schema<?, ?>, O extends Schema<?, ?>> implements SchemaConverter<I, O> {
+public abstract class SamplingSchemaConverter<I extends Schema, O extends Schema> implements SchemaConverter<I, O> {
 
     private final EpochClock clock;
     private final long sampleIntervalMillis;

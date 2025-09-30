@@ -2,9 +2,14 @@ package group.gnometrading.schemas;
 
 import org.agrona.MutableDirectBuffer;
 
-public class MBP10Schema extends Schema<MBP10Encoder, MBP10Decoder> {
+public class MBP10Schema extends Schema {
+
+    public final MBP10Encoder encoder = new MBP10Encoder();
+    public final MBP10Decoder decoder = new MBP10Decoder();
+
     public MBP10Schema() {
-        super(SchemaType.MBP_10, new MBP10Encoder(), new MBP10Decoder());
+        super(SchemaType.MBP_10);
+        this.wrap(this.buffer);
     }
 
     @Override

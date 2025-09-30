@@ -5,24 +5,19 @@ import group.gnometrading.utils.Copyable;
 import org.agrona.MutableDirectBuffer;
 import org.agrona.concurrent.UnsafeBuffer;
 
-public abstract class Schema<E, D> implements Copyable<Schema<E, D>> {
+public abstract class Schema implements Copyable<Schema> {
 
     public final SchemaType schemaType;
-    public final E encoder;
-    public final D decoder;
     public final UnsafeBuffer buffer;
     public final MessageHeaderEncoder messageHeaderEncoder;
     public final MessageHeaderDecoder messageHeaderDecoder;
 
-    public Schema(SchemaType schemaType, E encoder, D decoder) {
+    public Schema(SchemaType schemaType) {
         this.schemaType = schemaType;
-        this.encoder = encoder;
-        this.decoder = decoder;
         this.messageHeaderDecoder = new MessageHeaderDecoder();
         this.messageHeaderEncoder = new MessageHeaderEncoder();
 
         this.buffer = ByteBufferUtils.createAlignedUnsafeBuffer(this.totalMessageSize());
-        this.wrap(this.buffer);
     }
 
     public int totalMessageSize() {
@@ -42,7 +37,8 @@ public abstract class Schema<E, D> implements Copyable<Schema<E, D>> {
     public abstract long getSequenceNumber();
 
     @Override
-    public void copyFrom(Schema<E, D> other) {
+    public void copyFrom(Schema other) {
+        assert this.schemaType == other.schemaType : "Cannot copy from different schema types";
         other.buffer.putBytes(0, this.buffer, 0, this.totalMessageSize());
     }
 

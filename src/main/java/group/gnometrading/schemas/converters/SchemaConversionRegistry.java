@@ -30,29 +30,29 @@ public class SchemaConversionRegistry {
 
         // MBP10 converters
         converters.get(SchemaType.MBP_10).put(SchemaType.MBP_1, MBP10ToMBP1Converter::new);
-        converters.get(SchemaType.MBP_10).put(SchemaType.TRADES, () -> new WaterfallConverter(
+        converters.get(SchemaType.MBP_10).put(SchemaType.TRADES, () -> new WaterfallConverter<>(
                 new MBP10ToMBP1Converter(),
                 new MBP1ToTradesConverter()
         ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.BBO_1S, () -> new WaterfallConverter(
+        converters.get(SchemaType.MBP_10).put(SchemaType.BBO_1S, () -> new WaterfallConverter<>(
                 new MBP10ToMBP1Converter(),
                 new MBP1ToBBO1SConverter()
         ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.BBO_1M, () -> new WaterfallConverter(
+        converters.get(SchemaType.MBP_10).put(SchemaType.BBO_1M, () -> new WaterfallConverter<>(
                 new MBP10ToMBP1Converter(),
                 new MBP1ToBBO1MConverter()
         ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1S, () -> new WaterfallConverter(
+    converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1S, () -> new WaterfallConverter<>(
                 new MBP10ToMBP1Converter(),
                 new MBP1ToTradesConverter(),
                 new TradesToOHLCV1SConverter()
         ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1M, () -> new WaterfallConverter(
+        converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1M, () -> new WaterfallConverter<>(
                 new MBP10ToMBP1Converter(),
                 new MBP1ToTradesConverter(),
                 new TradesToOHLCV1MConverter()
         ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1H, () -> new WaterfallConverter(
+        converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1H, () -> new WaterfallConverter<>(
                 new MBP10ToMBP1Converter(),
                 new MBP1ToTradesConverter(),
                 new TradesToOHLCV1HConverter()

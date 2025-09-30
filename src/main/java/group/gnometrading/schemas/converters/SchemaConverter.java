@@ -2,7 +2,7 @@ package group.gnometrading.schemas.converters;
 
 import group.gnometrading.schemas.Schema;
 
-public interface SchemaConverter<I extends Schema<?, ?>, O extends Schema<?, ?>> {
+public interface SchemaConverter<I extends Schema, O extends Schema> {
     /**
      * Convert the source schema into an optional ouput schema.
      *

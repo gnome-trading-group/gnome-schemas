@@ -9,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SamplingSchemaConverterTest {
 
-    private static class DummySchema extends Schema<Object, Object> {
+    private static class DummySchema extends Schema {
 
         int id;
 
         public DummySchema(int id) {
-            super(SchemaType.MBO, 0, 0);
+            super(SchemaType.MBO);
             this.id = id;
         }
 

@@ -2,10 +2,14 @@ package group.gnometrading.schemas;
 
 import org.agrona.MutableDirectBuffer;
 
-public class TradesSchema extends Schema<TradesEncoder, TradesDecoder> {
+public class TradesSchema extends Schema {
+
+    public final TradesEncoder encoder = new TradesEncoder();
+    public final TradesDecoder decoder = new TradesDecoder();
 
     public TradesSchema() {
-        super(SchemaType.TRADES, new TradesEncoder(), new TradesDecoder());
+        super(SchemaType.TRADES);
+        this.wrap(this.buffer);
     }
 
     @Override
