@@ -39,7 +39,7 @@ public abstract class Schema implements Copyable<Schema> {
     @Override
     public void copyFrom(Schema other) {
         assert this.schemaType == other.schemaType : "Cannot copy from different schema types";
-        other.buffer.putBytes(0, this.buffer, 0, this.totalMessageSize());
+        this.buffer.putBytes(0, other.buffer, 0, this.totalMessageSize());
     }
 
 }

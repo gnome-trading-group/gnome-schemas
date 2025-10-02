@@ -19,11 +19,11 @@ public class SchemaTest {
         OHLCV1SSchema other = new OHLCV1SSchema();
         other.copyFrom(schema);
 
-        assertEquals(schema.decoder.open(), other.decoder.open());
-        assertEquals(schema.decoder.high(), other.decoder.high());
-        assertEquals(schema.decoder.low(), other.decoder.low());
-        assertEquals(schema.decoder.close(), other.decoder.close());
-        assertEquals(schema.decoder.volume(), other.decoder.volume());
+        assertEquals(100, other.decoder.open());
+        assertEquals(20, other.decoder.high());
+        assertEquals(40, other.decoder.low());
+        assertEquals(60, other.decoder.close());
+        assertEquals(50, other.decoder.volume());
     }
 
 }
