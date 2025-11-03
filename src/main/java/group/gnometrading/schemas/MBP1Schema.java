@@ -27,4 +27,9 @@ public class MBP1Schema extends Schema {
     public long getSequenceNumber() {
         return this.decoder.sequence();
     }
+
+    @Override
+    public long getEventTimestamp() {
+        return this.decoder.timestampEvent();
+    }
 }

@@ -36,6 +36,14 @@ public abstract class Schema implements Copyable<Schema> {
      */
     public abstract long getSequenceNumber();
 
+    /**
+     * Retrieve the event timestamp for the record. Note, the decoder *must*
+     * be wrapped around a valid byte buffer for this to work.
+     *
+     * @return the event timestamp
+     */
+    public abstract long getEventTimestamp();
+
     @Override
     public void copyFrom(Schema other) {
         assert this.schemaType == other.schemaType : "Cannot copy from different schema types";

@@ -27,6 +27,8 @@ class SamplingSchemaConverterTest {
         public void wrap(MutableDirectBuffer buffer) {}
         @Override
         public long getSequenceNumber() { return 0; }
+        @Override
+        public long getEventTimestamp() { return 0; }
     }
 
     @Test

@@ -25,6 +25,11 @@ public class BBO1SSchema extends Schema {
 
     @Override
     public long getSequenceNumber() {
-        return 0;
+        return this.decoder.sequence();
+    }
+
+    @Override
+    public long getEventTimestamp() {
+        return this.decoder.timestampEvent();
     }
 }
