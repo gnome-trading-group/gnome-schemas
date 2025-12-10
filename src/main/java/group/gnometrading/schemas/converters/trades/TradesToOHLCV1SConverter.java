@@ -5,24 +5,18 @@ import group.gnometrading.schemas.OHLCV1SEncoder;
 import group.gnometrading.schemas.OHLCV1SSchema;
 import group.gnometrading.schemas.TradesSchema;
 import group.gnometrading.schemas.converters.SamplingSchemaConverter;
-import org.agrona.concurrent.EpochClock;
-import org.agrona.concurrent.SystemEpochClock;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class TradesToOHLCV1SConverter extends SamplingSchemaConverter<TradesSchema, OHLCV1SSchema> {
 
     private final OHLCV1SSchema state, output;
 
-    public TradesToOHLCV1SConverter(EpochClock clock) {
-        super(clock, TimeUnit.SECONDS.toMillis(1));
+    public TradesToOHLCV1SConverter() {
+        super(Duration.ofSeconds(1));
         this.state = new OHLCV1SSchema();
         this.output = new OHLCV1SSchema();
         reset();
-    }
-
-    public TradesToOHLCV1SConverter() {
-        this(new SystemEpochClock());
     }
 
     private void reset() {
@@ -35,7 +29,7 @@ public class TradesToOHLCV1SConverter extends SamplingSchemaConverter<TradesSche
 
     @Override
     protected OHLCV1SSchema sample() {
-        this.state.encoder.timestampEvent(TimeUnit.MILLISECONDS.toNanos(this.getLastSampleTimeMillis()));
+        this.state.encoder.timestampEvent(this.getLastSampleTimeNanos());
         this.state.buffer.getBytes(0, this.output.buffer, 0, this.state.totalMessageSize());
         reset();
         return this.output;

@@ -5,6 +5,8 @@ import group.gnometrading.schemas.SchemaType;
 import org.agrona.MutableDirectBuffer;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SamplingSchemaConverterTest {
@@ -12,10 +14,12 @@ class SamplingSchemaConverterTest {
     private static class DummySchema extends Schema {
 
         int id;
+        long eventTimestamp;
 
-        public DummySchema(int id) {
+        public DummySchema(int id, long eventTimestamp) {
             super(SchemaType.MBO);
             this.id = id;
+            this.eventTimestamp = eventTimestamp;
         }
 
         @Override
@@ -28,19 +32,18 @@ class SamplingSchemaConverterTest {
         @Override
         public long getSequenceNumber() { return 0; }
         @Override
-        public long getEventTimestamp() { return 0; }
+        public long getEventTimestamp() { return eventTimestamp; }
     }
 
     @Test
     void testBasicSampling() {
         final int[] calls = {0, 0};
-        final var clock = new DummyClock();
-        final var sampler = new SamplingSchemaConverter<DummySchema, DummySchema>(clock, 1_000) {
+        final var sampler = new SamplingSchemaConverter<DummySchema, DummySchema>(Duration.ofSeconds(1)) {
 
             @Override
             protected DummySchema sample() {
                 calls[1]++;
-                return new DummySchema(calls[1]);
+                return new DummySchema(calls[1], 0);
             }
 
             @Override
@@ -50,32 +53,27 @@ class SamplingSchemaConverterTest {
             }
         };
 
-        clock.time = 0;
-        var result = sampler.convert(new DummySchema(0));
+        var result = sampler.convert(new DummySchema(0, 0));
         assertEquals(1, calls[0]);
         assertEquals(0, calls[1]);
         assertNull(result);
 
-        clock.time = 500;
-        result = sampler.convert(new DummySchema(1));
+        result = sampler.convert(new DummySchema(1, 500_000_000L));
         assertEquals(2, calls[0]);
         assertEquals(0, calls[1]);
         assertNull(result);
 
-        clock.time = 1000;
-        result = sampler.convert(new DummySchema(2));
+        result = sampler.convert(new DummySchema(2, 1_000_000_000L));
         assertEquals(3, calls[0]);
         assertEquals(1, calls[1]);
-        assertNull(result); // Ignore the first, incomplete interval
+        assertEquals(1, result.id); // First interval now returns a result
 
-        clock.time = 1001;
-        result = sampler.convert(new DummySchema(3));
+        result = sampler.convert(new DummySchema(3, 1_001_000_000L));
         assertEquals(4, calls[0]);
         assertEquals(1, calls[1]);
         assertNull(result);
 
-        clock.time = 2001;
-        result = sampler.convert(new DummySchema(4));
+        result = sampler.convert(new DummySchema(4, 2_001_000_000L));
         assertEquals(5, calls[0]);
         assertEquals(2, calls[1]);
         assertEquals(2, result.id);
@@ -84,8 +82,7 @@ class SamplingSchemaConverterTest {
     @Test
     void testMissingSamples() {
         final int[] calls = {0, 0};
-        final var clock = new DummyClock();
-        final var sampler = new SamplingSchemaConverter<DummySchema, DummySchema>(clock, 500) {
+        final var sampler = new SamplingSchemaConverter<DummySchema, DummySchema>(Duration.ofMillis(500)) {
 
             DummySchema state = null;
 
@@ -103,39 +100,34 @@ class SamplingSchemaConverterTest {
             }
         };
 
-        clock.time = 500;
-        var result = sampler.convert(new DummySchema(0));
+        var result = sampler.convert(new DummySchema(0, 500_000_000L));
         assertEquals(1, calls[0]);
         assertEquals(0, calls[1]);
-        assertEquals(-1, sampler.getLastSampleTimeMillis());
+        assertEquals(-1, sampler.getLastSampleTimeNanos());
         assertNull(result);
 
-        clock.time = 1000;
-        result = sampler.convert(new DummySchema(1));
+        result = sampler.convert(new DummySchema(1, 1_000_000_000L));
         assertEquals(2, calls[0]);
         assertEquals(1, calls[1]);
-        assertEquals(500, sampler.getLastSampleTimeMillis());
-        assertNull(result); // Ignore the first interval
+        assertEquals(500_000_000L, sampler.getLastSampleTimeNanos());
+        assertEquals(0, result.id); // First interval now returns a result
 
-        clock.time = 1499;
-        result = sampler.convert(new DummySchema(2));
+        result = sampler.convert(new DummySchema(2, 1_499_000_000L));
         assertEquals(3, calls[0]);
         assertEquals(1, calls[1]);
-        assertEquals(500, sampler.getLastSampleTimeMillis());
+        assertEquals(500_000_000L, sampler.getLastSampleTimeNanos());
         assertNull(result);
 
-        clock.time = 2050;
-        result = sampler.convert(new DummySchema(3));
+        result = sampler.convert(new DummySchema(3, 2_050_000_000L));
         assertEquals(4, calls[0]);
         assertEquals(2, calls[1]);
-        assertEquals(1000, sampler.getLastSampleTimeMillis());
+        assertEquals(1_000_000_000L, sampler.getLastSampleTimeNanos());
         assertEquals(2, result.id);
 
-        clock.time = 4050;
-        result = sampler.convert(new DummySchema(4));
+        result = sampler.convert(new DummySchema(4, 4_050_000_000L));
         assertEquals(5, calls[0]);
         assertEquals(3, calls[1]);
-        assertEquals(2000, sampler.getLastSampleTimeMillis());
+        assertEquals(2_000_000_000L, sampler.getLastSampleTimeNanos());
         assertEquals(3, result.id);
     }
 }

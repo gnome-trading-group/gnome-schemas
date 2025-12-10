@@ -91,20 +91,19 @@ class WaterfallConverterTest {
     @Test
     void testThreeStepConversion_MBP10ToMBP1ToTradesToOHLCV1S() {
         // Create a waterfall converter: MBP10 -> MBP1 -> Trades -> OHLCV1S
-        DummyClock clock = new DummyClock();
         WaterfallConverter<MBP10Schema, OHLCV1SSchema> converter = new WaterfallConverter<>(
                 new MBP10ToMBP1Converter(),
                 new MBP1ToTradesConverter(),
-                new TradesToOHLCV1SConverter(clock)
+                new TradesToOHLCV1SConverter()
         );
 
         // Create input MBP10 schema with Trade action
         MBP10Schema input = new MBP10Schema();
         input.encoder.exchangeId(99);
         input.encoder.securityId(1299);
-        input.encoder.timestampEvent(1000);
-        input.encoder.timestampSent(1001);
-        input.encoder.timestampRecv(1002);
+        input.encoder.timestampEvent(0);
+        input.encoder.timestampSent(1);
+        input.encoder.timestampRecv(2);
         input.encoder.price(100);
         input.encoder.size(10);
         input.encoder.action(Action.Trade);
@@ -114,22 +113,23 @@ class WaterfallConverterTest {
         input.encoder.depth((short) 0);
 
         // First conversion - should return null (initializing)
-        clock.time = 0;
         OHLCV1SSchema result = converter.convert(input);
         assertNull(result);
 
-        // Second conversion - should return null (first interval ignored)
-        clock.time = 1000;
+        // Second conversion - should return OHLCV data (first interval)
+        input.encoder.timestampEvent(1_000_000_000L);
         result = converter.convert(input);
-        assertNull(result);
+        assertNotNull(result);
+        assertEquals(99, result.decoder.exchangeId());
+        assertEquals(1299, result.decoder.securityId());
 
         // Third conversion - should return null (still in same interval)
-        clock.time = 1500;
+        input.encoder.timestampEvent(1_500_000_000L);
         result = converter.convert(input);
         assertNull(result);
 
         // Fourth conversion - should return OHLCV data
-        clock.time = 2000;
+        input.encoder.timestampEvent(2_000_000_000L);
         result = converter.convert(input);
         assertNotNull(result);
         assertEquals(99, result.decoder.exchangeId());

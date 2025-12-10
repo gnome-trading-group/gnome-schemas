@@ -2,7 +2,6 @@ package group.gnometrading.schemas.converters.mbp1;
 
 import group.gnometrading.schemas.BBO1SSchema;
 import group.gnometrading.schemas.MBP1Schema;
-import group.gnometrading.schemas.converters.DummyClock;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -14,32 +13,25 @@ class MBP1ToBBO1SConverterTest {
 
     @Test
     void testBasicConverter() {
-        var clock = new DummyClock();
-        var converter = new MBP1ToBBO1SConverter(clock);
+        var converter = new MBP1ToBBO1SConverter();
 
-        clock.time = 1000;
-        var input = generate();
+        var input = generate(TimeUnit.MILLISECONDS.toNanos(1000));
         var result = converter.convert(input);
         assertNull(result);
 
-        clock.time = 2000;
-        var input1 = generate();
+        var input1 = generate(TimeUnit.MILLISECONDS.toNanos(2000));
         result = converter.convert(input1);
-        assertNull(result); // Ignore first interval
+        assertSchema(result, input, 1000);
 
-        clock.time = 2001;
-        converter.convert(generate());
-        clock.time = 2005;
-        input = generate();
-        converter.convert(input);
+        assertNull(converter.convert(generate(TimeUnit.MILLISECONDS.toNanos(2001))));
+        input = generate(TimeUnit.MILLISECONDS.toNanos(2005));
+        assertNull(converter.convert(input));
 
-        clock.time = 3001;
-        input1 = generate();
+        input1 = generate(TimeUnit.MILLISECONDS.toNanos(3001));
         result = converter.convert(input1);
         assertSchema(result, input, 2000);
 
-        clock.time = 5000;
-        result = converter.convert(generate());
+        result = converter.convert(generate(TimeUnit.MILLISECONDS.toNanos(5000)));
         assertSchema(result, input1, 3000);
     }
 

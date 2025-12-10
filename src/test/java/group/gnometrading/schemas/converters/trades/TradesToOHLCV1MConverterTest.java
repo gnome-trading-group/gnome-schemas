@@ -1,7 +1,6 @@
 package group.gnometrading.schemas.converters.trades;
 
 import group.gnometrading.schemas.OHLCV1MSchema;
-import group.gnometrading.schemas.converters.DummyClock;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -14,31 +13,24 @@ class TradesToOHLCV1MConverterTest {
 
     @Test
     void testBasicConverter() {
-        var clock = new DummyClock();
-        var converter = new TradesToOHLCV1MConverter(clock);
+        var converter = new TradesToOHLCV1MConverter();
 
-        clock.time = 0;
-        var result = converter.convert(genTrade(100, 1));
+        var result = converter.convert(genTrade(100, 1, 0));
         assertNull(result);
 
-        clock.time = TimeUnit.MINUTES.toMillis(1);
-        result = converter.convert(genTrade(101, 10));
-        assertNull(result); // Ignore first interval
+        result = converter.convert(genTrade(101, 10, TimeUnit.MINUTES.toNanos(1)));
+        assertSchema(result, 0, 100, 100, 100, 100, 1);
 
-        clock.time += 1;
-        result = converter.convert(genTrade(105, 5));
+        result = converter.convert(genTrade(105, 5, TimeUnit.MINUTES.toNanos(1) + TimeUnit.MILLISECONDS.toNanos(1)));
         assertNull(result);
 
-        clock.time += 500;
-        result = converter.convert(genTrade(110, 3));
+        result = converter.convert(genTrade(110, 3, TimeUnit.MINUTES.toNanos(1) + TimeUnit.MILLISECONDS.toNanos(501)));
         assertNull(result);
 
-        clock.time = TimeUnit.MINUTES.toMillis(2);
-        result = converter.convert(genTrade(10, 3));
+        result = converter.convert(genTrade(10, 3, TimeUnit.MINUTES.toNanos(2)));
         assertSchema(result, 1, 101, 110, 101, 110, 18);
 
-        clock.time = TimeUnit.MINUTES.toMillis(3);;
-        result = converter.convert(genTrade(10, 5));
+        result = converter.convert(genTrade(10, 5, TimeUnit.MINUTES.toNanos(3)));
         assertSchema(result, 2, 10, 10, 10, 10, 3);
     }
 

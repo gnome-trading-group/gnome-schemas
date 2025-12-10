@@ -10,7 +10,7 @@ public class MBP1TestUtils {
     public static final int EXCHANGE_ID = 24;
     public static final int SECURITY_ID = 50;
 
-    public static MBP1Schema generate() {
+    public static MBP1Schema generate(long eventTimestampNanos) {
         var schema = new MBP1Schema();
         var encoder = schema.encoder;
         var random = new Random();
@@ -20,7 +20,7 @@ public class MBP1TestUtils {
 
         encoder.timestampRecv(Math.abs(random.nextLong()));
         encoder.timestampSent(Math.abs(random.nextLong()));
-        encoder.timestampEvent(Math.abs(random.nextLong()));
+        encoder.timestampEvent(eventTimestampNanos);
 
         encoder.price(Math.abs(random.nextLong()));
         encoder.size(Math.abs(random.nextLong()));

@@ -1,59 +1,50 @@
 package group.gnometrading.schemas.converters;
 
 import group.gnometrading.schemas.Schema;
-import org.agrona.concurrent.EpochClock;
+
+import java.time.Duration;
 
 
 public abstract class SamplingSchemaConverter<I extends Schema, O extends Schema> implements SchemaConverter<I, O> {
 
-    private final EpochClock clock;
-    private final long sampleIntervalMillis;
+    private final long sampleIntervalNanos;
 
-    private long lastSampleTimeMillis, nextSampleTimeMillis;
-    private boolean ignoreFirstInterval;
+    private long lastSampleTimeNanos, nextSampleTimeNanos;
 
-    public SamplingSchemaConverter(EpochClock clock, long sampleIntervalMillis) {
-        this.clock = clock;
-        this.sampleIntervalMillis = sampleIntervalMillis;
-        this.lastSampleTimeMillis = this.nextSampleTimeMillis = -1;
-        this.ignoreFirstInterval = true;
+    public SamplingSchemaConverter(Duration sampleInterval) {
+        this.sampleIntervalNanos = sampleInterval.toNanos();
+        this.lastSampleTimeNanos = this.nextSampleTimeNanos = -1;
     }
 
-    private long getNextInterval() {
-        long now = this.clock.time();
-        return now + (this.sampleIntervalMillis - (now % this.sampleIntervalMillis));
+    private long getNextInterval(long eventTimestampNanos) {
+        return eventTimestampNanos + (this.sampleIntervalNanos - (eventTimestampNanos % this.sampleIntervalNanos));
     }
 
     /**
-     * @return the start (inclusive) of the last interval sampled
+     * @return the start (inclusive) of the last interval sampled, in nanoseconds
      */
-    public long getLastSampleTimeMillis() {
-        return this.lastSampleTimeMillis;
+    public long getLastSampleTimeNanos() {
+        return this.lastSampleTimeNanos;
     }
 
     @Override
     public O convert(I source) {
-        long now = this.clock.time();
-        if (this.nextSampleTimeMillis == -1) {
-            this.nextSampleTimeMillis = this.getNextInterval();
+        long eventTimestampNanos = source.getEventTimestamp();
+        if (this.nextSampleTimeNanos == -1) {
+            this.nextSampleTimeNanos = this.getNextInterval(eventTimestampNanos);
             updateState(source);
             return null;
         }
 
-        if (now < this.nextSampleTimeMillis) {
+        if (eventTimestampNanos < this.nextSampleTimeNanos) {
             updateState(source);
             return null;
         }
 
-        this.lastSampleTimeMillis = this.nextSampleTimeMillis - this.sampleIntervalMillis;
-        this.nextSampleTimeMillis = this.getNextInterval();
+        this.lastSampleTimeNanos = this.nextSampleTimeNanos - this.sampleIntervalNanos;
+        this.nextSampleTimeNanos = this.getNextInterval(eventTimestampNanos);
         final O result = sample();
         updateState(source);
-
-        if (this.ignoreFirstInterval) {
-            this.ignoreFirstInterval = false;
-            return null;
-        }
         return result;
     }
 

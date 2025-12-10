@@ -3,24 +3,18 @@ package group.gnometrading.schemas.converters.mbp1;
 import group.gnometrading.schemas.*;
 import group.gnometrading.schemas.converters.SamplingSchemaConverter;
 import group.gnometrading.schemas.converters.Utils;
-import org.agrona.concurrent.EpochClock;
-import org.agrona.concurrent.SystemEpochClock;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class MBP1ToBBO1SConverter extends SamplingSchemaConverter<MBP1Schema, BBO1SSchema> {
 
     private final BBO1SSchema output;
     private final MBP1Schema state;
 
-    public MBP1ToBBO1SConverter(EpochClock clock) {
-        super(clock, TimeUnit.SECONDS.toMillis(1));
+    public MBP1ToBBO1SConverter() {
+        super(Duration.ofSeconds(1));
         this.output = new BBO1SSchema();
         this.state = new MBP1Schema();
-    }
-
-    public MBP1ToBBO1SConverter() {
-        this(new SystemEpochClock());
     }
 
     protected BBO1SSchema sample() {
@@ -29,7 +23,7 @@ public class MBP1ToBBO1SConverter extends SamplingSchemaConverter<MBP1Schema, BB
 
         encoder.exchangeId(decoder.exchangeId());
         encoder.securityId(decoder.securityId());
-        encoder.timestampEvent(TimeUnit.MILLISECONDS.toNanos(this.getLastSampleTimeMillis()));
+        encoder.timestampEvent(this.getLastSampleTimeNanos());
         encoder.timestampRecv(decoder.timestampRecv());
 
         encoder.price(decoder.price());
