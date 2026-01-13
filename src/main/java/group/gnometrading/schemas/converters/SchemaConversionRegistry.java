@@ -92,6 +92,12 @@ public class SchemaConversionRegistry {
                 new MBP1ToTradesBulkConverter(),
                 new TradesToOHLCV1HBulkConverter()
         ));
+
+        // Passthrough converters
+        for (var type : SchemaType.values()) {
+            converters.get(type).put(type, PassthroughConverter::new);
+            bulkConverters.get(type).put(type, PassthroughBulkConverter::new);
+        }
     }
 
     public static SchemaConverter<?, ?> getConverter(SchemaType source, SchemaType target) {
