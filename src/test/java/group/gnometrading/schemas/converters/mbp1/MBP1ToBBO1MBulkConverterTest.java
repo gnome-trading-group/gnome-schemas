@@ -18,9 +18,8 @@ class MBP1ToBBO1MBulkConverterTest {
         var converter = new MBP1ToBBO1MBulkConverter();
         List<MBP1Schema> input = new ArrayList<>();
         List<BBO1MSchema> result = converter.convert(input);
-        // SamplingSchemaBulkConverter always calls sample() at the end,
-        // which returns a result even for empty input (with uninitialized data)
-        assertEquals(1, result.size());
+        // Empty input means no pending samples, so result should be empty
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -60,7 +59,7 @@ class MBP1ToBBO1MBulkConverterTest {
         );
         List<BBO1MSchema> result = converter.convert(input);
 
-        // 2 samples during iteration + 1 final sample = 3 total
+        // 2 samples during iteration + 1 final sample (last element started interval 2)
         assertEquals(3, result.size());
     }
 

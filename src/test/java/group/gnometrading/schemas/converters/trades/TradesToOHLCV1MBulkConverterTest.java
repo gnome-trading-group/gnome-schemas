@@ -18,9 +18,8 @@ class TradesToOHLCV1MBulkConverterTest {
         var converter = new TradesToOHLCV1MBulkConverter();
         List<TradesSchema> input = new ArrayList<>();
         List<OHLCV1MSchema> result = converter.convert(input);
-        // SamplingSchemaBulkConverter always calls sample() at the end,
-        // which returns a result even for empty input (with uninitialized data)
-        assertEquals(1, result.size());
+        // Empty input means no pending samples, so result should be empty
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -61,7 +60,7 @@ class TradesToOHLCV1MBulkConverterTest {
         );
         List<OHLCV1MSchema> result = converter.convert(input);
 
-        // 2 samples during iteration + 1 final sample = 3 total
+        // 2 samples during iteration + 1 final sample (last element started interval 2)
         assertEquals(3, result.size());
 
         // First interval: only one trade (100, 10)

@@ -86,7 +86,7 @@ class WaterfallBulkConverterTest {
 
         List<OHLCV1SSchema> result = converter.convert(input);
 
-        // 2 samples during iteration + 1 final sample = 3 total
+        // 2 samples during iteration + 1 final sample (last element started interval 2)
         assertEquals(3, result.size());
         assertEquals(99, result.get(0).decoder.exchangeId());
         assertEquals(1299, result.get(0).decoder.securityId());
