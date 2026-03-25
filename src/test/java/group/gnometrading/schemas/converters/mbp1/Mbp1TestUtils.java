@@ -6,8 +6,7 @@ import java.util.Random;
 
 public final class Mbp1TestUtils {
 
-    private Mbp1TestUtils() {
-    }
+    private Mbp1TestUtils() {}
 
     public static final int EXCHANGE_ID = 24;
     public static final int SECURITY_ID = 50;

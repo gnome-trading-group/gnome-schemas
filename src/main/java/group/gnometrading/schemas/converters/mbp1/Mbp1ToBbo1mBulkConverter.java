@@ -14,5 +14,4 @@ public final class Mbp1ToBbo1mBulkConverter extends SamplingSchemaBulkConverter<
     protected Bbo1mSchema newOutputSchema() {
         return new Bbo1mSchema();
     }
-
 }

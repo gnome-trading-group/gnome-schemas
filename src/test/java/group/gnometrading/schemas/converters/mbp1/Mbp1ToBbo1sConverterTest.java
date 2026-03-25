@@ -1,12 +1,12 @@
 package group.gnometrading.schemas.converters.mbp1;
 
-import group.gnometrading.schemas.Bbo1sSchema;
-import group.gnometrading.schemas.Mbp1Schema;
-import org.junit.jupiter.api.Test;
-import java.util.concurrent.TimeUnit;
-
 import static group.gnometrading.schemas.converters.mbp1.Mbp1TestUtils.generate;
 import static org.junit.jupiter.api.Assertions.*;
+
+import group.gnometrading.schemas.Bbo1sSchema;
+import group.gnometrading.schemas.Mbp1Schema;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
 
 class Mbp1ToBbo1sConverterTest {
 
@@ -39,7 +39,8 @@ class Mbp1ToBbo1sConverterTest {
         var toDecoder = to.decoder;
         assertEquals(fromDecoder.exchangeId(), toDecoder.exchangeId());
         assertEquals(fromDecoder.securityId(), toDecoder.securityId());
-        assertEquals(TimeUnit.MILLISECONDS.toNanos(time), toDecoder.timestampEvent());;
+        assertEquals(TimeUnit.MILLISECONDS.toNanos(time), toDecoder.timestampEvent());
+        ;
         assertEquals(fromDecoder.timestampRecv(), toDecoder.timestampRecv());
         assertEquals(fromDecoder.price(), toDecoder.price());
         assertEquals(fromDecoder.size(), toDecoder.size());

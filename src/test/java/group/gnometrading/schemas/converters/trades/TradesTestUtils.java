@@ -4,8 +4,7 @@ import group.gnometrading.schemas.TradesSchema;
 
 public final class TradesTestUtils {
 
-    private TradesTestUtils() {
-    }
+    private TradesTestUtils() {}
 
     public static final int EXCHANGE_ID = 99;
     public static final int SECURITY_ID = 1299;

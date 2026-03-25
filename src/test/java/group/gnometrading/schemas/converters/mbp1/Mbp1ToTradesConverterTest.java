@@ -1,17 +1,17 @@
 package group.gnometrading.schemas.converters.mbp1;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Action;
 import group.gnometrading.schemas.Mbp10Encoder;
 import group.gnometrading.schemas.Mbp1Schema;
 import group.gnometrading.schemas.Side;
 import group.gnometrading.schemas.TradesSchema;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class Mbp1ToTradesConverterTest {
 
@@ -65,8 +65,7 @@ class Mbp1ToTradesConverterTest {
 
                             return schema;
                         },
-                        true
-                ),
+                        true),
                 Arguments.of(
                         (Supplier<Mbp1Schema>) () -> {
                             var schema = new Mbp1Schema();
@@ -95,10 +94,9 @@ class Mbp1ToTradesConverterTest {
                             return schema;
                         },
                         (Supplier<TradesSchema>) () -> {
-                           return null;
+                            return null;
                         },
-                        true
-                ),
+                        true),
                 Arguments.of(
                         (Supplier<Mbp1Schema>) () -> {
                             var schema = new Mbp1Schema();
@@ -145,11 +143,8 @@ class Mbp1ToTradesConverterTest {
 
                             return schema;
                         },
-                        false
-                )
-        );
+                        false));
     }
-
 
     @ParameterizedTest
     @MethodSource("generateConverterArgs")
@@ -170,5 +165,4 @@ class Mbp1ToTradesConverterTest {
             }
         }
     }
-
 }

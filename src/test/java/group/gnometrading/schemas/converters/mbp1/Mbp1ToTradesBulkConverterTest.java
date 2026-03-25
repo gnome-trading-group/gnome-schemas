@@ -1,14 +1,14 @@
 package group.gnometrading.schemas.converters.mbp1;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Action;
 import group.gnometrading.schemas.Mbp1Schema;
 import group.gnometrading.schemas.Side;
 import group.gnometrading.schemas.TradesSchema;
-import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class Mbp1ToTradesBulkConverterTest {
 
@@ -46,7 +46,8 @@ class Mbp1ToTradesBulkConverterTest {
 
     @Test
     void testSingleTradeElement() {
-        List<Mbp1Schema> input = List.of(createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_A, PRICE_A, SIZE_A, Action.Trade));
+        List<Mbp1Schema> input =
+                List.of(createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_A, PRICE_A, SIZE_A, Action.Trade));
         List<TradesSchema> result = converter.convert(input);
 
         assertEquals(1, result.size());
@@ -59,8 +60,7 @@ class Mbp1ToTradesBulkConverterTest {
         List<Mbp1Schema> input = List.of(
                 createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_1K, PRICE_1, SIZE_1, Action.Add),
                 createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_2K, PRICE_2, SIZE_2, Action.Cancel),
-                createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_3K, PRICE_3, SIZE_3, Action.Modify)
-        );
+                createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_3K, PRICE_3, SIZE_3, Action.Modify));
         List<TradesSchema> result = converter.convert(input);
 
         // All non-Trade actions should be filtered out
@@ -74,8 +74,7 @@ class Mbp1ToTradesBulkConverterTest {
                 createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_2K, PRICE_2, SIZE_2, Action.Add),
                 createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_3K, PRICE_3, SIZE_3, Action.Trade),
                 createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_4K, PRICE_4, SIZE_4, Action.Cancel),
-                createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_5K, PRICE_5, SIZE_5, Action.Trade)
-        );
+                createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_5K, PRICE_5, SIZE_5, Action.Trade));
         List<TradesSchema> result = converter.convert(input);
 
         // Only Trade actions should be in the result
@@ -89,16 +88,17 @@ class Mbp1ToTradesBulkConverterTest {
     void testOutputSchemasAreIndependent() {
         List<Mbp1Schema> input = List.of(
                 createMbp1Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_1K, PRICE_1, SIZE_1, Action.Trade),
-                createMbp1Schema(EXCHANGE_ID_B, SECURITY_ID_B, TIMESTAMP_2K, PRICE_2, SIZE_2, Action.Trade)
-        );
+                createMbp1Schema(EXCHANGE_ID_B, SECURITY_ID_B, TIMESTAMP_2K, PRICE_2, SIZE_2, Action.Trade));
         List<TradesSchema> result = converter.convert(input);
 
         assertEquals(2, result.size());
         assertNotSame(result.get(0), result.get(1));
-        assertNotEquals(result.get(0).decoder.exchangeId(), result.get(1).decoder.exchangeId());
+        assertNotEquals(
+                result.get(0).decoder.exchangeId(), result.get(1).decoder.exchangeId());
     }
 
-    private Mbp1Schema createMbp1Schema(int exchangeId, int securityId, long timestampEvent, long price, long size, Action action) {
+    private Mbp1Schema createMbp1Schema(
+            int exchangeId, int securityId, long timestampEvent, long price, long size, Action action) {
         var schema = new Mbp1Schema();
         schema.encoder.exchangeId(exchangeId);
         schema.encoder.securityId(securityId);
@@ -121,7 +121,8 @@ class Mbp1ToTradesBulkConverterTest {
         return schema;
     }
 
-    private void assertTradesSchema(TradesSchema schema, int exchangeId, int securityId, long timestampEvent, long price, long size) {
+    private void assertTradesSchema(
+            TradesSchema schema, int exchangeId, int securityId, long timestampEvent, long price, long size) {
         assertEquals(exchangeId, schema.decoder.exchangeId());
         assertEquals(securityId, schema.decoder.securityId());
         assertEquals(timestampEvent, schema.decoder.timestampEvent());

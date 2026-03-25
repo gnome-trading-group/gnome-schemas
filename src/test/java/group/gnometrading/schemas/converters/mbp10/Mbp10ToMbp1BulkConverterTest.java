@@ -1,14 +1,14 @@
 package group.gnometrading.schemas.converters.mbp10;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Action;
 import group.gnometrading.schemas.Mbp10Schema;
 import group.gnometrading.schemas.Mbp1Schema;
 import group.gnometrading.schemas.Side;
-import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class Mbp10ToMbp1BulkConverterTest {
 
@@ -40,7 +40,8 @@ class Mbp10ToMbp1BulkConverterTest {
 
     @Test
     void testSingleElement() {
-        List<Mbp10Schema> input = List.of(createMbp10Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_A, PRICE_A, SIZE_A));
+        List<Mbp10Schema> input =
+                List.of(createMbp10Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_A, PRICE_A, SIZE_A));
         List<Mbp1Schema> result = converter.convert(input);
 
         assertEquals(1, result.size());
@@ -52,8 +53,7 @@ class Mbp10ToMbp1BulkConverterTest {
         List<Mbp10Schema> input = List.of(
                 createMbp10Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_1K, PRICE_1, SIZE_1),
                 createMbp10Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_2K, PRICE_2, SIZE_2),
-                createMbp10Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_3K, PRICE_3, SIZE_3)
-        );
+                createMbp10Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_3K, PRICE_3, SIZE_3));
         List<Mbp1Schema> result = converter.convert(input);
 
         assertEquals(3, result.size());
@@ -67,14 +67,14 @@ class Mbp10ToMbp1BulkConverterTest {
         // Verify that each output schema is a separate instance
         List<Mbp10Schema> input = List.of(
                 createMbp10Schema(EXCHANGE_ID_A, SECURITY_ID_A, TIMESTAMP_1K, PRICE_1, SIZE_1),
-                createMbp10Schema(EXCHANGE_ID_B, SECURITY_ID_B, TIMESTAMP_2K, PRICE_2, SIZE_2)
-        );
+                createMbp10Schema(EXCHANGE_ID_B, SECURITY_ID_B, TIMESTAMP_2K, PRICE_2, SIZE_2));
         List<Mbp1Schema> result = converter.convert(input);
 
         assertEquals(2, result.size());
         // Verify they are different instances with different data
         assertNotSame(result.get(0), result.get(1));
-        assertNotEquals(result.get(0).decoder.exchangeId(), result.get(1).decoder.exchangeId());
+        assertNotEquals(
+                result.get(0).decoder.exchangeId(), result.get(1).decoder.exchangeId());
     }
 
     private Mbp10Schema createMbp10Schema(int exchangeId, int securityId, long timestampEvent, long price, long size) {
@@ -100,7 +100,8 @@ class Mbp10ToMbp1BulkConverterTest {
         return schema;
     }
 
-    private void assertMbp1Schema(Mbp1Schema schema, int exchangeId, int securityId, long timestampEvent, long price, long size) {
+    private void assertMbp1Schema(
+            Mbp1Schema schema, int exchangeId, int securityId, long timestampEvent, long price, long size) {
         assertEquals(exchangeId, schema.decoder.exchangeId());
         assertEquals(securityId, schema.decoder.securityId());
         assertEquals(timestampEvent, schema.decoder.timestampEvent());

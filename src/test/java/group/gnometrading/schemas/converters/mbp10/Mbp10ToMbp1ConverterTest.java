@@ -1,17 +1,17 @@
 package group.gnometrading.schemas.converters.mbp10;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Action;
 import group.gnometrading.schemas.Mbp10Encoder;
 import group.gnometrading.schemas.Mbp10Schema;
 import group.gnometrading.schemas.Mbp1Schema;
 import group.gnometrading.schemas.Side;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class Mbp10ToMbp1ConverterTest {
 
@@ -79,8 +79,7 @@ class Mbp10ToMbp1ConverterTest {
 
                             return schema;
                         },
-                        true
-                ),
+                        true),
                 Arguments.of(
                         (Supplier<Mbp10Schema>) () -> {
                             var schema = new Mbp10Schema();
@@ -141,9 +140,7 @@ class Mbp10ToMbp1ConverterTest {
 
                             return schema;
                         },
-                        false
-                )
-        );
+                        false));
     }
 
     @ParameterizedTest
@@ -151,9 +148,7 @@ class Mbp10ToMbp1ConverterTest {
     void testConverter(Supplier<Mbp10Schema> from, Supplier<Mbp1Schema> to, boolean equals) {
         var result = converter.convert(from.get());
 
-        if (equals)
-            assertEquals(to.get().decoder.toString(), result.decoder.toString());
-        else
-            assertNotEquals(to.get().decoder.toString(), result.decoder.toString());
+        if (equals) assertEquals(to.get().decoder.toString(), result.decoder.toString());
+        else assertNotEquals(to.get().decoder.toString(), result.decoder.toString());
     }
 }

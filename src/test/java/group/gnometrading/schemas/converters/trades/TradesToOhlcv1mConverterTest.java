@@ -1,12 +1,12 @@
 package group.gnometrading.schemas.converters.trades;
 
-import group.gnometrading.schemas.Ohlcv1mSchema;
-import org.junit.jupiter.api.Test;
-import java.util.concurrent.TimeUnit;
-
 import static group.gnometrading.schemas.converters.trades.TradesTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import group.gnometrading.schemas.Ohlcv1mSchema;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
 
 class TradesToOhlcv1mConverterTest {
 
@@ -33,7 +33,8 @@ class TradesToOhlcv1mConverterTest {
         assertSchema(result, 2, 10, 10, 10, 10, 3);
     }
 
-    private void assertSchema(Ohlcv1mSchema schema, long time, long open, long high, long low, long close, long volume) {
+    private void assertSchema(
+            Ohlcv1mSchema schema, long time, long open, long high, long low, long close, long volume) {
         assertEquals(schema.decoder.timestampEvent(), TimeUnit.MINUTES.toNanos(time));
         assertEquals(schema.decoder.open(), open);
         assertEquals(schema.decoder.high(), high);

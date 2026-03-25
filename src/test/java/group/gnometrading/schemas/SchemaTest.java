@@ -1,8 +1,8 @@
 package group.gnometrading.schemas;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
 
 public class SchemaTest {
 
@@ -25,5 +25,4 @@ public class SchemaTest {
         assertEquals(60, other.decoder.close());
         assertEquals(50, other.decoder.volume());
     }
-
 }

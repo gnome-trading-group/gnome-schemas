@@ -1,14 +1,14 @@
 package group.gnometrading.schemas.converters.trades;
 
+import static group.gnometrading.schemas.converters.trades.TradesTestUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Ohlcv1hSchema;
 import group.gnometrading.schemas.TradesSchema;
-import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static group.gnometrading.schemas.converters.trades.TradesTestUtils.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class TradesToOhlcv1hBulkConverterTest {
 
@@ -38,8 +38,7 @@ class TradesToOhlcv1hBulkConverterTest {
         List<TradesSchema> input = List.of(
                 genTrade(100, 10, TimeUnit.MINUTES.toNanos(10)),
                 genTrade(110, 5, TimeUnit.MINUTES.toNanos(20)),
-                genTrade(90, 15, TimeUnit.MINUTES.toNanos(30))
-        );
+                genTrade(90, 15, TimeUnit.MINUTES.toNanos(30)));
         List<Ohlcv1hSchema> result = converter.convert(input);
 
         // All within the same 1-hour interval, so only final sample() produces output
@@ -52,11 +51,14 @@ class TradesToOhlcv1hBulkConverterTest {
     void testMultipleElementsAcrossIntervals() {
         var converter = new TradesToOhlcv1hBulkConverter();
         List<TradesSchema> input = List.of(
-                genTrade(100, 10, TimeUnit.MINUTES.toNanos(30)),   // interval 0
-                genTrade(110, 5, TimeUnit.HOURS.toNanos(1)),       // triggers sample for interval 0
-                genTrade(120, 15, TimeUnit.MINUTES.toNanos(90)),   // still in interval 1
-                genTrade(130, 20, TimeUnit.HOURS.toNanos(2) + TimeUnit.MINUTES.toNanos(30))  // triggers sample for interval 1
-        );
+                genTrade(100, 10, TimeUnit.MINUTES.toNanos(30)), // interval 0
+                genTrade(110, 5, TimeUnit.HOURS.toNanos(1)), // triggers sample for interval 0
+                genTrade(120, 15, TimeUnit.MINUTES.toNanos(90)), // still in interval 1
+                genTrade(
+                        130,
+                        20,
+                        TimeUnit.HOURS.toNanos(2) + TimeUnit.MINUTES.toNanos(30)) // triggers sample for interval 1
+                );
         List<Ohlcv1hSchema> result = converter.convert(input);
 
         // 2 samples during iteration + 1 final sample (last element started interval 2)
@@ -77,9 +79,8 @@ class TradesToOhlcv1hBulkConverterTest {
         var converter = new TradesToOhlcv1hBulkConverter();
         List<TradesSchema> input = List.of(
                 genTrade(100, 10, TimeUnit.MINUTES.toNanos(30)),
-                genTrade(110, 5, TimeUnit.HOURS.toNanos(1)),  // triggers sample for interval 0
-                genTrade(120, 15, TimeUnit.MINUTES.toNanos(90))
-        );
+                genTrade(110, 5, TimeUnit.HOURS.toNanos(1)), // triggers sample for interval 0
+                genTrade(120, 15, TimeUnit.MINUTES.toNanos(90)));
         List<Ohlcv1hSchema> result = converter.convert(input);
 
         // 1 sample during iteration + 1 final sample = 2 total
@@ -97,8 +98,7 @@ class TradesToOhlcv1hBulkConverterTest {
         List<TradesSchema> input = List.of(
                 genTrade(100, 10, TimeUnit.MINUTES.toNanos(30)),
                 genTrade(200, 20, TimeUnit.HOURS.toNanos(1) + TimeUnit.MINUTES.toNanos(30)),
-                genTrade(300, 30, TimeUnit.HOURS.toNanos(2) + TimeUnit.MINUTES.toNanos(30))
-        );
+                genTrade(300, 30, TimeUnit.HOURS.toNanos(2) + TimeUnit.MINUTES.toNanos(30)));
         List<Ohlcv1hSchema> result = converter.convert(input);
 
         // Verify all results are different instances

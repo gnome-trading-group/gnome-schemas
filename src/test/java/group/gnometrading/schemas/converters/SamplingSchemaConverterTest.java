@@ -1,13 +1,12 @@
 package group.gnometrading.schemas.converters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Schema;
 import group.gnometrading.schemas.SchemaType;
+import java.time.Duration;
 import org.agrona.MutableDirectBuffer;
 import org.junit.jupiter.api.Test;
-
-import java.time.Duration;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SamplingSchemaConverterTest {
 
@@ -29,10 +28,16 @@ class SamplingSchemaConverterTest {
 
         @Override
         public void wrap(MutableDirectBuffer buf) {}
+
         @Override
-        public long getSequenceNumber() { return 0; }
+        public long getSequenceNumber() {
+            return 0;
+        }
+
         @Override
-        public long getEventTimestamp() { return eventTimestamp; }
+        public long getEventTimestamp() {
+            return eventTimestamp;
+        }
     }
 
     @Test

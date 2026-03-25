@@ -5,8 +5,7 @@ import group.gnometrading.schemas.MarketUpdateFlagsEncoder;
 
 public final class Utils {
 
-    private Utils() {
-    }
+    private Utils() {}
 
     public static void copyFlags(MarketUpdateFlagsDecoder source, MarketUpdateFlagsEncoder dest) {
         dest.lastMessage(source.lastMessage());

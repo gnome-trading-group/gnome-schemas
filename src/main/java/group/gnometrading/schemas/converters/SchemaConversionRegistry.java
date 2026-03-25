@@ -21,11 +21,9 @@ import java.util.function.Supplier;
 
 public final class SchemaConversionRegistry {
 
-    private SchemaConversionRegistry() {
-    }
+    private SchemaConversionRegistry() {}
 
-    private static final Map<SchemaType, Map<SchemaType, Supplier<SchemaConverter<?, ?>>>> converters =
-            new HashMap<>();
+    private static final Map<SchemaType, Map<SchemaType, Supplier<SchemaConverter<?, ?>>>> converters = new HashMap<>();
     private static final Map<SchemaType, Map<SchemaType, Supplier<SchemaBulkConverter<?, ?>>>> bulkConverters =
             new HashMap<>();
 
@@ -51,61 +49,88 @@ public final class SchemaConversionRegistry {
 
         // MBP10 converters
         converters.get(SchemaType.MBP_10).put(SchemaType.MBP_1, Mbp10ToMbp1Converter::new);
-        converters.get(SchemaType.MBP_10).put(SchemaType.TRADES, () -> new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToTradesConverter()
-        ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.BBO_1S, () -> new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToBbo1sConverter()
-        ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.BBO_1M, () -> new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToBbo1mConverter()
-        ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1S, () -> new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToTradesConverter(),
-                new TradesToOhlcv1sConverter()
-        ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1M, () -> new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToTradesConverter(),
-                new TradesToOhlcv1mConverter()
-        ));
-        converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1H, () -> new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToTradesConverter(),
-                new TradesToOhlcv1hConverter()
-        ));
+        converters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.TRADES,
+                        () -> new WaterfallConverter<>(new Mbp10ToMbp1Converter(), new Mbp1ToTradesConverter()));
+        converters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.BBO_1S,
+                        () -> new WaterfallConverter<>(new Mbp10ToMbp1Converter(), new Mbp1ToBbo1sConverter()));
+        converters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.BBO_1M,
+                        () -> new WaterfallConverter<>(new Mbp10ToMbp1Converter(), new Mbp1ToBbo1mConverter()));
+        converters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.OHLCV_1S,
+                        () -> new WaterfallConverter<>(
+                                new Mbp10ToMbp1Converter(),
+                                new Mbp1ToTradesConverter(),
+                                new TradesToOhlcv1sConverter()));
+        converters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.OHLCV_1M,
+                        () -> new WaterfallConverter<>(
+                                new Mbp10ToMbp1Converter(),
+                                new Mbp1ToTradesConverter(),
+                                new TradesToOhlcv1mConverter()));
+        converters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.OHLCV_1H,
+                        () -> new WaterfallConverter<>(
+                                new Mbp10ToMbp1Converter(),
+                                new Mbp1ToTradesConverter(),
+                                new TradesToOhlcv1hConverter()));
         bulkConverters.get(SchemaType.MBP_10).put(SchemaType.MBP_1, Mbp10ToMbp1BulkConverter::new);
-        bulkConverters.get(SchemaType.MBP_10).put(SchemaType.TRADES, () -> new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToTradesBulkConverter()
-        ));
-        bulkConverters.get(SchemaType.MBP_10).put(SchemaType.BBO_1S, () -> new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToBbo1sBulkConverter()
-        ));
-        bulkConverters.get(SchemaType.MBP_10).put(SchemaType.BBO_1M, () -> new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToBbo1mBulkConverter()
-        ));
-        bulkConverters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1S, () -> new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToTradesBulkConverter(),
-                new TradesToOhlcv1sBulkConverter()
-        ));
-        bulkConverters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1M, () -> new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToTradesBulkConverter(),
-                new TradesToOhlcv1mBulkConverter()
-        ));
-        bulkConverters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1H, () -> new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToTradesBulkConverter(),
-                new TradesToOhlcv1hBulkConverter()
-        ));
+        bulkConverters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.TRADES,
+                        () -> new WaterfallBulkConverter<>(
+                                new Mbp10ToMbp1BulkConverter(), new Mbp1ToTradesBulkConverter()));
+        bulkConverters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.BBO_1S,
+                        () -> new WaterfallBulkConverter<>(
+                                new Mbp10ToMbp1BulkConverter(), new Mbp1ToBbo1sBulkConverter()));
+        bulkConverters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.BBO_1M,
+                        () -> new WaterfallBulkConverter<>(
+                                new Mbp10ToMbp1BulkConverter(), new Mbp1ToBbo1mBulkConverter()));
+        bulkConverters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.OHLCV_1S,
+                        () -> new WaterfallBulkConverter<>(
+                                new Mbp10ToMbp1BulkConverter(),
+                                new Mbp1ToTradesBulkConverter(),
+                                new TradesToOhlcv1sBulkConverter()));
+        bulkConverters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.OHLCV_1M,
+                        () -> new WaterfallBulkConverter<>(
+                                new Mbp10ToMbp1BulkConverter(),
+                                new Mbp1ToTradesBulkConverter(),
+                                new TradesToOhlcv1mBulkConverter()));
+        bulkConverters
+                .get(SchemaType.MBP_10)
+                .put(
+                        SchemaType.OHLCV_1H,
+                        () -> new WaterfallBulkConverter<>(
+                                new Mbp10ToMbp1BulkConverter(),
+                                new Mbp1ToTradesBulkConverter(),
+                                new TradesToOhlcv1hBulkConverter()));
 
         // Passthrough converters
         for (var type : SchemaType.values()) {
@@ -139,5 +164,4 @@ public final class SchemaConversionRegistry {
     public static boolean hasConverter(SchemaType source, SchemaType target) {
         return converters.get(source).containsKey(target);
     }
-
 }

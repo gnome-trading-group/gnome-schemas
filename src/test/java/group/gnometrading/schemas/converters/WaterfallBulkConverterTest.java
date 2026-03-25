@@ -1,5 +1,7 @@
 package group.gnometrading.schemas.converters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Action;
 import group.gnometrading.schemas.Mbp10Schema;
 import group.gnometrading.schemas.Mbp1Schema;
@@ -9,21 +11,17 @@ import group.gnometrading.schemas.TradesSchema;
 import group.gnometrading.schemas.converters.mbp1.Mbp1ToTradesBulkConverter;
 import group.gnometrading.schemas.converters.mbp10.Mbp10ToMbp1BulkConverter;
 import group.gnometrading.schemas.converters.trades.TradesToOhlcv1sBulkConverter;
-import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class WaterfallBulkConverterTest {
 
     @Test
     void testEmptyList() {
-        WaterfallBulkConverter<Mbp10Schema, TradesSchema> converter = new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToTradesBulkConverter()
-        );
+        WaterfallBulkConverter<Mbp10Schema, TradesSchema> converter =
+                new WaterfallBulkConverter<>(new Mbp10ToMbp1BulkConverter(), new Mbp1ToTradesBulkConverter());
 
         List<Mbp10Schema> input = new ArrayList<>();
         List<TradesSchema> result = converter.convert(input);
@@ -32,16 +30,13 @@ class WaterfallBulkConverterTest {
 
     @Test
     void testTwoStepConversion_MBP10ToMBP1ToTrades() {
-        WaterfallBulkConverter<Mbp10Schema, TradesSchema> converter = new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToTradesBulkConverter()
-        );
+        WaterfallBulkConverter<Mbp10Schema, TradesSchema> converter =
+                new WaterfallBulkConverter<>(new Mbp10ToMbp1BulkConverter(), new Mbp1ToTradesBulkConverter());
 
         List<Mbp10Schema> input = List.of(
                 createMbp10Schema(11, 22, 1000, 100, 10, Action.Trade),
                 createMbp10Schema(11, 22, 2000, 200, 20, Action.Trade),
-                createMbp10Schema(11, 22, 3000, 300, 30, Action.Trade)
-        );
+                createMbp10Schema(11, 22, 3000, 300, 30, Action.Trade));
 
         List<TradesSchema> result = converter.convert(input);
 
@@ -53,18 +48,16 @@ class WaterfallBulkConverterTest {
 
     @Test
     void testTwoStepConversion_FiltersNullsFromIntermediateStep() {
-        WaterfallBulkConverter<Mbp10Schema, TradesSchema> converter = new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToTradesBulkConverter()
-        );
+        WaterfallBulkConverter<Mbp10Schema, TradesSchema> converter =
+                new WaterfallBulkConverter<>(new Mbp10ToMbp1BulkConverter(), new Mbp1ToTradesBulkConverter());
 
         // Mix of Trade and non-Trade actions
         List<Mbp10Schema> input = List.of(
                 createMbp10Schema(11, 22, 1000, 100, 10, Action.Trade),
-                createMbp10Schema(11, 22, 2000, 200, 20, Action.Add),    // Will be filtered
+                createMbp10Schema(11, 22, 2000, 200, 20, Action.Add), // Will be filtered
                 createMbp10Schema(11, 22, 3000, 300, 30, Action.Trade),
-                createMbp10Schema(11, 22, 4000, 400, 40, Action.Cancel)  // Will be filtered
-        );
+                createMbp10Schema(11, 22, 4000, 400, 40, Action.Cancel) // Will be filtered
+                );
 
         List<TradesSchema> result = converter.convert(input);
 
@@ -77,16 +70,12 @@ class WaterfallBulkConverterTest {
     @Test
     void testThreeStepConversion_MBP10ToMBP1ToTradesToOhlcv1s() {
         WaterfallBulkConverter<Mbp10Schema, Ohlcv1sSchema> converter = new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new Mbp1ToTradesBulkConverter(),
-                new TradesToOhlcv1sBulkConverter()
-        );
+                new Mbp10ToMbp1BulkConverter(), new Mbp1ToTradesBulkConverter(), new TradesToOhlcv1sBulkConverter());
 
         List<Mbp10Schema> input = List.of(
                 createMbp10Schema(99, 1299, TimeUnit.MILLISECONDS.toNanos(500), 100, 10, Action.Trade),
                 createMbp10Schema(99, 1299, TimeUnit.MILLISECONDS.toNanos(1500), 110, 5, Action.Trade),
-                createMbp10Schema(99, 1299, TimeUnit.MILLISECONDS.toNanos(2500), 120, 15, Action.Trade)
-        );
+                createMbp10Schema(99, 1299, TimeUnit.MILLISECONDS.toNanos(2500), 120, 15, Action.Trade));
 
         List<Ohlcv1sSchema> result = converter.convert(input);
 
@@ -98,14 +87,12 @@ class WaterfallBulkConverterTest {
 
     @Test
     void testSingleConverterInWaterfall() {
-        WaterfallBulkConverter<Mbp10Schema, Mbp1Schema> converter = new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter()
-        );
+        WaterfallBulkConverter<Mbp10Schema, Mbp1Schema> converter =
+                new WaterfallBulkConverter<>(new Mbp10ToMbp1BulkConverter());
 
         List<Mbp10Schema> input = List.of(
                 createMbp10Schema(11, 22, 1000, 100, 10, Action.Trade),
-                createMbp10Schema(33, 44, 2000, 200, 20, Action.Trade)
-        );
+                createMbp10Schema(33, 44, 2000, 200, 20, Action.Trade));
 
         List<Mbp1Schema> result = converter.convert(input);
 
@@ -118,16 +105,16 @@ class WaterfallBulkConverterTest {
     void testClassCastException_IncompatibleIntermediateConversion() {
         // Create a waterfall with incompatible converters
         WaterfallBulkConverter<Mbp10Schema, Ohlcv1sSchema> converter = new WaterfallBulkConverter<>(
-                new Mbp10ToMbp1BulkConverter(),
-                new TradesToOhlcv1sBulkConverter()  // Expects Trades, but gets MBP1
-        );
+                new Mbp10ToMbp1BulkConverter(), new TradesToOhlcv1sBulkConverter() // Expects Trades, but gets MBP1
+                );
 
         List<Mbp10Schema> input = List.of(createMbp10Schema(11, 22, 1000, 100, 10, Action.Trade));
 
         assertThrows(ClassCastException.class, () -> converter.convert(input));
     }
 
-    private Mbp10Schema createMbp10Schema(int exchangeId, int securityId, long timestampEvent, long price, long size, Action action) {
+    private Mbp10Schema createMbp10Schema(
+            int exchangeId, int securityId, long timestampEvent, long price, long size, Action action) {
         var schema = new Mbp10Schema();
         schema.encoder.exchangeId(exchangeId);
         schema.encoder.securityId(securityId);
@@ -144,7 +131,8 @@ class WaterfallBulkConverterTest {
         return schema;
     }
 
-    private void assertTradesSchema(TradesSchema schema, int exchangeId, int securityId, long timestampEvent, long price, long size) {
+    private void assertTradesSchema(
+            TradesSchema schema, int exchangeId, int securityId, long timestampEvent, long price, long size) {
         assertEquals(exchangeId, schema.decoder.exchangeId());
         assertEquals(securityId, schema.decoder.securityId());
         assertEquals(timestampEvent, schema.decoder.timestampEvent());

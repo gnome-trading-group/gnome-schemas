@@ -1,14 +1,14 @@
 package group.gnometrading.schemas.converters.mbp1;
 
+import static group.gnometrading.schemas.converters.mbp1.Mbp1TestUtils.generate;
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Bbo1mSchema;
 import group.gnometrading.schemas.Mbp1Schema;
-import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static group.gnometrading.schemas.converters.mbp1.Mbp1TestUtils.generate;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class Mbp1ToBbo1mBulkConverterTest {
 
@@ -39,8 +39,7 @@ class Mbp1ToBbo1mBulkConverterTest {
         List<Mbp1Schema> input = List.of(
                 generate(TimeUnit.SECONDS.toNanos(10)),
                 generate(TimeUnit.SECONDS.toNanos(20)),
-                generate(TimeUnit.SECONDS.toNanos(30))
-        );
+                generate(TimeUnit.SECONDS.toNanos(30)));
         List<Bbo1mSchema> result = converter.convert(input);
 
         // All within the same 1-minute interval, so only final sample() produces output
@@ -51,11 +50,11 @@ class Mbp1ToBbo1mBulkConverterTest {
     void testMultipleElementsAcrossIntervals() {
         var converter = new Mbp1ToBbo1mBulkConverter();
         List<Mbp1Schema> input = List.of(
-                generate(TimeUnit.SECONDS.toNanos(30)),   // interval 0
-                generate(TimeUnit.MINUTES.toNanos(1)),    // triggers sample for interval 0
-                generate(TimeUnit.SECONDS.toNanos(90)),   // still in interval 1
-                generate(TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(30))  // triggers sample for interval 1
-        );
+                generate(TimeUnit.SECONDS.toNanos(30)), // interval 0
+                generate(TimeUnit.MINUTES.toNanos(1)), // triggers sample for interval 0
+                generate(TimeUnit.SECONDS.toNanos(90)), // still in interval 1
+                generate(TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(30)) // triggers sample for interval 1
+                );
         List<Bbo1mSchema> result = converter.convert(input);
 
         // 2 samples during iteration + 1 final sample (last element started interval 2)
@@ -68,9 +67,8 @@ class Mbp1ToBbo1mBulkConverterTest {
         Mbp1Schema lastInput = generate(TimeUnit.SECONDS.toNanos(90));
         List<Mbp1Schema> input = List.of(
                 generate(TimeUnit.SECONDS.toNanos(30)),
-                generate(TimeUnit.MINUTES.toNanos(1)),  // triggers sample for interval 0
-                lastInput
-        );
+                generate(TimeUnit.MINUTES.toNanos(1)), // triggers sample for interval 0
+                lastInput);
         List<Bbo1mSchema> result = converter.convert(input);
 
         // 1 sample during iteration + 1 final sample = 2 total
@@ -88,8 +86,7 @@ class Mbp1ToBbo1mBulkConverterTest {
         List<Mbp1Schema> input = List.of(
                 generate(TimeUnit.SECONDS.toNanos(30)),
                 generate(TimeUnit.MINUTES.toNanos(1) + TimeUnit.SECONDS.toNanos(30)),
-                generate(TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(30))
-        );
+                generate(TimeUnit.MINUTES.toNanos(2) + TimeUnit.SECONDS.toNanos(30)));
         List<Bbo1mSchema> result = converter.convert(input);
 
         // Verify all results are different instances

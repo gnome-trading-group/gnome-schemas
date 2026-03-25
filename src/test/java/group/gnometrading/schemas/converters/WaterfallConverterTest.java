@@ -1,27 +1,25 @@
 package group.gnometrading.schemas.converters;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import group.gnometrading.schemas.Action;
 import group.gnometrading.schemas.Mbp10Schema;
 import group.gnometrading.schemas.Mbp1Schema;
 import group.gnometrading.schemas.Ohlcv1sSchema;
 import group.gnometrading.schemas.Side;
 import group.gnometrading.schemas.TradesSchema;
-import group.gnometrading.schemas.converters.mbp10.Mbp10ToMbp1Converter;
 import group.gnometrading.schemas.converters.mbp1.Mbp1ToTradesConverter;
+import group.gnometrading.schemas.converters.mbp10.Mbp10ToMbp1Converter;
 import group.gnometrading.schemas.converters.trades.TradesToOhlcv1sConverter;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class WaterfallConverterTest {
 
     @Test
     void testTwoStepConversion_MBP10ToMBP1ToTrades() {
         // Create a waterfall converter: MBP10 -> MBP1 -> Trades
-        WaterfallConverter<Mbp10Schema, TradesSchema> converter = new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToTradesConverter()
-        );
+        WaterfallConverter<Mbp10Schema, TradesSchema> converter =
+                new WaterfallConverter<>(new Mbp10ToMbp1Converter(), new Mbp1ToTradesConverter());
 
         // Create input MBP10 schema with Trade action
         Mbp10Schema input = new Mbp10Schema();
@@ -65,10 +63,8 @@ class WaterfallConverterTest {
     @Test
     void testTwoStepConversion_ReturnsNullWhenIntermediateConverterReturnsNull() {
         // Create a waterfall converter: MBP10 -> MBP1 -> Trades
-        WaterfallConverter<Mbp10Schema, TradesSchema> converter = new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToTradesConverter()
-        );
+        WaterfallConverter<Mbp10Schema, TradesSchema> converter =
+                new WaterfallConverter<>(new Mbp10ToMbp1Converter(), new Mbp1ToTradesConverter());
 
         // Create input MBP10 schema with Add action (not Trade)
         // Mbp1ToTradesConverter returns null for non-Trade actions
@@ -80,7 +76,7 @@ class WaterfallConverterTest {
         input.encoder.timestampRecv(1236);
         input.encoder.price(99);
         input.encoder.size(45);
-        input.encoder.action(Action.Add);  // Not a Trade action
+        input.encoder.action(Action.Add); // Not a Trade action
         input.encoder.side(Side.Ask);
         input.encoder.flags().marketByPrice(true);
         input.encoder.sequence(100);
@@ -97,10 +93,7 @@ class WaterfallConverterTest {
     void testThreeStepConversion_MBP10ToMBP1ToTradesToOhlcv1s() {
         // Create a waterfall converter: MBP10 -> MBP1 -> Trades -> Ohlcv1s
         WaterfallConverter<Mbp10Schema, Ohlcv1sSchema> converter = new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new Mbp1ToTradesConverter(),
-                new TradesToOhlcv1sConverter()
-        );
+                new Mbp10ToMbp1Converter(), new Mbp1ToTradesConverter(), new TradesToOhlcv1sConverter());
 
         // Create input MBP10 schema with Trade action
         Mbp10Schema input = new Mbp10Schema();
@@ -146,8 +139,8 @@ class WaterfallConverterTest {
         // Create a waterfall converter with wrong order: Trades -> MBP1 (impossible conversion)
         // This should cause a ClassCastException when we try to convert
         WaterfallConverter<TradesSchema, Mbp1Schema> converter = new WaterfallConverter<>(
-                new Mbp1ToTradesConverter()  // This expects MBP1 as input, not Trades
-        );
+                new Mbp1ToTradesConverter() // This expects MBP1 as input, not Trades
+                );
 
         // Create input TradesSchema
         TradesSchema input = new TradesSchema();
@@ -170,9 +163,8 @@ class WaterfallConverterTest {
         // Create a waterfall with incompatible converters in the middle
         // MBP10 -> MBP1 works, but then we try to use a converter that expects Trades
         WaterfallConverter<Mbp10Schema, Ohlcv1sSchema> converter = new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter(),
-                new TradesToOhlcv1sConverter()  // This expects Trades, but gets MBP1
-        );
+                new Mbp10ToMbp1Converter(), new TradesToOhlcv1sConverter() // This expects Trades, but gets MBP1
+                );
 
         // Create input MBP10 schema
         Mbp10Schema input = new Mbp10Schema();
@@ -191,9 +183,7 @@ class WaterfallConverterTest {
     @Test
     void testSingleConverterInWaterfall() {
         // Test that waterfall works with just a single converter
-        WaterfallConverter<Mbp10Schema, Mbp1Schema> converter = new WaterfallConverter<>(
-                new Mbp10ToMbp1Converter()
-        );
+        WaterfallConverter<Mbp10Schema, Mbp1Schema> converter = new WaterfallConverter<>(new Mbp10ToMbp1Converter());
 
         // Create input MBP10 schema
         Mbp10Schema input = new Mbp10Schema();
@@ -216,5 +206,4 @@ class WaterfallConverterTest {
         assertEquals(99, result.decoder.price());
         assertEquals(45, result.decoder.size());
     }
-
 }
