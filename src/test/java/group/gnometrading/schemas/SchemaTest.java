@@ -8,7 +8,7 @@ public class SchemaTest {
 
     @Test
     void testBasicCopy() {
-        OHLCV1SSchema schema = new OHLCV1SSchema();
+        Ohlcv1sSchema schema = new Ohlcv1sSchema();
 
         schema.encoder.open(100);
         schema.encoder.high(20);
@@ -16,7 +16,7 @@ public class SchemaTest {
         schema.encoder.close(60);
         schema.encoder.volume(50);
 
-        OHLCV1SSchema other = new OHLCV1SSchema();
+        Ohlcv1sSchema other = new Ohlcv1sSchema();
         other.copyFrom(schema);
 
         assertEquals(100, other.decoder.open());

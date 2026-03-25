@@ -1,7 +1,6 @@
 package group.gnometrading.schemas.converters;
 
 import group.gnometrading.schemas.Schema;
-
 import java.util.List;
 
 public interface SchemaBulkConverter<I extends Schema, O extends Schema> {

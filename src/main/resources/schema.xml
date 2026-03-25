@@ -97,7 +97,7 @@
             <validValue name="EXCHANGE_REJECTED">4</validValue>
         </enum>
     </types>
-    <sbe:message name="MBO" id="1" description="mbo">
+    <sbe:message name="Mbo" id="1" description="mbo">
         <field name="exchangeId" id="1" type="uint16" />
         <field name="securityId" id="2" type="uint32" />
         <field name="timestampEvent" id="3" type="timestamp" />
@@ -112,7 +112,7 @@
         <field name="flags" id="11" type="MarketUpdateFlags" />
         <field name="sequence" id="12" type="sequence" />
     </sbe:message>
-    <sbe:message name="MBP10" id="2" description="mbp-10">
+    <sbe:message name="Mbp10" id="2" description="mbp-10">
         <field name="exchangeId" id="1" type="uint16" />
         <field name="securityId" id="2" type="uint32" />
         <field name="timestampEvent" id="3" type="timestamp" />
@@ -199,7 +199,7 @@
         <field name="askCount9" id="115" type="count" />
     </sbe:message>
 
-    <sbe:message name="MBP1" id="3" description="mbp-1">
+    <sbe:message name="Mbp1" id="3" description="mbp-1">
         <field name="exchangeId" id="1" type="uint16" />
         <field name="securityId" id="2" type="uint32" />
         <field name="timestampEvent" id="3" type="timestamp" />
@@ -223,7 +223,7 @@
         <field name="askCount0" id="25" type="count" />
     </sbe:message>
 
-    <sbe:message name="BBO1S" id="4" description="bbo-1s">
+    <sbe:message name="Bbo1s" id="4" description="bbo-1s">
         <field name="exchangeId" id="1" type="uint16" />
         <field name="securityId" id="2" type="uint32" />
         <field name="timestampEvent" id="3" type="timestamp" />
@@ -242,7 +242,7 @@
         <field name="bidCount0" id="24" type="count" />
         <field name="askCount0" id="25" type="count" />
     </sbe:message>
-    <sbe:message name="BBO1M" id="5" description="bbo-1m">
+    <sbe:message name="Bbo1m" id="5" description="bbo-1m">
         <field name="exchangeId" id="1" type="uint16" />
         <field name="securityId" id="2" type="uint32" />
         <field name="timestampEvent" id="3" type="timestamp" />
@@ -278,7 +278,7 @@
         <field name="depth" id="13" type="depth" />
     </sbe:message>
 
-    <sbe:message name="OHLCV1S" id="7" description="ohlcv-1s">
+    <sbe:message name="Ohlcv1s" id="7" description="ohlcv-1s">
         <field name="exchangeId" id="1" type="uint16" />
         <field name="securityId" id="2" type="uint32" />
         <field name="timestampEvent" id="3" type="timestamp" />
@@ -289,7 +289,7 @@
         <field name="close" id="10" type="price" />
         <field name="volume" id="12" type="volume" />
     </sbe:message>
-    <sbe:message name="OHLCV1M" id="8" description="ohlcv-1m">
+    <sbe:message name="Ohlcv1m" id="8" description="ohlcv-1m">
         <field name="exchangeId" id="1" type="uint16" />
         <field name="securityId" id="2" type="uint32" />
         <field name="timestampEvent" id="3" type="timestamp" />
@@ -300,7 +300,7 @@
         <field name="close" id="10" type="price" />
         <field name="volume" id="12" type="volume" />
     </sbe:message>
-    <sbe:message name="OHLCV1H" id="9" description="ohlcv-1h">
+    <sbe:message name="Ohlcv1h" id="9" description="ohlcv-1h">
         <field name="exchangeId" id="1" type="uint16" />
         <field name="securityId" id="2" type="uint32" />
         <field name="timestampEvent" id="3" type="timestamp" />

@@ -3,18 +3,19 @@ package group.gnometrading.schemas.converters;
 import group.gnometrading.schemas.Schema;
 
 @SuppressWarnings("rawtypes")
-public class WaterfallConverter<I extends Schema, O extends Schema> implements SchemaConverter<I, O> {
+public final class WaterfallConverter<I extends Schema, O extends Schema> implements SchemaConverter<I, O> {
 
     private final SchemaConverter[] converters;
 
     public WaterfallConverter(SchemaConverter... converters) {
         this.converters = new SchemaConverter[converters.length];
-        int i = 0;
+        int idx = 0;
         for (var converter : converters) {
-            this.converters[i++] = converter;
+            this.converters[idx++] = converter;
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public O convert(I source) {
         Schema current = source;

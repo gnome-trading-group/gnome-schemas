@@ -2,13 +2,13 @@ package group.gnometrading.schemas;
 
 import org.agrona.MutableDirectBuffer;
 
-public final class TradesSchema extends Schema {
+public final class MboSchema extends Schema {
 
-    public final TradesEncoder encoder = new TradesEncoder();
-    public final TradesDecoder decoder = new TradesDecoder();
+    public final MboEncoder encoder = new MboEncoder();
+    public final MboDecoder decoder = new MboDecoder();
 
-    public TradesSchema() {
-        super(SchemaType.TRADES);
+    public MboSchema() {
+        super(SchemaType.MBO);
         this.wrap(this.buffer);
     }
 
@@ -20,7 +20,7 @@ public final class TradesSchema extends Schema {
 
     @Override
     protected int getEncodedBlockLength() {
-        return TradesEncoder.BLOCK_LENGTH;
+        return MboEncoder.BLOCK_LENGTH;
     }
 
     @Override

@@ -3,15 +3,15 @@ package group.gnometrading.schemas;
 import java.util.function.Supplier;
 
 public enum SchemaType {
-    MBO("mbo", MBOSchema::new),
-    MBP_10("mbp-10", MBP10Schema::new),
-    MBP_1("mbp-1", MBP1Schema::new),
-    BBO_1S("bbo-1s", BBO1SSchema::new),
-    BBO_1M("bbo-1m", BBO1MSchema::new),
+    MBO("mbo", MboSchema::new),
+    MBP_10("mbp-10", Mbp10Schema::new),
+    MBP_1("mbp-1", Mbp1Schema::new),
+    BBO_1S("bbo-1s", Bbo1sSchema::new),
+    BBO_1M("bbo-1m", Bbo1mSchema::new),
     TRADES("trades", TradesSchema::new),
-    OHLCV_1S("ohlcv-1s", OHLCV1SSchema::new),
-    OHLCV_1M("ohlcv-1m", OHLCV1MSchema::new),
-    OHLCV_1H("ohlcv-1h", OHLCV1HSchema::new),
+    OHLCV_1S("ohlcv-1s", Ohlcv1sSchema::new),
+    OHLCV_1M("ohlcv-1m", Ohlcv1mSchema::new),
+    OHLCV_1H("ohlcv-1h", Ohlcv1hSchema::new),
     ;
 
     private final String identifier;

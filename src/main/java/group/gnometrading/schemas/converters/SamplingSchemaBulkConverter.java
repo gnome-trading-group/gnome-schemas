@@ -1,11 +1,11 @@
 package group.gnometrading.schemas.converters;
 
 import group.gnometrading.schemas.Schema;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SamplingSchemaBulkConverter<I extends Schema, O extends Schema> implements SchemaBulkConverter<I, O> {
+public abstract class SamplingSchemaBulkConverter<I extends Schema, O extends Schema>
+        implements SchemaBulkConverter<I, O> {
 
     private final SamplingSchemaConverter<I, O> converter;
 
@@ -16,7 +16,7 @@ public abstract class SamplingSchemaBulkConverter<I extends Schema, O extends Sc
     protected abstract O newOutputSchema();
 
     @Override
-    public List<O> convert(List<I> source) {
+    public final List<O> convert(List<I> source) {
         List<O> result = new ArrayList<>();
         boolean hasPendingSample = false;
 

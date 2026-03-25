@@ -2,7 +2,10 @@ package group.gnometrading.schemas.converters.trades;
 
 import group.gnometrading.schemas.TradesSchema;
 
-public class TradesTestUtils {
+public final class TradesTestUtils {
+
+    private TradesTestUtils() {
+    }
 
     public static final int EXCHANGE_ID = 99;
     public static final int SECURITY_ID = 1299;

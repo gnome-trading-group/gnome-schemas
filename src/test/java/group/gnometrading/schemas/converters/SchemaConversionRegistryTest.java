@@ -1,7 +1,7 @@
 package group.gnometrading.schemas.converters;
 
 import group.gnometrading.schemas.SchemaType;
-import group.gnometrading.schemas.converters.mbp10.MBP10ToMBP1Converter;
+import group.gnometrading.schemas.converters.mbp10.Mbp10ToMbp1Converter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,7 +10,7 @@ class SchemaConversionRegistryTest {
 
     @Test
     void testValidConverter() {
-        assertInstanceOf(MBP10ToMBP1Converter.class, SchemaConversionRegistry.getConverter(SchemaType.MBP_10, SchemaType.MBP_1));
+        assertInstanceOf(Mbp10ToMbp1Converter.class, SchemaConversionRegistry.getConverter(SchemaType.MBP_10, SchemaType.MBP_1));
     }
 
     @Test

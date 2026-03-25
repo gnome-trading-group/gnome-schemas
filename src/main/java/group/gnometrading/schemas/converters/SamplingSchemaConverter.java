@@ -1,19 +1,19 @@
 package group.gnometrading.schemas.converters;
 
 import group.gnometrading.schemas.Schema;
-
 import java.time.Duration;
-
 
 public abstract class SamplingSchemaConverter<I extends Schema, O extends Schema> implements SchemaConverter<I, O> {
 
     private final long sampleIntervalNanos;
 
-    private long lastSampleTimeNanos, nextSampleTimeNanos;
+    private long lastSampleTimeNanos;
+    private long nextSampleTimeNanos;
 
     public SamplingSchemaConverter(Duration sampleInterval) {
         this.sampleIntervalNanos = sampleInterval.toNanos();
-        this.lastSampleTimeNanos = this.nextSampleTimeNanos = -1;
+        this.lastSampleTimeNanos = -1;
+        this.nextSampleTimeNanos = -1;
     }
 
     private long getNextInterval(long eventTimestampNanos) {
@@ -23,12 +23,12 @@ public abstract class SamplingSchemaConverter<I extends Schema, O extends Schema
     /**
      * @return the start (inclusive) of the last interval sampled, in nanoseconds
      */
-    public long getLastSampleTimeNanos() {
+    public final long getLastSampleTimeNanos() {
         return this.lastSampleTimeNanos;
     }
 
     @Override
-    public O convert(I source) {
+    public final O convert(I source) {
         long eventTimestampNanos = source.getEventTimestamp();
         if (this.nextSampleTimeNanos == -1) {
             this.nextSampleTimeNanos = this.getNextInterval(eventTimestampNanos);

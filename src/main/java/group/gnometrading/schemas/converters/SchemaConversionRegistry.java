@@ -1,19 +1,33 @@
 package group.gnometrading.schemas.converters;
 
 import group.gnometrading.schemas.SchemaType;
-import group.gnometrading.schemas.converters.mbp1.*;
-import group.gnometrading.schemas.converters.mbp10.MBP10ToMBP1BulkConverter;
-import group.gnometrading.schemas.converters.mbp10.MBP10ToMBP1Converter;
-import group.gnometrading.schemas.converters.trades.*;
-
+import group.gnometrading.schemas.converters.mbp1.Mbp1ToBbo1mBulkConverter;
+import group.gnometrading.schemas.converters.mbp1.Mbp1ToBbo1mConverter;
+import group.gnometrading.schemas.converters.mbp1.Mbp1ToBbo1sBulkConverter;
+import group.gnometrading.schemas.converters.mbp1.Mbp1ToBbo1sConverter;
+import group.gnometrading.schemas.converters.mbp1.Mbp1ToTradesBulkConverter;
+import group.gnometrading.schemas.converters.mbp1.Mbp1ToTradesConverter;
+import group.gnometrading.schemas.converters.mbp10.Mbp10ToMbp1BulkConverter;
+import group.gnometrading.schemas.converters.mbp10.Mbp10ToMbp1Converter;
+import group.gnometrading.schemas.converters.trades.TradesToOhlcv1hBulkConverter;
+import group.gnometrading.schemas.converters.trades.TradesToOhlcv1hConverter;
+import group.gnometrading.schemas.converters.trades.TradesToOhlcv1mBulkConverter;
+import group.gnometrading.schemas.converters.trades.TradesToOhlcv1mConverter;
+import group.gnometrading.schemas.converters.trades.TradesToOhlcv1sBulkConverter;
+import group.gnometrading.schemas.converters.trades.TradesToOhlcv1sConverter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class SchemaConversionRegistry {
+public final class SchemaConversionRegistry {
 
-    private static final Map<SchemaType, Map<SchemaType, Supplier<SchemaConverter<?, ?>>>> converters = new HashMap<>();
-    private static final Map<SchemaType, Map<SchemaType, Supplier<SchemaBulkConverter<?, ?>>>> bulkConverters = new HashMap<>();
+    private SchemaConversionRegistry() {
+    }
+
+    private static final Map<SchemaType, Map<SchemaType, Supplier<SchemaConverter<?, ?>>>> converters =
+            new HashMap<>();
+    private static final Map<SchemaType, Map<SchemaType, Supplier<SchemaBulkConverter<?, ?>>>> bulkConverters =
+            new HashMap<>();
 
     static {
         converters.put(SchemaType.MBO, new HashMap<>());
@@ -36,61 +50,61 @@ public class SchemaConversionRegistry {
         bulkConverters.put(SchemaType.OHLCV_1H, new HashMap<>());
 
         // MBP10 converters
-        converters.get(SchemaType.MBP_10).put(SchemaType.MBP_1, MBP10ToMBP1Converter::new);
+        converters.get(SchemaType.MBP_10).put(SchemaType.MBP_1, Mbp10ToMbp1Converter::new);
         converters.get(SchemaType.MBP_10).put(SchemaType.TRADES, () -> new WaterfallConverter<>(
-                new MBP10ToMBP1Converter(),
-                new MBP1ToTradesConverter()
+                new Mbp10ToMbp1Converter(),
+                new Mbp1ToTradesConverter()
         ));
         converters.get(SchemaType.MBP_10).put(SchemaType.BBO_1S, () -> new WaterfallConverter<>(
-                new MBP10ToMBP1Converter(),
-                new MBP1ToBBO1SConverter()
+                new Mbp10ToMbp1Converter(),
+                new Mbp1ToBbo1sConverter()
         ));
         converters.get(SchemaType.MBP_10).put(SchemaType.BBO_1M, () -> new WaterfallConverter<>(
-                new MBP10ToMBP1Converter(),
-                new MBP1ToBBO1MConverter()
+                new Mbp10ToMbp1Converter(),
+                new Mbp1ToBbo1mConverter()
         ));
         converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1S, () -> new WaterfallConverter<>(
-                new MBP10ToMBP1Converter(),
-                new MBP1ToTradesConverter(),
-                new TradesToOHLCV1SConverter()
+                new Mbp10ToMbp1Converter(),
+                new Mbp1ToTradesConverter(),
+                new TradesToOhlcv1sConverter()
         ));
         converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1M, () -> new WaterfallConverter<>(
-                new MBP10ToMBP1Converter(),
-                new MBP1ToTradesConverter(),
-                new TradesToOHLCV1MConverter()
+                new Mbp10ToMbp1Converter(),
+                new Mbp1ToTradesConverter(),
+                new TradesToOhlcv1mConverter()
         ));
         converters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1H, () -> new WaterfallConverter<>(
-                new MBP10ToMBP1Converter(),
-                new MBP1ToTradesConverter(),
-                new TradesToOHLCV1HConverter()
+                new Mbp10ToMbp1Converter(),
+                new Mbp1ToTradesConverter(),
+                new TradesToOhlcv1hConverter()
         ));
-        bulkConverters.get(SchemaType.MBP_10).put(SchemaType.MBP_1, MBP10ToMBP1BulkConverter::new);
+        bulkConverters.get(SchemaType.MBP_10).put(SchemaType.MBP_1, Mbp10ToMbp1BulkConverter::new);
         bulkConverters.get(SchemaType.MBP_10).put(SchemaType.TRADES, () -> new WaterfallBulkConverter<>(
-                new MBP10ToMBP1BulkConverter(),
-                new MBP1ToTradesBulkConverter()
+                new Mbp10ToMbp1BulkConverter(),
+                new Mbp1ToTradesBulkConverter()
         ));
         bulkConverters.get(SchemaType.MBP_10).put(SchemaType.BBO_1S, () -> new WaterfallBulkConverter<>(
-                new MBP10ToMBP1BulkConverter(),
-                new MBP1ToBBO1SBulkConverter()
+                new Mbp10ToMbp1BulkConverter(),
+                new Mbp1ToBbo1sBulkConverter()
         ));
         bulkConverters.get(SchemaType.MBP_10).put(SchemaType.BBO_1M, () -> new WaterfallBulkConverter<>(
-                new MBP10ToMBP1BulkConverter(),
-                new MBP1ToBBO1MBulkConverter()
+                new Mbp10ToMbp1BulkConverter(),
+                new Mbp1ToBbo1mBulkConverter()
         ));
         bulkConverters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1S, () -> new WaterfallBulkConverter<>(
-                new MBP10ToMBP1BulkConverter(),
-                new MBP1ToTradesBulkConverter(),
-                new TradesToOHLCV1SBulkConverter()
+                new Mbp10ToMbp1BulkConverter(),
+                new Mbp1ToTradesBulkConverter(),
+                new TradesToOhlcv1sBulkConverter()
         ));
         bulkConverters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1M, () -> new WaterfallBulkConverter<>(
-                new MBP10ToMBP1BulkConverter(),
-                new MBP1ToTradesBulkConverter(),
-                new TradesToOHLCV1MBulkConverter()
+                new Mbp10ToMbp1BulkConverter(),
+                new Mbp1ToTradesBulkConverter(),
+                new TradesToOhlcv1mBulkConverter()
         ));
         bulkConverters.get(SchemaType.MBP_10).put(SchemaType.OHLCV_1H, () -> new WaterfallBulkConverter<>(
-                new MBP10ToMBP1BulkConverter(),
-                new MBP1ToTradesBulkConverter(),
-                new TradesToOHLCV1HBulkConverter()
+                new Mbp10ToMbp1BulkConverter(),
+                new Mbp1ToTradesBulkConverter(),
+                new TradesToOhlcv1hBulkConverter()
         ));
 
         // Passthrough converters
@@ -103,7 +117,7 @@ public class SchemaConversionRegistry {
     public static SchemaConverter<?, ?> getConverter(SchemaType source, SchemaType target) {
         final var availableConverters = converters.get(source);
         if (!availableConverters.containsKey(target)) {
-            throw new IllegalArgumentException(String.format("Conversion from %s to %s does not exist", source, target));
+            throw new IllegalArgumentException("Conversion from " + source + " to " + target + " does not exist");
         }
 
         return availableConverters.get(target).get();
@@ -112,7 +126,7 @@ public class SchemaConversionRegistry {
     public static SchemaBulkConverter<?, ?> getBulkConverter(SchemaType source, SchemaType target) {
         final var availableConverters = bulkConverters.get(source);
         if (!availableConverters.containsKey(target)) {
-            throw new IllegalArgumentException(String.format("Conversion from %s to %s does not exist", source, target));
+            throw new IllegalArgumentException("Conversion from " + source + " to " + target + " does not exist");
         }
 
         return availableConverters.get(target).get();
