@@ -325,6 +325,7 @@
         <field name="timestampRecv" id="13" type="timestamp"/>
         <field name="flags" id="14" type="OrderFlags" presence="optional"/>
         <field name="rejectReason" id="15" type="RejectReason" presence="optional"/>
+        <field name="fee" id="16" type="price" presence="optional"/>
     </sbe:message>
     <sbe:message name="Order" id="11" description="Outgoing order submitted to an exchange">
         <field name="exchangeId" id="1" type="uint16" />

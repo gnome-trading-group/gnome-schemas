@@ -1,32 +1,14 @@
 package group.gnometrading.schemas;
 
-import group.gnometrading.utils.ByteBufferUtils;
 import group.gnometrading.utils.Copyable;
-import org.agrona.MutableDirectBuffer;
-import org.agrona.concurrent.UnsafeBuffer;
 
-public abstract class Schema implements Copyable<Schema> {
+public abstract class Schema extends SbeMessage implements Copyable<Schema> {
 
     public final SchemaType schemaType;
-    public final UnsafeBuffer buffer;
-    public final MessageHeaderEncoder messageHeaderEncoder;
-    public final MessageHeaderDecoder messageHeaderDecoder;
 
     public Schema(SchemaType schemaType) {
         this.schemaType = schemaType;
-        this.messageHeaderDecoder = new MessageHeaderDecoder();
-        this.messageHeaderEncoder = new MessageHeaderEncoder();
-
-        this.buffer = ByteBufferUtils.createAlignedUnsafeBuffer(this.totalMessageSize());
     }
-
-    public final int totalMessageSize() {
-        return MessageHeaderEncoder.ENCODED_LENGTH + this.getEncodedBlockLength();
-    }
-
-    protected abstract int getEncodedBlockLength();
-
-    public abstract void wrap(MutableDirectBuffer buf);
 
     /**
      * Retrieve the sequence number for the record. Note, the decoder *must*
