@@ -2,7 +2,7 @@ package group.gnometrading.schemas;
 
 import org.agrona.MutableDirectBuffer;
 
-public final class CancelOrder extends SbeMessage {
+public final class CancelOrder extends ClientOidMessage {
 
     public final CancelOrderEncoder encoder = new CancelOrderEncoder();
     public final CancelOrderDecoder decoder = new CancelOrderDecoder();
@@ -15,6 +15,11 @@ public final class CancelOrder extends SbeMessage {
     public void wrap(MutableDirectBuffer buf) {
         this.encoder.wrapAndApplyHeader(buf, 0, this.messageHeaderEncoder);
         this.decoder.wrapAndApplyHeader(buf, 0, this.messageHeaderDecoder);
+    }
+
+    @Override
+    protected int clientOidEncodingOffset() {
+        return CancelOrderDecoder.clientOidEncodingOffset();
     }
 
     @Override
