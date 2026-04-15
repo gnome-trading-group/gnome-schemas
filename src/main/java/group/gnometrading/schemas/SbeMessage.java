@@ -22,5 +22,24 @@ public abstract class SbeMessage {
         return MessageHeaderEncoder.ENCODED_LENGTH + this.getEncodedBlockLength();
     }
 
-    public abstract void wrap(MutableDirectBuffer buf);
+    /**
+     * Wraps {@link #buffer} around {@code buf} as a zero-copy view, then delegates to
+     * {@link #wrapCodecs(MutableDirectBuffer)} to update the encoder and decoder.
+     *
+     * @param buf the buffer to wrap
+     */
+    public final void wrap(MutableDirectBuffer buf) {
+        this.buffer.wrap(buf);
+        this.wrapCodecs(buf);
+    }
+
+    /**
+     * Wraps the subclass encoder and decoder around {@code buf}.
+     *
+     * <p>Called by {@link #wrap(MutableDirectBuffer)} after {@link #buffer} has been updated.
+     * Do not call this directly.
+     *
+     * @param buf the buffer to wrap
+     */
+    protected abstract void wrapCodecs(MutableDirectBuffer buf);
 }

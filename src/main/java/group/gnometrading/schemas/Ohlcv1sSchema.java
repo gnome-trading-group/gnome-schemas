@@ -18,7 +18,7 @@ public final class Ohlcv1sSchema extends Schema {
     }
 
     @Override
-    public void wrap(MutableDirectBuffer buf) {
+    protected void wrapCodecs(MutableDirectBuffer buf) {
         this.encoder.wrapAndApplyHeader(buf, 0, this.messageHeaderEncoder);
         this.decoder.wrapAndApplyHeader(buf, 0, this.messageHeaderDecoder);
     }
