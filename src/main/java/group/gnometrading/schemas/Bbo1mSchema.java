@@ -18,6 +18,11 @@ public final class Bbo1mSchema extends Schema {
     }
 
     @Override
+    protected int getSbeVersion() {
+        return Bbo1mEncoder.SCHEMA_VERSION;
+    }
+
+    @Override
     protected void wrapCodecs(MutableDirectBuffer buf) {
         this.encoder.wrapAndApplyHeader(buf, 0, this.messageHeaderEncoder);
         this.decoder.wrapAndApplyHeader(buf, 0, this.messageHeaderDecoder);

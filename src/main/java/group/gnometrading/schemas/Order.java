@@ -26,4 +26,9 @@ public final class Order extends ClientOidMessage {
     protected int getEncodedBlockLength() {
         return OrderEncoder.BLOCK_LENGTH;
     }
+
+    @Override
+    protected int getSbeVersion() {
+        return OrderEncoder.SCHEMA_VERSION;
+    }
 }

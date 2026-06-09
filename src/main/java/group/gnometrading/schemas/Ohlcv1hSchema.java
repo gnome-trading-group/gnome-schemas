@@ -24,6 +24,11 @@ public final class Ohlcv1hSchema extends Schema {
     }
 
     @Override
+    protected int getSbeVersion() {
+        return Ohlcv1hEncoder.SCHEMA_VERSION;
+    }
+
+    @Override
     public long getSequenceNumber() {
         return this.decoder.timestampEvent();
     }

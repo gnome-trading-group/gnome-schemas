@@ -22,6 +22,8 @@ public abstract class SbeMessage {
         return MessageHeaderEncoder.ENCODED_LENGTH + this.getEncodedBlockLength();
     }
 
+    protected abstract int getSbeVersion();
+
     /**
      * Wraps {@link #buffer} around {@code buf} as a zero-copy view, then delegates to
      * {@link #wrapCodecs(MutableDirectBuffer)} to update the encoder and decoder.

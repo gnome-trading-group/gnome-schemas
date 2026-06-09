@@ -24,6 +24,11 @@ public final class TradesSchema extends Schema {
     }
 
     @Override
+    protected int getSbeVersion() {
+        return TradesEncoder.SCHEMA_VERSION;
+    }
+
+    @Override
     public long getSequenceNumber() {
         return this.decoder.sequence();
     }

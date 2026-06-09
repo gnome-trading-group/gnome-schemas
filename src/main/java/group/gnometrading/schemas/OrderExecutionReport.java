@@ -26,4 +26,9 @@ public final class OrderExecutionReport extends ClientOidMessage {
     protected int getEncodedBlockLength() {
         return OrderExecutionReportEncoder.BLOCK_LENGTH;
     }
+
+    @Override
+    protected int getSbeVersion() {
+        return OrderExecutionReportEncoder.SCHEMA_VERSION;
+    }
 }

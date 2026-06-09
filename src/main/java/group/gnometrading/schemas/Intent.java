@@ -21,4 +21,9 @@ public final class Intent extends SbeMessage {
     protected int getEncodedBlockLength() {
         return IntentEncoder.BLOCK_LENGTH;
     }
+
+    @Override
+    protected int getSbeVersion() {
+        return IntentEncoder.SCHEMA_VERSION;
+    }
 }

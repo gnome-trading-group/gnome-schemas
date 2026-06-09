@@ -26,4 +26,9 @@ public final class ModifyOrder extends ClientOidMessage {
     protected int getEncodedBlockLength() {
         return ModifyOrderEncoder.BLOCK_LENGTH;
     }
+
+    @Override
+    protected int getSbeVersion() {
+        return ModifyOrderEncoder.SCHEMA_VERSION;
+    }
 }

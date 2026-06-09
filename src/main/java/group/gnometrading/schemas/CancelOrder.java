@@ -26,4 +26,9 @@ public final class CancelOrder extends ClientOidMessage {
     protected int getEncodedBlockLength() {
         return CancelOrderEncoder.BLOCK_LENGTH;
     }
+
+    @Override
+    protected int getSbeVersion() {
+        return CancelOrderEncoder.SCHEMA_VERSION;
+    }
 }

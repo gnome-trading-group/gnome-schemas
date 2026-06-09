@@ -27,6 +27,11 @@ class SamplingSchemaConverterTest {
         }
 
         @Override
+        protected int getSbeVersion() {
+            return 0;
+        }
+
+        @Override
         protected void wrapCodecs(MutableDirectBuffer buf) {}
 
         @Override

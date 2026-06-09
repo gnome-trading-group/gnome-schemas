@@ -24,6 +24,11 @@ public final class Mbp10Schema extends Schema {
     }
 
     @Override
+    protected int getSbeVersion() {
+        return Mbp10Encoder.SCHEMA_VERSION;
+    }
+
+    @Override
     public long getSequenceNumber() {
         return this.decoder.sequence();
     }

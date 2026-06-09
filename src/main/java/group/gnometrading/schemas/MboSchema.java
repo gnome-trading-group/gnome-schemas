@@ -24,6 +24,11 @@ public final class MboSchema extends Schema {
     }
 
     @Override
+    protected int getSbeVersion() {
+        return MboEncoder.SCHEMA_VERSION;
+    }
+
+    @Override
     public long getSequenceNumber() {
         return this.decoder.sequence();
     }

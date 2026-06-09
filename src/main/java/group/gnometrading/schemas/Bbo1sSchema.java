@@ -24,6 +24,11 @@ public final class Bbo1sSchema extends Schema {
     }
 
     @Override
+    protected int getSbeVersion() {
+        return Bbo1sEncoder.SCHEMA_VERSION;
+    }
+
+    @Override
     public long getSequenceNumber() {
         return this.decoder.sequence();
     }
