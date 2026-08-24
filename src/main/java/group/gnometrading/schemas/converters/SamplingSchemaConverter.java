@@ -27,6 +27,14 @@ public abstract class SamplingSchemaConverter<I extends Schema, O extends Schema
         return this.lastSampleTimeNanos;
     }
 
+    public final O flush() {
+        if (this.nextSampleTimeNanos == -1) {
+            return null;
+        }
+        this.lastSampleTimeNanos = this.nextSampleTimeNanos - this.sampleIntervalNanos;
+        return sample();
+    }
+
     @Override
     public final O convert(I source) {
         long eventTimestampNanos = source.getEventTimestamp();

@@ -32,7 +32,7 @@ public abstract class SamplingSchemaBulkConverter<I extends Schema, O extends Sc
         }
 
         if (hasPendingSample) {
-            var sampled = this.converter.sample();
+            var sampled = this.converter.flush();
             if (sampled != null) {
                 O newSchema = newOutputSchema();
                 newSchema.copyFrom(sampled);

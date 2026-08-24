@@ -23,14 +23,13 @@ class Mbp1ToBbo1sBulkConverterTest {
 
     @Test
     void testSingleElementNoSample() {
-        // A single element won't trigger a sample during iteration,
-        // but the final sample() call should produce output
         var converter = new Mbp1ToBbo1sBulkConverter();
         List<Mbp1Schema> input = List.of(generate(TimeUnit.MILLISECONDS.toNanos(500)));
         List<Bbo1sSchema> result = converter.convert(input);
 
-        // The final sample() should produce one result
         assertEquals(1, result.size());
+        // Event at 500ms falls in bucket [0, 1s), so bucket start is 0, not null (-1)
+        assertEquals(0L, result.get(0).decoder.timestampEvent());
     }
 
     @Test

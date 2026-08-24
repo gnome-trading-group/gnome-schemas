@@ -90,6 +90,32 @@ class SamplingSchemaConverterTest {
     }
 
     @Test
+    void testFlushBeforeAnyBoundaryCrossed() {
+        final var sampler = new SamplingSchemaConverter<DummySchema, DummySchema>(Duration.ofSeconds(1)) {
+            @Override
+            protected DummySchema sample() {
+                return new DummySchema(99, getLastSampleTimeNanos());
+            }
+
+            @Override
+            protected void updateState(DummySchema source) {}
+        };
+
+        // No events processed yet — flush returns null
+        assertNull(sampler.flush());
+
+        // Process one event at 500ms (no boundary crossed)
+        assertNull(sampler.convert(new DummySchema(0, 500_000_000L)));
+        assertEquals(-1, sampler.getLastSampleTimeNanos());
+
+        // flush() must set lastSampleTimeNanos to bucket start (0), not leave it at -1
+        DummySchema result = sampler.flush();
+        assertNotNull(result);
+        assertEquals(0L, result.eventTimestamp);
+        assertEquals(0L, sampler.getLastSampleTimeNanos());
+    }
+
+    @Test
     void testMissingSamples() {
         final int[] calls = {0, 0};
         final var sampler = new SamplingSchemaConverter<DummySchema, DummySchema>(Duration.ofMillis(500)) {
