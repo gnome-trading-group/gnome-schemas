@@ -66,7 +66,7 @@
         </set>
 
         <set name="OrderFlags" encodingType="uint8">
-            <choice name="todo">0</choice>
+            <choice name="postOnly">0</choice>
         </set>
 
         <enum name="ExecType" encodingType="uint8">
@@ -94,6 +94,7 @@
             <validValue name="INVALID_SIZE">2</validValue>
             <validValue name="RISK_LIMIT_EXCEEDED">3</validValue>
             <validValue name="EXCHANGE_REJECTED">4</validValue>
+            <validValue name="POST_ONLY_WOULD_CROSS">5</validValue>
         </enum>
     </types>
     <sbe:message name="Mbo" id="1" description="mbo">
