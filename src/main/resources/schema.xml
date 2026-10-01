@@ -69,6 +69,12 @@
             <choice name="postOnly">0</choice>
         </set>
 
+        <type name="liquidityEncoding" primitiveType="uint8" nullValue="0" presence="optional"/>
+        <enum name="Liquidity" encodingType="liquidityEncoding" description="Whether a fill added or removed liquidity (FIX LastLiquidityInd). Null on non-fill reports.">
+            <validValue name="MAKER">1</validValue>
+            <validValue name="TAKER">2</validValue>
+        </enum>
+
         <enum name="ExecType" encodingType="uint8">
             <validValue name="NEW">0</validValue>
             <validValue name="CANCEL">1</validValue>
@@ -327,6 +333,7 @@
         <field name="flags" id="14" type="OrderFlags" presence="optional"/>
         <field name="rejectReason" id="15" type="RejectReason" presence="optional"/>
         <field name="fee" id="16" type="price" presence="optional"/>
+        <field name="liquidity" id="17" type="Liquidity" presence="optional"/>
     </sbe:message>
     <sbe:message name="Order" id="11" description="Outgoing order submitted to an exchange">
         <field name="exchangeId" id="1" type="uint16" />
