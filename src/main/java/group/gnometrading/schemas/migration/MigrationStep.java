@@ -37,10 +37,8 @@ public final class MigrationStep {
 
     /** The step from {@code version} to the next, using the schemas archived on the classpath. */
     public static MigrationStep from(final int version) {
-        final int next = version + 1;
         return new MigrationStep(
-                SchemaLayout.fromResource(archived(version)),
-                SchemaLayout.fromResource(next == SbeMigrator.CURRENT_VERSION ? CURRENT_SCHEMA : archived(next)));
+                SchemaLayout.fromResource(archived(version)), SchemaLayout.fromResource(archived(version + 1)));
     }
 
     static MigrationStep between(final SchemaLayout source, final SchemaLayout target) {

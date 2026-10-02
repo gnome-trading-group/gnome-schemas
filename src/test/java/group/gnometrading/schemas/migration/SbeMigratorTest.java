@@ -174,6 +174,20 @@ class SbeMigratorTest {
     }
 
     @Test
+    void currentSchemaMatchesItsArchivedVersion() {
+        final SchemaLayout current = SchemaLayout.fromResource(MigrationStep.CURRENT_SCHEMA);
+        final SchemaLayout archived = SchemaLayout.fromResource(MigrationStep.archived(SbeMigrator.CURRENT_VERSION));
+
+        assertEquals(
+                archived.messages(),
+                current.messages(),
+                "schema.xml changed layout without a version bump. Bump its version to "
+                        + (SbeMigrator.CURRENT_VERSION + 1) + ", archive it as "
+                        + MigrationStep.archived(SbeMigrator.CURRENT_VERSION + 1)
+                        + ", and register MigrationStep.from(" + SbeMigrator.CURRENT_VERSION + ")");
+    }
+
+    @Test
     void archivedSchemaParsesToTheSameLayoutAsTheGeneratedCodecs() {
         final SchemaLayout v0 = SchemaLayout.fromResource(MigrationStep.archived(0));
         final SchemaLayout current = SchemaLayout.fromResource(MigrationStep.CURRENT_SCHEMA);
