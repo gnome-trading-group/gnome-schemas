@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
                    xmlns:xi="http://www.w3.org/2001/XInclude"
-                   package="group.gnometrading.schemas"
+                   package="group.gnometrading.schemas.v0"
                    id="1"
-                   version="1"
+                   version="0"
                    semanticVersion="5.2"
                    description="Schemas used in Gnome Trading Group"
                    byteOrder="littleEndian">
@@ -20,7 +20,7 @@
         <!-- Presence optional is needed so null values are generated correctly -->
         <type name="timestamp" primitiveType="uint64" nullValue="0" presence="optional" />
         <type name="price" primitiveType="int64" nullValue="-9223372036854775808" presence="optional" />
-        <type name="size" primitiveType="int64" nullValue="-9223372036854775808" presence="optional" />
+        <type name="size" primitiveType="uint32" nullValue="4294967295" presence="optional" />
         <type name="volume" primitiveType="uint64" /> <!-- Current volume will never be null -->
         <type name="count" primitiveType="uint32" nullValue="4294967295" presence="optional" />
         <type name="depth" primitiveType="uint8" nullValue="255" presence="optional" />

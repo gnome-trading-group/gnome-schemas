@@ -42,6 +42,19 @@
             <groupId>org.agrona</groupId>
             <artifactId>agrona</artifactId>
         </dependency>
+        <!-- SBE's schema parser and IR, so stored data from older schema versions is converted from
+             the archived schema XML rather than hand-written layouts. -->
+        <dependency>
+            <groupId>uk.co.real-logic</groupId>
+            <artifactId>sbe-tool</artifactId>
+            <version>1.34.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.agrona</groupId>
+                    <artifactId>agrona</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>group.gnometrading</groupId>
             <artifactId>gnome-core</artifactId>
@@ -73,38 +86,74 @@
                 <version>1.6.0</version>
                 <executions>
                     <execution>
+                        <id>generate-current</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
+                        <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>sbe.output.dir</key>
+                                    <value>${project.build.directory}/generated-sources/java</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.stop.on.error</key>
+                                    <value>true</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.warnings.fatal</key>
+                                    <value>false</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.xsd</key>
+                                    <value>${project.build.resources[0].directory}/sbe.xsd</value>
+                                </systemProperty>
+                            </systemProperties>
+                            <arguments>
+                                <argument>${project.build.resources[0].directory}/schema.xml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!-- Codecs for each archived schema version, for tests only: they write data the way
+                         that version stored it. Migration itself reads the archived XML, not codecs.
+                         One execution per file in src/main/resources/schemas/. -->
+                    <execution>
+                        <id>generate-v0-for-tests</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>sbe.output.dir</key>
+                                    <value>${project.build.directory}/generated-test-sources/java</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.stop.on.error</key>
+                                    <value>true</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.warnings.fatal</key>
+                                    <value>false</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.xsd</key>
+                                    <value>${project.build.resources[0].directory}/sbe.xsd</value>
+                                </systemProperty>
+                            </systemProperties>
+                            <arguments>
+                                <argument>${project.build.resources[0].directory}/schemas/schema-v0.xml</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
                     <includeProjectDependencies>false</includeProjectDependencies>
                     <includePluginDependencies>true</includePluginDependencies>
                     <mainClass>uk.co.real_logic.sbe.SbeTool</mainClass>
-                    <systemProperties>
-                        <systemProperty>
-                            <key>sbe.output.dir</key>
-                            <value>${project.build.directory}/generated-sources/java</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>sbe.validation.stop.on.error</key>
-                            <value>true</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>sbe.validation.warnings.fatal</key>
-                            <value>false</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <key>sbe.validation.xsd</key>
-                            <value>${project.build.resources[0].directory}/sbe.xsd</value>
-                        </systemProperty>
-                    </systemProperties>
-                    <arguments>
-                        <argument>${project.build.resources[0].directory}/schema.xml</argument>
-                    </arguments>
-                    <workingDirectory>${project.build.directory}/generated-sources/java</workingDirectory>
+                    <workingDirectory>${project.build.directory}</workingDirectory>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -113,6 +162,19 @@
                         <version>1.34.1</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <!-- Publishes the test classes, including the archived versions' codecs, so other repos'
+                 tests can write data the way an older schema stored it. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -128,6 +190,18 @@
                         <configuration>
                             <sources>
                                 <source>${project.build.directory}/generated-sources/java/</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-test-sources/java/</source>
                             </sources>
                         </configuration>
                     </execution>

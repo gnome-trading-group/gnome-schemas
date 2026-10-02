@@ -1,6 +1,6 @@
 package group.gnometrading.schemas;
 
-import group.gnometrading.schemas.converters.SchemaVersionConversionRegistry;
+import group.gnometrading.schemas.migration.SbeMigrator;
 import group.gnometrading.utils.Copyable;
 
 public abstract class Schema extends SbeMessage implements Copyable<Schema> {
@@ -27,21 +27,12 @@ public abstract class Schema extends SbeMessage implements Copyable<Schema> {
      */
     public abstract long getEventTimestamp();
 
+    /**
+     * Brings stored data written by an older schema version up to the current one, message by message.
+     * Returns {@code data} itself when nothing needs converting.
+     */
     public final byte[] migrateIfNeeded(byte[] data) {
-        if (data == null || data.length < 8) {
-            return data;
-        }
-        int fileVersion = Byte.toUnsignedInt(data[6]) | (Byte.toUnsignedInt(data[7]) << 8);
-        int expectedVersion = getSbeVersion();
-        if (fileVersion == expectedVersion) {
-            return data;
-        }
-        return SchemaVersionConversionRegistry.find(this.schemaType, fileVersion)
-                .orElseThrow(() -> new UnsupportedOperationException(
-                        ("Schema version mismatch for %s: file has version %d, expected %d. "
-                                        + "Register a SchemaVersionConverter to migrate this data.")
-                                .formatted(this.schemaType, fileVersion, expectedVersion)))
-                .convert(data);
+        return SbeMigrator.migrateStream(data);
     }
 
     @Override
