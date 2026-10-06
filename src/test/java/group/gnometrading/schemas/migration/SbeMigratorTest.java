@@ -90,6 +90,7 @@ class SbeMigratorTest {
         assertEquals(LARGE_SIZE, report.cumulativeQty());
         assertEquals(OrderExecutionReportDecoder.leavesQtyNullValue(), report.leavesQty());
         assertEquals(ExecType.PARTIAL_FILL, report.execType());
+        assertEquals("", report.exchangeOrderId(), "v0 reports never carried the venue's order ID");
     }
 
     @Test

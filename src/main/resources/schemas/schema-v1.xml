@@ -27,6 +27,7 @@
         <type name="sequence" primitiveType="uint64" nullValue="0" presence="optional" />
 
         <type name="clientOid" primitiveType="uint8" length="16" presence="optional" description="128-bit client order ID"/>
+        <type name="exchangeOrderId" primitiveType="char" length="66" characterEncoding="US-ASCII" presence="optional" description="The ID the venue knows an order by: a Kalshi client_order_id, or a Polymarket 0x-prefixed order hash. Empty until the venue acknowledges the order."/>
 
         <enum name="Action" encodingType="char">
             <validValue name="Add">A</validValue>
@@ -101,6 +102,11 @@
             <validValue name="RISK_LIMIT_EXCEEDED">3</validValue>
             <validValue name="EXCHANGE_REJECTED">4</validValue>
             <validValue name="POST_ONLY_WOULD_CROSS">5</validValue>
+            <!-- Our gateway refused the order and sent nothing, as opposed to the venue refusing it. -->
+            <validValue name="GATEWAY_REJECTED">6</validValue>
+            <!-- The strategy, session or listing is killed or latched, or risk data is stale: every order is
+                 refused until that clears, as opposed to RISK_LIMIT_EXCEEDED, where this order broke a limit. -->
+            <validValue name="HALTED">7</validValue>
         </enum>
     </types>
     <sbe:message name="Mbo" id="1" description="mbo">
@@ -320,7 +326,7 @@
     <sbe:message name="OrderExecutionReport" id="10" description="Execution report for order updates such as ACK, FILL, CANCEL, REJECT, etc.">
         <field name="exchangeId" id="1" type="uint16"/>
         <field name="securityId" id="2" type="uint32"/>
-        <field name="orderId" id="3" type="uint64"/>
+        <field name="exchangeOrderId" id="3" type="exchangeOrderId"/>
         <field name="clientOid" id="4" type="clientOid"/>
         <field name="execType" id="6" type="ExecType"/>
         <field name="orderStatus" id="7" type="OrderStatus"/>

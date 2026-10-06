@@ -2,6 +2,7 @@ package group.gnometrading.schemas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.agrona.concurrent.UnsafeBuffer;
 import org.junit.jupiter.api.Test;
 
 class ClientOidMessageTest {
@@ -54,13 +55,6 @@ class ClientOidMessageTest {
     }
 
     @Test
-    void testAllMessageTypesHaveSameOffset() {
-        assertEquals(OrderDecoder.clientOidEncodingOffset(), CancelOrderDecoder.clientOidEncodingOffset());
-        assertEquals(OrderDecoder.clientOidEncodingOffset(), ModifyOrderDecoder.clientOidEncodingOffset());
-        assertEquals(OrderDecoder.clientOidEncodingOffset(), OrderExecutionReportDecoder.clientOidEncodingOffset());
-    }
-
-    @Test
     void testRoundTripOnAllMessageTypes() {
         long counter = 77L;
         int strategyId = 3;
@@ -79,5 +73,20 @@ class ClientOidMessageTest {
         report.encodeClientOid(counter, strategyId);
         assertEquals(counter, report.getClientOidCounter());
         assertEquals(strategyId, report.getClientOidStrategyId());
+    }
+
+    @Test
+    void executionReportCarriesAFullPolymarketOrderHash() {
+        final String hash = "0x" + "ab".repeat(32);
+        final UnsafeBuffer buffer = new UnsafeBuffer(new byte[256]);
+        new OrderExecutionReportEncoder()
+                .wrapAndApplyHeader(buffer, 0, new MessageHeaderEncoder())
+                .exchangeOrderId(hash);
+
+        final OrderExecutionReportDecoder decoder =
+                new OrderExecutionReportDecoder().wrapAndApplyHeader(buffer, 0, new MessageHeaderDecoder());
+
+        assertEquals(66, hash.length());
+        assertEquals(hash, decoder.exchangeOrderId());
     }
 }

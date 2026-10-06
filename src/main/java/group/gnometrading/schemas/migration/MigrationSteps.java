@@ -12,7 +12,8 @@ final class MigrationSteps {
     private MigrationSteps() {}
 
     static void registerAll() {
-        // v0 → v1: sizes widen from uint32 to int64, which the defaults cover.
-        SbeMigrator.register(MigrationStep.from(0));
+        // v0 → v1: sizes widen from uint32 to int64, which the defaults cover. Execution reports trade the
+        // gateway-local orderId, which nothing ever read, for the venue's own order ID, which old reports lack.
+        SbeMigrator.register(MigrationStep.from(0).message("OrderExecutionReport", rules -> rules.drop("orderId")));
     }
 }
