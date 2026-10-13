@@ -110,6 +110,13 @@
             <!-- The venue's request budget is spent, ours or the venue's own 429: nothing was placed, and the same
                  order can be sent again once the budget refills. -->
             <validValue name="RATE_LIMITED">8</validValue>
+            <!-- The venue refused the order because the account can't pay for it: not enough cash, collateral or tokens
+                 to sell. -->
+            <validValue name="INSUFFICIENT_FUNDS">9</validValue>
+            <!-- The venue refused the order because it would have traded against one of the account's own orders. -->
+            <validValue name="SELF_TRADE">10</validValue>
+            <!-- The venue refused the order because the market is closed, paused or no longer trading. -->
+            <validValue name="MARKET_CLOSED">11</validValue>
         </enum>
     </types>
     <sbe:message name="Mbo" id="1" description="mbo">
