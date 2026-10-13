@@ -107,6 +107,9 @@
             <!-- The strategy, session or listing is killed or latched, or risk data is stale: every order is
                  refused until that clears, as opposed to RISK_LIMIT_EXCEEDED, where this order broke a limit. -->
             <validValue name="HALTED">7</validValue>
+            <!-- The venue's request budget is spent, ours or the venue's own 429: nothing was placed, and the same
+                 order can be sent again once the budget refills. -->
+            <validValue name="RATE_LIMITED">8</validValue>
         </enum>
     </types>
     <sbe:message name="Mbo" id="1" description="mbo">
