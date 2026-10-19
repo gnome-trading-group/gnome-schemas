@@ -118,6 +118,21 @@
             <!-- The venue refused the order because the market is closed, paused or no longer trading. -->
             <validValue name="MARKET_CLOSED">11</validValue>
         </enum>
+        <!-- A metric row's packed column values, and the names streams and columns are declared with. -->
+        <composite name="metricValues">
+            <type name="length" primitiveType="uint16"/>
+            <type name="varData" primitiveType="uint8" length="0"/>
+        </composite>
+        <composite name="metricName">
+            <type name="length" primitiveType="uint16"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="US-ASCII"/>
+        </composite>
+
+        <enum name="MetricColumnType" encodingType="uint8">
+            <validValue name="LONG">0</validValue>
+            <validValue name="DOUBLE">1</validValue>
+            <validValue name="INT">2</validValue>
+        </enum>
     </types>
     <sbe:message name="Mbo" id="1" description="mbo">
         <field name="exchangeId" id="1" type="uint16" />
@@ -394,5 +409,22 @@
         <field name="takeOrderType" id="12" type="OrderType" presence="optional"/>
         <field name="takeLimitPrice" id="13" type="price" presence="optional"/>
         <field name="flags" id="14" type="OrderFlags" presence="optional"/>
+    </sbe:message>
+    <!-- Metric streams are declared at runtime, so their rows carry raw values and the declarations that name them
+         travel in the same journal. Their size never sets the ring slot size: rows and names are capped to fit it. -->
+    <sbe:message name="MetricRow" id="15" description="One row of a declared metric stream: its column values, little-endian, in declaration order">
+        <field name="streamId" id="1" type="uint16"/>
+        <data name="values" id="2" type="metricValues"/>
+    </sbe:message>
+    <sbe:message name="MetricStream" id="16" description="Declares a metric stream ahead of its columns and rows">
+        <field name="streamId" id="1" type="uint16"/>
+        <field name="columnCount" id="2" type="uint16"/>
+        <data name="name" id="3" type="metricName"/>
+    </sbe:message>
+    <sbe:message name="MetricColumn" id="17" description="Declares one column of a metric stream">
+        <field name="streamId" id="1" type="uint16"/>
+        <field name="columnIndex" id="2" type="uint16"/>
+        <field name="columnType" id="3" type="MetricColumnType"/>
+        <data name="name" id="4" type="metricName"/>
     </sbe:message>
 </sbe:messageSchema>
