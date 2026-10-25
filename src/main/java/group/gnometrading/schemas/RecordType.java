@@ -66,6 +66,18 @@ public enum RecordType {
         return this.supplier.get();
     }
 
+    /**
+     * One new record of each type, indexed by template id (null where no record type has that id). Each caller gets
+     * its own records, since it wraps them over its own buffers.
+     */
+    public static StreamRecord[] newRecordsByTemplateId() {
+        final StreamRecord[] records = new StreamRecord[BY_TEMPLATE_ID.length];
+        for (final RecordType type : values()) {
+            records[type.templateId] = type.newInstance();
+        }
+        return records;
+    }
+
     /** The record type of a template id, or null if the id names no stream record (a core message, say). */
     public static RecordType forTemplateId(final int templateId) {
         return templateId >= 0 && templateId < BY_TEMPLATE_ID.length ? BY_TEMPLATE_ID[templateId] : null;

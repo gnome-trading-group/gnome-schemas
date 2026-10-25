@@ -41,6 +41,25 @@ class StreamRecordTest {
     }
 
     @Test
+    void recordsByTemplateIdHoldOneNewRecordOfEachTypeAtItsTemplateId() {
+        final StreamRecord[] records = RecordType.newRecordsByTemplateId();
+        int present = 0;
+        for (int templateId = 0; templateId < records.length; templateId++) {
+            final RecordType type = RecordType.forTemplateId(templateId);
+            if (type == null) {
+                assertNull(records[templateId]);
+            } else {
+                assertEquals(type, records[templateId].recordType);
+                present++;
+            }
+        }
+        assertEquals(RecordType.values().length, present);
+        assertNotSame(
+                records[RecordType.MBP_10.templateId()],
+                RecordType.newRecordsByTemplateId()[RecordType.MBP_10.templateId()]);
+    }
+
+    @Test
     void coreTemplatesAreNotStreamRecords() {
         assertNull(RecordType.forTemplateId(new Intent().templateId()));
         assertNull(RecordType.forTemplateId(-1));
