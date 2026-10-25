@@ -2,28 +2,31 @@ package group.gnometrading.schemas.converters;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import group.gnometrading.schemas.Schema;
-import group.gnometrading.schemas.SchemaType;
+import group.gnometrading.schemas.RecordType;
+import group.gnometrading.schemas.SbeMessage;
+import group.gnometrading.schemas.Statics;
+import group.gnometrading.schemas.StreamHeader;
+import group.gnometrading.schemas.StreamRecord;
 import java.time.Duration;
 import org.agrona.MutableDirectBuffer;
 import org.junit.jupiter.api.Test;
 
 class SamplingSchemaConverterTest {
 
-    private static class DummySchema extends Schema {
+    private static class DummySchema extends StreamRecord {
 
         int id;
-        long eventTimestamp;
 
         public DummySchema(int id, long eventTimestamp) {
-            super(SchemaType.MBO);
+            super(RecordType.MBO);
             this.id = id;
-            this.eventTimestamp = eventTimestamp;
+            this.buffer.putLong(
+                    SbeMessage.HEADER_LENGTH + StreamHeader.TIMESTAMP_EVENT_OFFSET, eventTimestamp, Statics.BYTE_ORDER);
         }
 
         @Override
         protected int getEncodedBlockLength() {
-            return 0;
+            return StreamHeader.LENGTH;
         }
 
         @Override
@@ -33,16 +36,6 @@ class SamplingSchemaConverterTest {
 
         @Override
         protected void wrapCodecs(MutableDirectBuffer buf) {}
-
-        @Override
-        public long getSequenceNumber() {
-            return 0;
-        }
-
-        @Override
-        public long getEventTimestamp() {
-            return eventTimestamp;
-        }
     }
 
     @Test
@@ -111,7 +104,7 @@ class SamplingSchemaConverterTest {
         // flush() must set lastSampleTimeNanos to bucket start (0), not leave it at -1
         DummySchema result = sampler.flush();
         assertNotNull(result);
-        assertEquals(0L, result.eventTimestamp);
+        assertEquals(0L, result.getEventTimestamp());
         assertEquals(0L, sampler.getLastSampleTimeNanos());
     }
 

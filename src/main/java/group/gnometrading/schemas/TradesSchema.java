@@ -1,21 +1,23 @@
 package group.gnometrading.schemas;
 
+import group.gnometrading.schemas.book.TradesDecoder;
+import group.gnometrading.schemas.book.TradesEncoder;
 import org.agrona.MutableDirectBuffer;
 
-public final class TradesSchema extends Schema {
+public final class TradesSchema extends BookRecord {
 
     public final TradesEncoder encoder = new TradesEncoder();
     public final TradesDecoder decoder = new TradesDecoder();
 
     public TradesSchema() {
-        super(SchemaType.TRADES);
+        super(RecordType.TRADES);
         this.wrap(this.buffer);
     }
 
     @Override
     protected void wrapCodecs(MutableDirectBuffer buf) {
-        this.encoder.wrapAndApplyHeader(buf, 0, this.messageHeaderEncoder);
-        this.decoder.wrapAndApplyHeader(buf, 0, this.messageHeaderDecoder);
+        this.encoder.wrapAndApplyHeader(buf, 0, this.headerEncoder);
+        this.decoder.wrapAndApplyHeader(buf, 0, this.headerDecoder);
     }
 
     @Override
@@ -26,15 +28,5 @@ public final class TradesSchema extends Schema {
     @Override
     protected int getSbeVersion() {
         return TradesEncoder.SCHEMA_VERSION;
-    }
-
-    @Override
-    public long getSequenceNumber() {
-        return this.decoder.sequence();
-    }
-
-    @Override
-    public long getEventTimestamp() {
-        return this.decoder.timestampEvent();
     }
 }

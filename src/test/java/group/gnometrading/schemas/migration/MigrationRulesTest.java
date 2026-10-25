@@ -135,7 +135,7 @@ class MigrationRulesTest {
 
     @Test
     void stepsChainAcrossVersions() {
-        final MigrationChain chain = new MigrationChain(2);
+        final MigrationChain chain = new MigrationChain(V2);
         chain.register(fullRules());
         chain.register(MigrationStep.between(V1, V2).dropMessage("Enums").dropMessage("Rules"));
         final byte[] v0 = message(V0, WIDEN, m -> m.put("u32", 4_000_000_000L).put("i32", 3));
@@ -151,7 +151,7 @@ class MigrationRulesTest {
     @Test
     void threeStepChainAlternatesScratchBuffersCorrectly() {
         final SchemaLayout v3 = layout("migration/test-v3.xml");
-        final MigrationChain chain = new MigrationChain(3);
+        final MigrationChain chain = new MigrationChain(v3);
         chain.register(fullRules());
         chain.register(MigrationStep.between(V1, V2).dropMessage("Enums").dropMessage("Rules"));
         chain.register(MigrationStep.between(V2, v3));
@@ -298,7 +298,7 @@ class MigrationRulesTest {
     }
 
     private static MigrationChain chain(final int current, final MigrationStep step) {
-        final MigrationChain chain = new MigrationChain(current);
+        final MigrationChain chain = new MigrationChain(layout("migration/test-v" + current + ".xml"));
         chain.register(step);
         return chain;
     }

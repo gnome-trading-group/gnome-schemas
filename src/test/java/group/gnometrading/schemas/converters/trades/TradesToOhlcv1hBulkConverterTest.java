@@ -88,8 +88,7 @@ class TradesToOhlcv1hBulkConverterTest {
 
         // Verify the last result contains data from the last interval
         Ohlcv1hSchema lastResult = result.get(result.size() - 1);
-        assertEquals(EXCHANGE_ID, lastResult.decoder.exchangeId());
-        assertEquals(SECURITY_ID, lastResult.decoder.securityId());
+        assertEquals(STREAM_ID, lastResult.decoder.streamId());
     }
 
     @Test
@@ -115,7 +114,6 @@ class TradesToOhlcv1hBulkConverterTest {
         assertEquals(low, schema.decoder.low());
         assertEquals(close, schema.decoder.close());
         assertEquals(volume, schema.decoder.volume());
-        assertEquals(EXCHANGE_ID, schema.decoder.exchangeId());
-        assertEquals(SECURITY_ID, schema.decoder.securityId());
+        assertEquals(STREAM_ID, schema.decoder.streamId());
     }
 }

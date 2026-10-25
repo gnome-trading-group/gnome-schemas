@@ -1,8 +1,8 @@
 package group.gnometrading.schemas.converters;
 
-import group.gnometrading.schemas.Schema;
+import group.gnometrading.schemas.StreamRecord;
 
-public interface SchemaConverter<I extends Schema, O extends Schema> {
+public interface SchemaConverter<I extends StreamRecord, O extends StreamRecord> {
     /**
      * Convert the source schema into an optional ouput schema.
      *

@@ -1,21 +1,23 @@
 package group.gnometrading.schemas;
 
+import group.gnometrading.schemas.book.MboDecoder;
+import group.gnometrading.schemas.book.MboEncoder;
 import org.agrona.MutableDirectBuffer;
 
-public final class MboSchema extends Schema {
+public final class MboSchema extends BookRecord {
 
     public final MboEncoder encoder = new MboEncoder();
     public final MboDecoder decoder = new MboDecoder();
 
     public MboSchema() {
-        super(SchemaType.MBO);
+        super(RecordType.MBO);
         this.wrap(this.buffer);
     }
 
     @Override
     protected void wrapCodecs(MutableDirectBuffer buf) {
-        this.encoder.wrapAndApplyHeader(buf, 0, this.messageHeaderEncoder);
-        this.decoder.wrapAndApplyHeader(buf, 0, this.messageHeaderDecoder);
+        this.encoder.wrapAndApplyHeader(buf, 0, this.headerEncoder);
+        this.decoder.wrapAndApplyHeader(buf, 0, this.headerDecoder);
     }
 
     @Override
@@ -26,15 +28,5 @@ public final class MboSchema extends Schema {
     @Override
     protected int getSbeVersion() {
         return MboEncoder.SCHEMA_VERSION;
-    }
-
-    @Override
-    public long getSequenceNumber() {
-        return this.decoder.sequence();
-    }
-
-    @Override
-    public long getEventTimestamp() {
-        return this.decoder.timestampEvent();
     }
 }

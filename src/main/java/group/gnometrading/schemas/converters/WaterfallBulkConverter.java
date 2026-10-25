@@ -1,10 +1,11 @@
 package group.gnometrading.schemas.converters;
 
-import group.gnometrading.schemas.Schema;
+import group.gnometrading.schemas.StreamRecord;
 import java.util.List;
 
 @SuppressWarnings("rawtypes")
-public final class WaterfallBulkConverter<I extends Schema, O extends Schema> implements SchemaBulkConverter<I, O> {
+public final class WaterfallBulkConverter<I extends StreamRecord, O extends StreamRecord>
+        implements SchemaBulkConverter<I, O> {
 
     private final SchemaBulkConverter[] converters;
 

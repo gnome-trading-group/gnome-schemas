@@ -37,8 +37,7 @@ class Mbp1ToBbo1sConverterTest {
     private void assertSchema(Bbo1sSchema to, Mbp1Schema from, long time) {
         var fromDecoder = from.decoder;
         var toDecoder = to.decoder;
-        assertEquals(fromDecoder.exchangeId(), toDecoder.exchangeId());
-        assertEquals(fromDecoder.securityId(), toDecoder.securityId());
+        assertEquals(fromDecoder.streamId(), toDecoder.streamId());
         assertEquals(TimeUnit.MILLISECONDS.toNanos(time), toDecoder.timestampEvent());
         ;
         assertEquals(fromDecoder.timestampRecv(), toDecoder.timestampRecv());
@@ -52,7 +51,7 @@ class Mbp1ToBbo1sConverterTest {
         assertEquals(fromDecoder.flags().snapshot(), toDecoder.flags().snapshot());
         assertEquals(fromDecoder.flags().marketByPrice(), toDecoder.flags().marketByPrice());
         assertEquals(fromDecoder.flags().badTimestampRecv(), toDecoder.flags().badTimestampRecv());
-        assertEquals(fromDecoder.flags().maybeBadBook(), toDecoder.flags().maybeBadBook());
+        assertEquals(fromDecoder.flags().badData(), toDecoder.flags().badData());
 
         assertEquals(fromDecoder.askPrice0(), toDecoder.askPrice0());
         assertEquals(fromDecoder.askCount0(), toDecoder.askCount0());

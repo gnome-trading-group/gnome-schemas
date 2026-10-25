@@ -1,10 +1,10 @@
 package group.gnometrading.schemas.converters;
 
-import group.gnometrading.schemas.Schema;
+import group.gnometrading.schemas.StreamRecord;
 
-public final class PassthroughConverter implements SchemaConverter<Schema, Schema> {
+public final class PassthroughConverter implements SchemaConverter<StreamRecord, StreamRecord> {
     @Override
-    public Schema convert(Schema source) {
+    public StreamRecord convert(StreamRecord source) {
         return source;
     }
 }

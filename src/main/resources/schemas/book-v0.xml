@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   package="group.gnometrading.schemas.book.v0"
+                   id="2"
+                   version="0"
+                   semanticVersion="5.2"
+                   description="The book family: order book and trade records of a venue listing's stream"
+                   byteOrder="littleEndian">
+    <!-- Every stream record, in every family, starts with the same five fields at the same offsets (streamId,
+         timestampEvent, timestampRecv, sequence, flags), so code that moves, stores or checks records reads them
+         without knowing the family. Template ids 100-199 belong to this family; other families have their own
+         hundred, so a template id alone names a record in a ring slot or journal. -->
+    <types>
+        <composite name="messageHeader" description="Message identifiers and length of message root.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+
+        <!-- Presence optional is needed so null values are generated correctly -->
+        <type name="timestamp" primitiveType="uint64" nullValue="0" presence="optional" />
+        <type name="price" primitiveType="int64" nullValue="-9223372036854775808" presence="optional" />
+        <type name="size" primitiveType="int64" nullValue="-9223372036854775808" presence="optional" />
+        <type name="volume" primitiveType="uint64" /> <!-- Current volume will never be null -->
+        <type name="count" primitiveType="uint32" nullValue="4294967295" presence="optional" />
+        <type name="depth" primitiveType="uint8" nullValue="255" presence="optional" />
+        <type name="sequence" primitiveType="uint64" nullValue="0" presence="optional" />
+
+        <enum name="Action" encodingType="char">
+            <validValue name="Add">A</validValue>
+            <validValue name="Cancel">C</validValue>
+            <validValue name="Modify">M</validValue>
+            <validValue name="Clear">W</validValue>
+            <validValue name="Trade">T</validValue>
+            <validValue name="Fill">F</validValue>
+            <validValue name="None">N</validValue>
+        </enum>
+        <enum name="Side" encodingType="char">
+            <validValue name="Ask">A</validValue>
+            <validValue name="Bid">B</validValue>
+            <validValue name="None">N</validValue>
+        </enum>
+
+        <!-- Bits 0-3 mean the same in every family's flags; bits 4-7 are the family's own. badData: the record may
+             not reflect the source (a gap, a resync, a lost or silent stream) until a snapshot clears it. -->
+        <set name="BookFlags" encodingType="uint8">
+            <choice name="badData">0</choice>
+            <choice name="snapshot">1</choice>
+            <choice name="lastMessage">2</choice>
+            <choice name="badTimestampRecv">3</choice>
+            <choice name="marketByPrice">4</choice>
+            <choice name="topOfBook">5</choice>
+        </set>
+    </types>
+    <sbe:message name="Mbo" id="100" description="mbo">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="timestampSent" id="6" type="timestamp" />
+        <field name="price" id="7" type="price" />
+        <field name="size" id="8" type="size" />
+        <field name="action" id="9" type="Action" />
+        <field name="side" id="10" type="Side" />
+        <field name="orderId" id="11" type="uint64" />
+    </sbe:message>
+    <sbe:message name="Mbp10" id="101" description="mbp-10">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="timestampSent" id="6" type="timestamp" />
+        <field name="price" id="7" type="price" />
+        <field name="size" id="8" type="size" />
+        <field name="action" id="9" type="Action" />
+        <field name="side" id="10" type="Side" />
+        <field name="depth" id="11" type="depth" />
+        <field name="bidPrice0" id="20" type="price" />
+        <field name="askPrice0" id="21" type="price" />
+        <field name="bidSize0" id="22" type="size" />
+        <field name="askSize0" id="23" type="size" />
+        <field name="bidCount0" id="24" type="count" />
+        <field name="askCount0" id="25" type="count" />
+        <field name="bidPrice1" id="30" type="price" />
+        <field name="askPrice1" id="31" type="price" />
+        <field name="bidSize1" id="32" type="size" />
+        <field name="askSize1" id="33" type="size" />
+        <field name="bidCount1" id="34" type="count" />
+        <field name="askCount1" id="35" type="count" />
+        <field name="bidPrice2" id="40" type="price" />
+        <field name="askPrice2" id="41" type="price" />
+        <field name="bidSize2" id="42" type="size" />
+        <field name="askSize2" id="43" type="size" />
+        <field name="bidCount2" id="44" type="count" />
+        <field name="askCount2" id="45" type="count" />
+        <field name="bidPrice3" id="50" type="price" />
+        <field name="askPrice3" id="51" type="price" />
+        <field name="bidSize3" id="52" type="size" />
+        <field name="askSize3" id="53" type="size" />
+        <field name="bidCount3" id="54" type="count" />
+        <field name="askCount3" id="55" type="count" />
+        <field name="bidPrice4" id="60" type="price" />
+        <field name="askPrice4" id="61" type="price" />
+        <field name="bidSize4" id="62" type="size" />
+        <field name="askSize4" id="63" type="size" />
+        <field name="bidCount4" id="64" type="count" />
+        <field name="askCount4" id="65" type="count" />
+        <field name="bidPrice5" id="70" type="price" />
+        <field name="askPrice5" id="71" type="price" />
+        <field name="bidSize5" id="72" type="size" />
+        <field name="askSize5" id="73" type="size" />
+        <field name="bidCount5" id="74" type="count" />
+        <field name="askCount5" id="75" type="count" />
+        <field name="bidPrice6" id="80" type="price" />
+        <field name="askPrice6" id="81" type="price" />
+        <field name="bidSize6" id="82" type="size" />
+        <field name="askSize6" id="83" type="size" />
+        <field name="bidCount6" id="84" type="count" />
+        <field name="askCount6" id="85" type="count" />
+        <field name="bidPrice7" id="90" type="price" />
+        <field name="askPrice7" id="91" type="price" />
+        <field name="bidSize7" id="92" type="size" />
+        <field name="askSize7" id="93" type="size" />
+        <field name="bidCount7" id="94" type="count" />
+        <field name="askCount7" id="95" type="count" />
+        <field name="bidPrice8" id="100" type="price" />
+        <field name="askPrice8" id="101" type="price" />
+        <field name="bidSize8" id="102" type="size" />
+        <field name="askSize8" id="103" type="size" />
+        <field name="bidCount8" id="104" type="count" />
+        <field name="askCount8" id="105" type="count" />
+        <field name="bidPrice9" id="110" type="price" />
+        <field name="askPrice9" id="111" type="price" />
+        <field name="bidSize9" id="112" type="size" />
+        <field name="askSize9" id="113" type="size" />
+        <field name="bidCount9" id="114" type="count" />
+        <field name="askCount9" id="115" type="count" />
+    </sbe:message>
+    <sbe:message name="Mbp1" id="102" description="mbp-1">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="timestampSent" id="6" type="timestamp" />
+        <field name="price" id="7" type="price" />
+        <field name="size" id="8" type="size" />
+        <field name="action" id="9" type="Action" />
+        <field name="side" id="10" type="Side" />
+        <field name="depth" id="11" type="depth" />
+        <field name="bidPrice0" id="20" type="price" />
+        <field name="askPrice0" id="21" type="price" />
+        <field name="bidSize0" id="22" type="size" />
+        <field name="askSize0" id="23" type="size" />
+        <field name="bidCount0" id="24" type="count" />
+        <field name="askCount0" id="25" type="count" />
+    </sbe:message>
+    <sbe:message name="Bbo1s" id="103" description="bbo-1s">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="price" id="7" type="price" />
+        <field name="size" id="8" type="size" />
+        <field name="side" id="10" type="Side" />
+        <field name="bidPrice0" id="20" type="price" />
+        <field name="askPrice0" id="21" type="price" />
+        <field name="bidSize0" id="22" type="size" />
+        <field name="askSize0" id="23" type="size" />
+        <field name="bidCount0" id="24" type="count" />
+        <field name="askCount0" id="25" type="count" />
+    </sbe:message>
+    <sbe:message name="Bbo1m" id="104" description="bbo-1m">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="price" id="7" type="price" />
+        <field name="size" id="8" type="size" />
+        <field name="side" id="10" type="Side" />
+        <field name="bidPrice0" id="20" type="price" />
+        <field name="askPrice0" id="21" type="price" />
+        <field name="bidSize0" id="22" type="size" />
+        <field name="askSize0" id="23" type="size" />
+        <field name="bidCount0" id="24" type="count" />
+        <field name="askCount0" id="25" type="count" />
+    </sbe:message>
+    <sbe:message name="Trades" id="105" description="trades">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="timestampSent" id="6" type="timestamp" />
+        <field name="price" id="7" type="price" />
+        <field name="size" id="8" type="size" />
+        <field name="action" id="9" type="Action" />
+        <field name="side" id="10" type="Side" />
+        <field name="depth" id="11" type="depth" />
+    </sbe:message>
+    <sbe:message name="Ohlcv1s" id="106" description="ohlcv-1s">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="open" id="6" type="price" />
+        <field name="high" id="7" type="price" />
+        <field name="low" id="8" type="price" />
+        <field name="close" id="9" type="price" />
+        <field name="volume" id="10" type="volume" />
+    </sbe:message>
+    <sbe:message name="Ohlcv1m" id="107" description="ohlcv-1m">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="open" id="6" type="price" />
+        <field name="high" id="7" type="price" />
+        <field name="low" id="8" type="price" />
+        <field name="close" id="9" type="price" />
+        <field name="volume" id="10" type="volume" />
+    </sbe:message>
+    <sbe:message name="Ohlcv1h" id="108" description="ohlcv-1h">
+        <field name="streamId" id="1" type="uint32" />
+        <field name="timestampEvent" id="2" type="timestamp" />
+        <field name="timestampRecv" id="3" type="timestamp" />
+        <field name="sequence" id="4" type="sequence" />
+        <field name="flags" id="5" type="BookFlags" />
+        <field name="open" id="6" type="price" />
+        <field name="high" id="7" type="price" />
+        <field name="low" id="8" type="price" />
+        <field name="close" id="9" type="price" />
+        <field name="volume" id="10" type="volume" />
+    </sbe:message>
+</sbe:messageSchema>

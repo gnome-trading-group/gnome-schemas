@@ -1,23 +1,21 @@
 package group.gnometrading.schemas.converters.mbp1;
 
 import group.gnometrading.schemas.Mbp1Schema;
-import group.gnometrading.schemas.Side;
+import group.gnometrading.schemas.book.Side;
 import java.util.Random;
 
 public final class Mbp1TestUtils {
 
     private Mbp1TestUtils() {}
 
-    public static final int EXCHANGE_ID = 24;
-    public static final int SECURITY_ID = 50;
+    public static final int STREAM_ID = 24;
 
     public static Mbp1Schema generate(long eventTimestampNanos) {
         var schema = new Mbp1Schema();
         var encoder = schema.encoder;
         var random = new Random();
 
-        encoder.exchangeId(EXCHANGE_ID);
-        encoder.securityId(SECURITY_ID);
+        encoder.streamId(STREAM_ID);
 
         encoder.timestampRecv(Math.abs(random.nextLong()));
         encoder.timestampSent(Math.abs(random.nextLong()));

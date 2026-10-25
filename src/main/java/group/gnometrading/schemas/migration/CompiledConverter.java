@@ -1,6 +1,6 @@
 package group.gnometrading.schemas.migration;
 
-import group.gnometrading.schemas.MessageHeaderDecoder;
+import group.gnometrading.schemas.SbeMessage;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 
@@ -10,7 +10,7 @@ import org.agrona.MutableDirectBuffer;
  */
 final class CompiledConverter implements MessageConverter {
 
-    private static final int HEADER_LENGTH = MessageHeaderDecoder.ENCODED_LENGTH;
+    private static final int HEADER_LENGTH = SbeMessage.HEADER_LENGTH;
     private static final int TEMPLATE_ID_OFFSET = 2;
     private static final int SCHEMA_ID_OFFSET = 4;
     private static final int VERSION_OFFSET = 6;

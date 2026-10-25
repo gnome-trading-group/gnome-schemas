@@ -2,12 +2,12 @@ package group.gnometrading.schemas.converters;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import group.gnometrading.schemas.Action;
 import group.gnometrading.schemas.Mbp10Schema;
 import group.gnometrading.schemas.Mbp1Schema;
 import group.gnometrading.schemas.Ohlcv1sSchema;
-import group.gnometrading.schemas.Side;
 import group.gnometrading.schemas.TradesSchema;
+import group.gnometrading.schemas.book.Action;
+import group.gnometrading.schemas.book.Side;
 import group.gnometrading.schemas.converters.mbp1.Mbp1ToTradesBulkConverter;
 import group.gnometrading.schemas.converters.mbp10.Mbp10ToMbp1BulkConverter;
 import group.gnometrading.schemas.converters.trades.TradesToOhlcv1sBulkConverter;
@@ -34,16 +34,16 @@ class WaterfallBulkConverterTest {
                 new WaterfallBulkConverter<>(new Mbp10ToMbp1BulkConverter(), new Mbp1ToTradesBulkConverter());
 
         List<Mbp10Schema> input = List.of(
-                createMbp10Schema(11, 22, 1000, 100, 10, Action.Trade),
-                createMbp10Schema(11, 22, 2000, 200, 20, Action.Trade),
-                createMbp10Schema(11, 22, 3000, 300, 30, Action.Trade));
+                createMbp10Schema(11, 1000, 100, 10, Action.Trade),
+                createMbp10Schema(11, 2000, 200, 20, Action.Trade),
+                createMbp10Schema(11, 3000, 300, 30, Action.Trade));
 
         List<TradesSchema> result = converter.convert(input);
 
         assertEquals(3, result.size());
-        assertTradesSchema(result.get(0), 11, 22, 1000, 100, 10);
-        assertTradesSchema(result.get(1), 11, 22, 2000, 200, 20);
-        assertTradesSchema(result.get(2), 11, 22, 3000, 300, 30);
+        assertTradesSchema(result.get(0), 11, 1000, 100, 10);
+        assertTradesSchema(result.get(1), 11, 2000, 200, 20);
+        assertTradesSchema(result.get(2), 11, 3000, 300, 30);
     }
 
     @Test
@@ -53,18 +53,18 @@ class WaterfallBulkConverterTest {
 
         // Mix of Trade and non-Trade actions
         List<Mbp10Schema> input = List.of(
-                createMbp10Schema(11, 22, 1000, 100, 10, Action.Trade),
-                createMbp10Schema(11, 22, 2000, 200, 20, Action.Add), // Will be filtered
-                createMbp10Schema(11, 22, 3000, 300, 30, Action.Trade),
-                createMbp10Schema(11, 22, 4000, 400, 40, Action.Cancel) // Will be filtered
+                createMbp10Schema(11, 1000, 100, 10, Action.Trade),
+                createMbp10Schema(11, 2000, 200, 20, Action.Add), // Will be filtered
+                createMbp10Schema(11, 3000, 300, 30, Action.Trade),
+                createMbp10Schema(11, 4000, 400, 40, Action.Cancel) // Will be filtered
                 );
 
         List<TradesSchema> result = converter.convert(input);
 
         // Only Trade actions should pass through
         assertEquals(2, result.size());
-        assertTradesSchema(result.get(0), 11, 22, 1000, 100, 10);
-        assertTradesSchema(result.get(1), 11, 22, 3000, 300, 30);
+        assertTradesSchema(result.get(0), 11, 1000, 100, 10);
+        assertTradesSchema(result.get(1), 11, 3000, 300, 30);
     }
 
     @Test
@@ -73,16 +73,15 @@ class WaterfallBulkConverterTest {
                 new Mbp10ToMbp1BulkConverter(), new Mbp1ToTradesBulkConverter(), new TradesToOhlcv1sBulkConverter());
 
         List<Mbp10Schema> input = List.of(
-                createMbp10Schema(99, 1299, TimeUnit.MILLISECONDS.toNanos(500), 100, 10, Action.Trade),
-                createMbp10Schema(99, 1299, TimeUnit.MILLISECONDS.toNanos(1500), 110, 5, Action.Trade),
-                createMbp10Schema(99, 1299, TimeUnit.MILLISECONDS.toNanos(2500), 120, 15, Action.Trade));
+                createMbp10Schema(99, TimeUnit.MILLISECONDS.toNanos(500), 100, 10, Action.Trade),
+                createMbp10Schema(99, TimeUnit.MILLISECONDS.toNanos(1500), 110, 5, Action.Trade),
+                createMbp10Schema(99, TimeUnit.MILLISECONDS.toNanos(2500), 120, 15, Action.Trade));
 
         List<Ohlcv1sSchema> result = converter.convert(input);
 
         // 2 samples during iteration + 1 final sample (last element started interval 2)
         assertEquals(3, result.size());
-        assertEquals(99, result.get(0).decoder.exchangeId());
-        assertEquals(1299, result.get(0).decoder.securityId());
+        assertEquals(99, result.get(0).decoder.streamId());
     }
 
     @Test
@@ -91,14 +90,13 @@ class WaterfallBulkConverterTest {
                 new WaterfallBulkConverter<>(new Mbp10ToMbp1BulkConverter());
 
         List<Mbp10Schema> input = List.of(
-                createMbp10Schema(11, 22, 1000, 100, 10, Action.Trade),
-                createMbp10Schema(33, 44, 2000, 200, 20, Action.Trade));
+                createMbp10Schema(11, 1000, 100, 10, Action.Trade), createMbp10Schema(33, 2000, 200, 20, Action.Trade));
 
         List<Mbp1Schema> result = converter.convert(input);
 
         assertEquals(2, result.size());
-        assertEquals(11, result.get(0).decoder.exchangeId());
-        assertEquals(33, result.get(1).decoder.exchangeId());
+        assertEquals(11, result.get(0).decoder.streamId());
+        assertEquals(33, result.get(1).decoder.streamId());
     }
 
     @Test
@@ -108,16 +106,14 @@ class WaterfallBulkConverterTest {
                 new Mbp10ToMbp1BulkConverter(), new TradesToOhlcv1sBulkConverter() // Expects Trades, but gets MBP1
                 );
 
-        List<Mbp10Schema> input = List.of(createMbp10Schema(11, 22, 1000, 100, 10, Action.Trade));
+        List<Mbp10Schema> input = List.of(createMbp10Schema(11, 1000, 100, 10, Action.Trade));
 
         assertThrows(ClassCastException.class, () -> converter.convert(input));
     }
 
-    private Mbp10Schema createMbp10Schema(
-            int exchangeId, int securityId, long timestampEvent, long price, long size, Action action) {
+    private Mbp10Schema createMbp10Schema(int streamId, long timestampEvent, long price, long size, Action action) {
         var schema = new Mbp10Schema();
-        schema.encoder.exchangeId(exchangeId);
-        schema.encoder.securityId(securityId);
+        schema.encoder.streamId(streamId);
         schema.encoder.timestampEvent(timestampEvent);
         schema.encoder.timestampSent(timestampEvent + 1);
         schema.encoder.timestampRecv(timestampEvent + 2);
@@ -131,10 +127,8 @@ class WaterfallBulkConverterTest {
         return schema;
     }
 
-    private void assertTradesSchema(
-            TradesSchema schema, int exchangeId, int securityId, long timestampEvent, long price, long size) {
-        assertEquals(exchangeId, schema.decoder.exchangeId());
-        assertEquals(securityId, schema.decoder.securityId());
+    private void assertTradesSchema(TradesSchema schema, int streamId, long timestampEvent, long price, long size) {
+        assertEquals(streamId, schema.decoder.streamId());
         assertEquals(timestampEvent, schema.decoder.timestampEvent());
         assertEquals(price, schema.decoder.price());
         assertEquals(size, schema.decoder.size());

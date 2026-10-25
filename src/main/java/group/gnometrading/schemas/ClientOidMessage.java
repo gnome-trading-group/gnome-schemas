@@ -1,6 +1,6 @@
 package group.gnometrading.schemas;
 
-public abstract class ClientOidMessage extends SbeMessage {
+public abstract class ClientOidMessage extends CoreMessage {
 
     public static final int CLIENT_OID_LENGTH = 16;
 
@@ -19,7 +19,7 @@ public abstract class ClientOidMessage extends SbeMessage {
     protected abstract int clientOidEncodingOffset();
 
     private int absoluteOffset() {
-        return MessageHeaderDecoder.ENCODED_LENGTH + clientOidEncodingOffset();
+        return HEADER_LENGTH + clientOidEncodingOffset();
     }
 
     public final long getClientOidCounter() {

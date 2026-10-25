@@ -1,18 +1,18 @@
 package group.gnometrading.schemas.converters;
 
-import group.gnometrading.schemas.MarketUpdateFlagsDecoder;
-import group.gnometrading.schemas.MarketUpdateFlagsEncoder;
+import group.gnometrading.schemas.book.BookFlagsDecoder;
+import group.gnometrading.schemas.book.BookFlagsEncoder;
 
 public final class Utils {
 
     private Utils() {}
 
-    public static void copyFlags(MarketUpdateFlagsDecoder source, MarketUpdateFlagsEncoder dest) {
-        dest.lastMessage(source.lastMessage());
-        dest.topOfBook(source.topOfBook());
+    public static void copyFlags(BookFlagsDecoder source, BookFlagsEncoder dest) {
+        dest.badData(source.badData());
         dest.snapshot(source.snapshot());
-        dest.marketByPrice(source.marketByPrice());
+        dest.lastMessage(source.lastMessage());
         dest.badTimestampRecv(source.badTimestampRecv());
-        dest.maybeBadBook(source.maybeBadBook());
+        dest.marketByPrice(source.marketByPrice());
+        dest.topOfBook(source.topOfBook());
     }
 }

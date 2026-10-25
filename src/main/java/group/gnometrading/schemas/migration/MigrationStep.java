@@ -1,6 +1,5 @@
 package group.gnometrading.schemas.migration;
 
-import group.gnometrading.schemas.MessageHeaderDecoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,14 +11,12 @@ import java.util.function.Consumer;
  * {@link MessagePlanner}); {@link #message} adds explicit rules for one template.
  *
  * <pre>{@code
- * MigrationStep.from(1)
+ * MigrationStep.from("core", 1)
  *         .message("Order", m -> m.rename("qty", "size").multiply("price", 10).drop("legacyFlag"))
  *         .dropMessage("Ohlcv1h");
  * }</pre>
  */
 public final class MigrationStep {
-
-    static final String CURRENT_SCHEMA = "schema.xml";
 
     private final SchemaLayout source;
     private final SchemaLayout target;
@@ -27,6 +24,10 @@ public final class MigrationStep {
     private final Set<String> droppedMessages = new HashSet<>();
 
     private MigrationStep(final SchemaLayout source, final SchemaLayout target) {
+        if (target.schemaId() != source.schemaId()) {
+            throw new IllegalArgumentException(
+                    "A step stays in one schema, not " + source.schemaId() + " to " + target.schemaId());
+        }
         if (target.version() != source.version() + 1) {
             throw new IllegalArgumentException(
                     "A step goes up one version, not v" + source.version() + " to v" + target.version());
@@ -35,18 +36,24 @@ public final class MigrationStep {
         this.target = target;
     }
 
-    /** The step from {@code version} to the next, using the schemas archived on the classpath. */
-    public static MigrationStep from(final int version) {
+    /** The step from {@code version} of the named schema (e.g. {@code core}) to the next, from its archives. */
+    public static MigrationStep from(final String schema, final int version) {
         return new MigrationStep(
-                SchemaLayout.fromResource(archived(version)), SchemaLayout.fromResource(archived(version + 1)));
+                SchemaLayout.fromResource(archived(schema, version)),
+                SchemaLayout.fromResource(archived(schema, version + 1)));
     }
 
     static MigrationStep between(final SchemaLayout source, final SchemaLayout target) {
         return new MigrationStep(source, target);
     }
 
-    static String archived(final int version) {
-        return "schemas/schema-v" + version + ".xml";
+    /** The current version of the named schema, e.g. {@code core.xml}. */
+    static String current(final String schema) {
+        return schema + ".xml";
+    }
+
+    static String archived(final String schema, final int version) {
+        return "schemas/" + schema + "-v" + version + ".xml";
     }
 
     /** Explicit rules for one message, by its name in the target version. */
@@ -59,6 +66,14 @@ public final class MigrationStep {
     public MigrationStep dropMessage(final String name) {
         this.droppedMessages.add(name);
         return this;
+    }
+
+    SchemaLayout source() {
+        return this.source;
+    }
+
+    int schemaId() {
+        return this.source.schemaId();
     }
 
     int fromVersion() {
@@ -82,14 +97,15 @@ public final class MigrationStep {
                 throw new IllegalStateException("Template " + from.name() + " is gone in v" + toVersion()
                         + "; dropMessage it if its data can go");
             }
+            if (!from.varData().equals(to.varData())) {
+                throw new IllegalStateException("Template " + from.name() + " changes its variable-length fields in v"
+                        + toVersion() + " (" + from.varData() + " to " + to.varData()
+                        + "); migration copies them unchanged, so that needs a new template instead");
+            }
             converters.put(
                     from.templateId(),
                     MessagePlanner.plan(
-                            from,
-                            to,
-                            this.rules.getOrDefault(to.name(), new MessageRules()),
-                            MessageHeaderDecoder.SCHEMA_ID,
-                            toVersion()));
+                            from, to, this.rules.getOrDefault(to.name(), new MessageRules()), schemaId(), toVersion()));
         }
         for (final String name : this.rules.keySet()) {
             if (this.target.messages().values().stream().noneMatch(m -> m.name().equals(name))) {

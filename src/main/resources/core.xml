@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   xmlns:xi="http://www.w3.org/2001/XInclude"
+                   package="group.gnometrading.schemas"
+                   id="1"
+                   version="2"
+                   semanticVersion="5.2"
+                   description="Gnome's core trading messages: orders, intents, execution reports and metrics. Market data lives in its own family schemas (book.xml)."
+                   byteOrder="littleEndian">
+    <types>
+        <!-- Common types across all SBE schemas  -->
+        <composite name="messageHeader" description="Message identifiers and length of message root.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+
+        <!-- User-defined types -->
+        <!-- Presence optional is needed so null values are generated correctly -->
+        <type name="timestamp" primitiveType="uint64" nullValue="0" presence="optional" />
+        <type name="price" primitiveType="int64" nullValue="-9223372036854775808" presence="optional" />
+        <type name="size" primitiveType="int64" nullValue="-9223372036854775808" presence="optional" />
+
+        <type name="clientOid" primitiveType="uint8" length="16" presence="optional" description="128-bit client order ID"/>
+        <type name="exchangeOrderId" primitiveType="char" length="66" characterEncoding="US-ASCII" presence="optional" description="The ID the venue knows an order by: a Kalshi client_order_id, or a Polymarket 0x-prefixed order hash. Empty until the venue acknowledges the order."/>
+
+        <enum name="Side" encodingType="char">
+            <validValue name="Ask">A</validValue>
+            <validValue name="Bid">B</validValue>
+            <validValue name="None">N</validValue>
+        </enum>
+
+        <enum name="OrderType" encodingType="uint8">
+            <validValue name="LIMIT">0</validValue>
+            <validValue name="MARKET">1</validValue>
+<!--            <validValue name="STOP_LIMIT">2</validValue>-->
+<!--            <validValue name="STOP_MARKET">3</validValue>-->
+        </enum>
+
+        <enum name="TimeInForce" encodingType="uint8">
+            <validValue name="GOOD_TILL_CANCELED">0</validValue>
+            <validValue name="IMMEDIATE_OR_CANCELED">1</validValue>
+            <validValue name="FILL_OR_KILL">2</validValue>
+        </enum>
+
+        <set name="OrderFlags" encodingType="uint8">
+            <choice name="postOnly">0</choice>
+        </set>
+
+        <type name="liquidityEncoding" primitiveType="uint8" nullValue="0" presence="optional"/>
+        <enum name="Liquidity" encodingType="liquidityEncoding" description="Whether a fill added or removed liquidity (FIX LastLiquidityInd). Null on non-fill reports.">
+            <validValue name="MAKER">1</validValue>
+            <validValue name="TAKER">2</validValue>
+        </enum>
+
+        <enum name="ExecType" encodingType="uint8">
+            <validValue name="NEW">0</validValue>
+            <validValue name="CANCEL">1</validValue>
+            <validValue name="FILL">2</validValue>
+            <validValue name="PARTIAL_FILL">3</validValue>
+            <validValue name="REJECT">4</validValue>
+            <validValue name="CANCEL_REJECT">5</validValue>
+            <validValue name="EXPIRE">6</validValue>
+        </enum>
+
+        <enum name="OrderStatus" encodingType="uint8">
+            <validValue name="NEW">0</validValue>
+            <validValue name="PARTIALLY_FILLED">1</validValue>
+            <validValue name="FILLED">2</validValue>
+            <validValue name="CANCELED">3</validValue>
+            <validValue name="REJECTED">4</validValue>
+            <validValue name="EXPIRED">5</validValue>
+        </enum>
+
+        <enum name="RejectReason" encodingType="uint8">
+            <validValue name="UNKNOWN">0</validValue>
+            <validValue name="INVALID_PRICE">1</validValue>
+            <validValue name="INVALID_SIZE">2</validValue>
+            <validValue name="RISK_LIMIT_EXCEEDED">3</validValue>
+            <validValue name="EXCHANGE_REJECTED">4</validValue>
+            <validValue name="POST_ONLY_WOULD_CROSS">5</validValue>
+            <!-- Our gateway refused the order and sent nothing, as opposed to the venue refusing it. -->
+            <validValue name="GATEWAY_REJECTED">6</validValue>
+            <!-- The strategy, session or listing is killed or latched, or risk data is stale: every order is
+                 refused until that clears, as opposed to RISK_LIMIT_EXCEEDED, where this order broke a limit. -->
+            <validValue name="HALTED">7</validValue>
+            <!-- The venue's request budget is spent, ours or the venue's own 429: nothing was placed, and the same
+                 order can be sent again once the budget refills. -->
+            <validValue name="RATE_LIMITED">8</validValue>
+            <!-- The venue refused the order because the account can't pay for it: not enough cash, collateral or tokens
+                 to sell. -->
+            <validValue name="INSUFFICIENT_FUNDS">9</validValue>
+            <!-- The venue refused the order because it would have traded against one of the account's own orders. -->
+            <validValue name="SELF_TRADE">10</validValue>
+            <!-- The venue refused the order because the market is closed, paused or no longer trading. -->
+            <validValue name="MARKET_CLOSED">11</validValue>
+        </enum>
+        <!-- A metric row's packed column values, and the names streams and columns are declared with. -->
+        <composite name="metricValues">
+            <type name="length" primitiveType="uint16"/>
+            <type name="varData" primitiveType="uint8" length="0"/>
+        </composite>
+        <composite name="metricName">
+            <type name="length" primitiveType="uint16"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="US-ASCII"/>
+        </composite>
+
+        <enum name="MetricColumnType" encodingType="uint8">
+            <validValue name="LONG">0</validValue>
+            <validValue name="DOUBLE">1</validValue>
+            <validValue name="INT">2</validValue>
+        </enum>
+    </types>
+    <sbe:message name="OrderExecutionReport" id="10" description="Execution report for order updates such as ACK, FILL, CANCEL, REJECT, etc.">
+        <field name="exchangeId" id="1" type="uint16"/>
+        <field name="securityId" id="2" type="uint32"/>
+        <field name="exchangeOrderId" id="3" type="exchangeOrderId"/>
+        <field name="clientOid" id="4" type="clientOid"/>
+        <field name="execType" id="6" type="ExecType"/>
+        <field name="orderStatus" id="7" type="OrderStatus"/>
+        <field name="filledQty" id="8" type="size"/>
+        <field name="fillPrice" id="9" type="price"/>
+        <field name="cumulativeQty" id="10" type="size"/>
+        <field name="leavesQty" id="11" type="size"/>
+        <field name="timestampEvent" id="12" type="timestamp"/>
+        <field name="timestampRecv" id="13" type="timestamp"/>
+        <field name="flags" id="14" type="OrderFlags" presence="optional"/>
+        <field name="rejectReason" id="15" type="RejectReason" presence="optional"/>
+        <field name="fee" id="16" type="price" presence="optional"/>
+        <field name="liquidity" id="17" type="Liquidity" presence="optional"/>
+    </sbe:message>
+    <sbe:message name="Order" id="11" description="Outgoing order submitted to an exchange">
+        <field name="exchangeId" id="1" type="uint16" />
+        <field name="securityId" id="2" type="uint32" />
+        <field name="timestampSend" id="3" type="timestamp" />
+        <field name="clientOid" id="4" type="clientOid" />
+        <field name="price" id="5" type="price" />
+        <field name="size" id="6" type="size" />
+        <field name="side" id="7" type="Side" />
+        <field name="flags" id="8" type="OrderFlags" />
+        <field name="orderType" id="9" type="OrderType" />
+        <field name="timeInForce" id="10" type="TimeInForce" />
+    </sbe:message>
+    <sbe:message name="ModifyOrder" id="12" description="Modify request for a previously sent order">
+        <field name="exchangeId" id="1" type="uint16" />
+        <field name="securityId" id="2" type="uint32" />
+        <field name="timestampSend" id="3" type="timestamp" />
+        <field name="clientOid" id="4" type="clientOid" />
+        <field name="price" id="5" type="price" presence="optional"/>
+        <field name="size" id="6" type="size" presence="optional"/>
+        <field name="flags" id="7" type="OrderFlags" presence="optional"/>
+        <field name="orderType" id="8" type="OrderType" />
+        <field name="timeInForce" id="9" type="TimeInForce" presence="optional"/>
+    </sbe:message>
+    <sbe:message name="CancelOrder" id="13" description="Cancel request for a previously sent order">
+        <field name="exchangeId" id="1" type="uint16" />
+        <field name="securityId" id="2" type="uint32" />
+        <field name="timestampSend" id="3" type="timestamp" />
+        <field name="clientOid" id="4" type="clientOid" />
+    </sbe:message>
+    <sbe:message name="Intent" id="14" description="Intent generated by signals for quoting and taking">
+        <field name="exchangeId" id="1" type="uint16"/>
+        <field name="securityId" id="2" type="uint32"/>
+        <field name="strategyId" id="3" type="uint16"/>
+        <field name="timestampSend" id="4" type="timestamp" />
+        <field name="bidPrice" id="5" type="price" presence="optional"/>
+        <field name="bidSize" id="6" type="size" presence="optional"/>
+        <field name="askPrice" id="7" type="price" presence="optional"/>
+        <field name="askSize" id="9" type="size" presence="optional"/>
+        <field name="takeSide" id="10" type="Side" presence="optional"/>
+        <field name="takeSize" id="11" type="size" presence="optional"/>
+        <field name="takeOrderType" id="12" type="OrderType" presence="optional"/>
+        <field name="takeLimitPrice" id="13" type="price" presence="optional"/>
+        <field name="flags" id="14" type="OrderFlags" presence="optional"/>
+    </sbe:message>
+    <!-- Metric streams are declared at runtime, so their rows carry raw values and the declarations that name them
+         travel in the same journal. Their size never sets the ring slot size: rows and names are capped to fit it. -->
+    <sbe:message name="MetricRow" id="15" description="One row of a declared metric stream: its column values, little-endian, in declaration order">
+        <field name="streamId" id="1" type="uint16"/>
+        <data name="values" id="2" type="metricValues"/>
+    </sbe:message>
+    <sbe:message name="MetricStream" id="16" description="Declares a metric stream ahead of its columns and rows">
+        <field name="streamId" id="1" type="uint16"/>
+        <field name="columnCount" id="2" type="uint16"/>
+        <data name="name" id="3" type="metricName"/>
+    </sbe:message>
+    <sbe:message name="MetricColumn" id="17" description="Declares one column of a metric stream">
+        <field name="streamId" id="1" type="uint16"/>
+        <field name="columnIndex" id="2" type="uint16"/>
+        <field name="columnType" id="3" type="MetricColumnType"/>
+        <data name="name" id="4" type="metricName"/>
+    </sbe:message>
+</sbe:messageSchema>

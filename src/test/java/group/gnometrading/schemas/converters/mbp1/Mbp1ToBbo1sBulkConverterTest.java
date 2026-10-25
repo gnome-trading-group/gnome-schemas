@@ -75,8 +75,7 @@ class Mbp1ToBbo1sBulkConverterTest {
 
         // Verify the last result contains data from the last input
         Bbo1sSchema lastResult = result.get(result.size() - 1);
-        assertEquals(lastInput.decoder.exchangeId(), lastResult.decoder.exchangeId());
-        assertEquals(lastInput.decoder.securityId(), lastResult.decoder.securityId());
+        assertEquals(lastInput.decoder.streamId(), lastResult.decoder.streamId());
     }
 
     @Test

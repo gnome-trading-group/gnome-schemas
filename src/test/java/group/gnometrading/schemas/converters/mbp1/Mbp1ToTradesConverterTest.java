@@ -2,11 +2,11 @@ package group.gnometrading.schemas.converters.mbp1;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import group.gnometrading.schemas.Action;
-import group.gnometrading.schemas.Mbp10Encoder;
 import group.gnometrading.schemas.Mbp1Schema;
-import group.gnometrading.schemas.Side;
 import group.gnometrading.schemas.TradesSchema;
+import group.gnometrading.schemas.book.Action;
+import group.gnometrading.schemas.book.Mbp10Encoder;
+import group.gnometrading.schemas.book.Side;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,8 +23,7 @@ class Mbp1ToTradesConverterTest {
                         (Supplier<Mbp1Schema>) () -> {
                             var schema = new Mbp1Schema();
 
-                            schema.encoder.exchangeId(11);
-                            schema.encoder.securityId(22);
+                            schema.encoder.streamId(11);
                             schema.encoder.timestampEvent(1234);
                             schema.encoder.timestampSent(1235);
                             schema.encoder.timestampRecv(1236);
@@ -49,8 +48,7 @@ class Mbp1ToTradesConverterTest {
                         (Supplier<TradesSchema>) () -> {
                             var schema = new TradesSchema();
 
-                            schema.encoder.exchangeId(11);
-                            schema.encoder.securityId(22);
+                            schema.encoder.streamId(11);
                             schema.encoder.timestampEvent(1234);
                             schema.encoder.timestampSent(1235);
                             schema.encoder.timestampRecv(1236);
@@ -70,8 +68,7 @@ class Mbp1ToTradesConverterTest {
                         (Supplier<Mbp1Schema>) () -> {
                             var schema = new Mbp1Schema();
 
-                            schema.encoder.exchangeId(11);
-                            schema.encoder.securityId(22);
+                            schema.encoder.streamId(11);
                             schema.encoder.timestampEvent(1234);
                             schema.encoder.timestampSent(1235);
                             schema.encoder.timestampRecv(1236);
@@ -101,8 +98,7 @@ class Mbp1ToTradesConverterTest {
                         (Supplier<Mbp1Schema>) () -> {
                             var schema = new Mbp1Schema();
 
-                            schema.encoder.exchangeId(11);
-                            schema.encoder.securityId(22);
+                            schema.encoder.streamId(11);
                             schema.encoder.timestampEvent(1234);
                             schema.encoder.timestampSent(1235);
                             schema.encoder.timestampRecv(1236);
@@ -127,8 +123,7 @@ class Mbp1ToTradesConverterTest {
                         (Supplier<TradesSchema>) () -> {
                             var schema = new TradesSchema();
 
-                            schema.encoder.exchangeId(11);
-                            schema.encoder.securityId(22);
+                            schema.encoder.streamId(11);
                             schema.encoder.timestampEvent(1234);
                             schema.encoder.timestampSent(1235);
                             schema.encoder.timestampRecv(1236);

@@ -2,12 +2,12 @@ package group.gnometrading.schemas.converters;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import group.gnometrading.schemas.Action;
 import group.gnometrading.schemas.Mbp10Schema;
 import group.gnometrading.schemas.Mbp1Schema;
 import group.gnometrading.schemas.Ohlcv1sSchema;
-import group.gnometrading.schemas.Side;
 import group.gnometrading.schemas.TradesSchema;
+import group.gnometrading.schemas.book.Action;
+import group.gnometrading.schemas.book.Side;
 import group.gnometrading.schemas.converters.mbp1.Mbp1ToTradesConverter;
 import group.gnometrading.schemas.converters.mbp10.Mbp10ToMbp1Converter;
 import group.gnometrading.schemas.converters.trades.TradesToOhlcv1sConverter;
@@ -23,8 +23,7 @@ class WaterfallConverterTest {
 
         // Create input MBP10 schema with Trade action
         Mbp10Schema input = new Mbp10Schema();
-        input.encoder.exchangeId(11);
-        input.encoder.securityId(22);
+        input.encoder.streamId(11);
         input.encoder.timestampEvent(1234);
         input.encoder.timestampSent(1235);
         input.encoder.timestampRecv(1236);
@@ -47,8 +46,7 @@ class WaterfallConverterTest {
 
         // Verify the result
         assertNotNull(result);
-        assertEquals(11, result.decoder.exchangeId());
-        assertEquals(22, result.decoder.securityId());
+        assertEquals(11, result.decoder.streamId());
         assertEquals(1234, result.decoder.timestampEvent());
         assertEquals(1235, result.decoder.timestampSent());
         assertEquals(1236, result.decoder.timestampRecv());
@@ -69,8 +67,7 @@ class WaterfallConverterTest {
         // Create input MBP10 schema with Add action (not Trade)
         // Mbp1ToTradesConverter returns null for non-Trade actions
         Mbp10Schema input = new Mbp10Schema();
-        input.encoder.exchangeId(11);
-        input.encoder.securityId(22);
+        input.encoder.streamId(11);
         input.encoder.timestampEvent(1234);
         input.encoder.timestampSent(1235);
         input.encoder.timestampRecv(1236);
@@ -97,8 +94,7 @@ class WaterfallConverterTest {
 
         // Create input MBP10 schema with Trade action
         Mbp10Schema input = new Mbp10Schema();
-        input.encoder.exchangeId(99);
-        input.encoder.securityId(1299);
+        input.encoder.streamId(99);
         input.encoder.timestampEvent(0);
         input.encoder.timestampSent(1);
         input.encoder.timestampRecv(2);
@@ -118,8 +114,7 @@ class WaterfallConverterTest {
         input.encoder.timestampEvent(1_000_000_000L);
         result = converter.convert(input);
         assertNotNull(result);
-        assertEquals(99, result.decoder.exchangeId());
-        assertEquals(1299, result.decoder.securityId());
+        assertEquals(99, result.decoder.streamId());
 
         // Third conversion - should return null (still in same interval)
         input.encoder.timestampEvent(1_500_000_000L);
@@ -130,8 +125,7 @@ class WaterfallConverterTest {
         input.encoder.timestampEvent(2_000_000_000L);
         result = converter.convert(input);
         assertNotNull(result);
-        assertEquals(99, result.decoder.exchangeId());
-        assertEquals(1299, result.decoder.securityId());
+        assertEquals(99, result.decoder.streamId());
     }
 
     @Test
@@ -144,8 +138,7 @@ class WaterfallConverterTest {
 
         // Create input TradesSchema
         TradesSchema input = new TradesSchema();
-        input.encoder.exchangeId(11);
-        input.encoder.securityId(22);
+        input.encoder.streamId(11);
         input.encoder.price(99);
         input.encoder.size(45);
         input.encoder.action(Action.Trade);
@@ -168,8 +161,7 @@ class WaterfallConverterTest {
 
         // Create input MBP10 schema
         Mbp10Schema input = new Mbp10Schema();
-        input.encoder.exchangeId(11);
-        input.encoder.securityId(22);
+        input.encoder.streamId(11);
         input.encoder.action(Action.Trade);
         input.encoder.side(Side.Ask);
 
@@ -187,8 +179,7 @@ class WaterfallConverterTest {
 
         // Create input MBP10 schema
         Mbp10Schema input = new Mbp10Schema();
-        input.encoder.exchangeId(11);
-        input.encoder.securityId(22);
+        input.encoder.streamId(11);
         input.encoder.timestampEvent(1234);
         input.encoder.price(99);
         input.encoder.size(45);
@@ -200,8 +191,7 @@ class WaterfallConverterTest {
 
         // Verify the result
         assertNotNull(result);
-        assertEquals(11, result.decoder.exchangeId());
-        assertEquals(22, result.decoder.securityId());
+        assertEquals(11, result.decoder.streamId());
         assertEquals(1234, result.decoder.timestampEvent());
         assertEquals(99, result.decoder.price());
         assertEquals(45, result.decoder.size());

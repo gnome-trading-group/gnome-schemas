@@ -1,21 +1,23 @@
 package group.gnometrading.schemas;
 
+import group.gnometrading.schemas.book.Ohlcv1hDecoder;
+import group.gnometrading.schemas.book.Ohlcv1hEncoder;
 import org.agrona.MutableDirectBuffer;
 
-public final class Ohlcv1hSchema extends Schema {
+public final class Ohlcv1hSchema extends BookRecord {
 
     public final Ohlcv1hEncoder encoder = new Ohlcv1hEncoder();
     public final Ohlcv1hDecoder decoder = new Ohlcv1hDecoder();
 
     public Ohlcv1hSchema() {
-        super(SchemaType.OHLCV_1H);
+        super(RecordType.OHLCV_1H);
         this.wrap(this.buffer);
     }
 
     @Override
     protected void wrapCodecs(MutableDirectBuffer buf) {
-        this.encoder.wrapAndApplyHeader(buf, 0, this.messageHeaderEncoder);
-        this.decoder.wrapAndApplyHeader(buf, 0, this.messageHeaderDecoder);
+        this.encoder.wrapAndApplyHeader(buf, 0, this.headerEncoder);
+        this.decoder.wrapAndApplyHeader(buf, 0, this.headerDecoder);
     }
 
     @Override
@@ -26,15 +28,5 @@ public final class Ohlcv1hSchema extends Schema {
     @Override
     protected int getSbeVersion() {
         return Ohlcv1hEncoder.SCHEMA_VERSION;
-    }
-
-    @Override
-    public long getSequenceNumber() {
-        return this.decoder.timestampEvent();
-    }
-
-    @Override
-    public long getEventTimestamp() {
-        return this.decoder.timestampEvent();
     }
 }

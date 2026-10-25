@@ -1,9 +1,9 @@
 package group.gnometrading.schemas.converters.trades;
 
-import group.gnometrading.schemas.Ohlcv1mDecoder;
-import group.gnometrading.schemas.Ohlcv1mEncoder;
 import group.gnometrading.schemas.Ohlcv1mSchema;
 import group.gnometrading.schemas.TradesSchema;
+import group.gnometrading.schemas.book.Ohlcv1mDecoder;
+import group.gnometrading.schemas.book.Ohlcv1mEncoder;
 import group.gnometrading.schemas.converters.SamplingSchemaConverter;
 import java.time.Duration;
 
@@ -41,8 +41,7 @@ public final class TradesToOhlcv1mConverter extends SamplingSchemaConverter<Trad
         final var encoder = this.state.encoder;
         final var currentState = this.state.decoder;
 
-        encoder.exchangeId(decoder.exchangeId());
-        encoder.securityId(decoder.securityId());
+        encoder.streamId(decoder.streamId());
 
         if (currentState.open() == Ohlcv1mDecoder.openNullValue()) {
             encoder.open(decoder.price());

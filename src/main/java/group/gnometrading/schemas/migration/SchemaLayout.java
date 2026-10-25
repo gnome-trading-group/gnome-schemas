@@ -3,6 +3,7 @@ package group.gnometrading.schemas.migration;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,10 +25,14 @@ import uk.co.real_logic.sbe.xml.XmlSchemaParser;
  */
 public final class SchemaLayout {
 
+    private static final int VAR_DATA_LENGTH_SIZE = 2;
+
+    private final int schemaId;
     private final int version;
     private final Map<Integer, MessageLayout> messages;
 
-    private SchemaLayout(final int version, final Map<Integer, MessageLayout> messages) {
+    private SchemaLayout(final int schemaId, final int version, final Map<Integer, MessageLayout> messages) {
+        this.schemaId = schemaId;
         this.version = version;
         this.messages = messages;
     }
@@ -62,9 +67,14 @@ public final class SchemaLayout {
             final Token begin = tokens.get(0);
             messages.put(
                     (int) begin.id(),
-                    new MessageLayout(begin.name(), (int) begin.id(), begin.encodedLength(), fields(tokens)));
+                    new MessageLayout(
+                            begin.name(), (int) begin.id(), begin.encodedLength(), fields(tokens), varData(tokens)));
         }
-        return new SchemaLayout(ir.version(), Collections.unmodifiableMap(messages));
+        return new SchemaLayout(ir.id(), ir.version(), Collections.unmodifiableMap(messages));
+    }
+
+    public int schemaId() {
+        return this.schemaId;
     }
 
     public int version() {
@@ -95,6 +105,26 @@ public final class SchemaLayout {
             }
         }
         return Collections.unmodifiableMap(fields);
+    }
+
+    /**
+     * The message's variable-length fields, in order. Each is stored as a uint16 length then that many bytes, the
+     * only form the schemas use, so a message's full length can be walked without its codec.
+     */
+    private static List<String> varData(final List<Token> tokens) {
+        final List<String> names = new ArrayList<>();
+        for (int index = 1; index < tokens.size(); index++) {
+            final Token token = tokens.get(index);
+            if (token.signal() == Signal.BEGIN_VAR_DATA) {
+                final Token length = tokens.get(index + 2);
+                if (length.encodedLength() != VAR_DATA_LENGTH_SIZE) {
+                    throw new IllegalArgumentException("Variable-length field " + token.name() + " has a "
+                            + length.encodedLength() + "-byte length; only uint16 lengths are supported");
+                }
+                names.add(token.name());
+            }
+        }
+        return Collections.unmodifiableList(names);
     }
 
     private static FieldLayout field(final Token fieldToken, final List<Token> tokens, final int typeIndex) {

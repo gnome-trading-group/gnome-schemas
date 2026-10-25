@@ -1,9 +1,9 @@
 package group.gnometrading.schemas.converters;
 
-import group.gnometrading.schemas.Schema;
+import group.gnometrading.schemas.StreamRecord;
 import java.util.List;
 
-public interface SchemaBulkConverter<I extends Schema, O extends Schema> {
+public interface SchemaBulkConverter<I extends StreamRecord, O extends StreamRecord> {
     /**
      * Convert the source schema into an optional ouput schema.
      *

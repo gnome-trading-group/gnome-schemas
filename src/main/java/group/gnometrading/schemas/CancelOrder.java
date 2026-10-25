@@ -13,8 +13,8 @@ public final class CancelOrder extends ClientOidMessage {
 
     @Override
     protected void wrapCodecs(MutableDirectBuffer buf) {
-        this.encoder.wrapAndApplyHeader(buf, 0, this.messageHeaderEncoder);
-        this.decoder.wrapAndApplyHeader(buf, 0, this.messageHeaderDecoder);
+        this.encoder.wrapAndApplyHeader(buf, 0, this.headerEncoder);
+        this.decoder.wrapAndApplyHeader(buf, 0, this.headerDecoder);
     }
 
     @Override

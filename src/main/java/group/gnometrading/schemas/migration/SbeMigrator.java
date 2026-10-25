@@ -1,61 +1,88 @@
 package group.gnometrading.schemas.migration;
 
-import group.gnometrading.schemas.MessageHeaderDecoder;
+import group.gnometrading.schemas.SbeMessage;
 import org.agrona.DirectBuffer;
 import org.agrona.MutableDirectBuffer;
 
 /**
- * Brings stored SBE messages written by an older schema version up to the current one.
+ * Brings stored SBE messages written by an older version of their schema up to its current one.
  *
- * <p>Works per message: every message's header names its template and the version that wrote it, and
- * the schema has no repeating groups or variable-length fields, so each message is exactly
- * {@code header + blockLength} bytes. A blob may therefore mix versions (files written either side of
- * a release) and template types (a journal). Every step registers here at class load (see
- * {@link MigrationSteps}), planned from the archived schema XML, so no reader can forget one.
+ * <p>Each of Gnome's schemas (core, and each record family) versions on its own, so each has its own chain; a
+ * message's header names its schema, and that schema's chain migrates it. Every step registers here at class load
+ * (see {@link MigrationSteps}), planned from the archived schema XML, so no reader can forget one.
  */
 public final class SbeMigrator {
 
-    public static final int CURRENT_VERSION = MessageHeaderDecoder.SCHEMA_VERSION;
+    static final String CORE = "core";
+    static final String BOOK = "book";
+    static final String[] SCHEMAS = {CORE, BOOK};
 
-    private static final MigrationChain CHAIN = new MigrationChain(CURRENT_VERSION);
+    private static final MigrationChain[] CHAINS = new MigrationChain[SCHEMAS.length];
 
     static {
+        for (int i = 0; i < SCHEMAS.length; i++) {
+            CHAINS[i] = new MigrationChain(SchemaLayout.fromResource(MigrationStep.current(SCHEMAS[i])));
+        }
         MigrationSteps.registerAll();
     }
 
     private SbeMigrator() {}
 
     static void register(final MigrationStep step) {
-        CHAIN.register(step);
+        chain(step.schemaId()).register(step);
     }
 
-    static boolean hasStep(final int templateId, final int fromVersion) {
-        return CHAIN.hasStep(templateId, fromVersion);
+    static boolean hasStep(final int schemaId, final int templateId, final int fromVersion) {
+        return chain(schemaId).hasStep(templateId, fromVersion);
+    }
+
+    /** Whether {@code schemaId} is one of Gnome's schemas, so its messages can be migrated. */
+    public static boolean isGnomeSchema(final int schemaId) {
+        for (final MigrationChain chain : CHAINS) {
+            if (chain.schemaId() == schemaId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** The current version of a schema, by its id. */
+    public static int currentVersion(final int schemaId) {
+        return chain(schemaId).currentVersion();
     }
 
     /**
-     * Returns {@code data} with every message at the current version, in order, minus any messages a
-     * step drops. When every message already is current, returns {@code data} itself without copying.
+     * Returns {@code data} with every message at its schema's current version, in order, minus any messages a step
+     * drops. When every message already is current, returns {@code data} itself without copying.
      *
-     * @throws IllegalStateException if the data ends part way through a message, is not this schema, or
-     *     holds a version no migration starts from
+     * @throws IllegalStateException if the data ends part way through a message, is not one of Gnome's schemas,
+     *     or holds a version no migration starts from
      */
     public static byte[] migrateStream(final byte[] data) {
-        return CHAIN.migrateStream(data);
+        return MigrationStreams.migrate(data, SbeMigrator::chain);
     }
 
-    /** Whether the message at {@code offset} was written by an older schema version. */
+    /** Whether the message at {@code offset} was written by an older version of its schema. */
     public static boolean needsMigration(final DirectBuffer buffer, final int offset) {
-        return CHAIN.needsMigration(buffer, offset);
+        return chain(SbeMessage.schemaId(buffer, offset)).needsMigration(buffer, offset);
     }
 
     /**
-     * Writes the message at {@code srcOffset} into {@code dst} at the current version.
+     * Writes the message at {@code srcOffset} into {@code dst} at its schema's current version.
      *
      * @return the number of bytes written; 0 if a step drops the message
      */
     public static int migrateMessage(
             final DirectBuffer src, final int srcOffset, final MutableDirectBuffer dst, final int dstOffset) {
-        return CHAIN.migrateMessage(src, srcOffset, dst, dstOffset);
+        return chain(SbeMessage.schemaId(src, srcOffset)).migrateMessage(src, srcOffset, dst, dstOffset);
+    }
+
+    private static MigrationChain chain(final int schemaId) {
+        for (final MigrationChain chain : CHAINS) {
+            if (chain.schemaId() == schemaId) {
+                return chain;
+            }
+        }
+        throw new IllegalStateException("Not a Gnome SBE message: schema id " + schemaId);
     }
 }

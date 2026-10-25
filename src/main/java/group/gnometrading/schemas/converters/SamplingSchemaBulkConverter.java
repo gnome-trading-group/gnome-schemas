@@ -1,10 +1,10 @@
 package group.gnometrading.schemas.converters;
 
-import group.gnometrading.schemas.Schema;
+import group.gnometrading.schemas.StreamRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SamplingSchemaBulkConverter<I extends Schema, O extends Schema>
+public abstract class SamplingSchemaBulkConverter<I extends StreamRecord, O extends StreamRecord>
         implements SchemaBulkConverter<I, O> {
 
     private final SamplingSchemaConverter<I, O> converter;

@@ -1,9 +1,9 @@
 package group.gnometrading.schemas.converters;
 
-import group.gnometrading.schemas.Schema;
+import group.gnometrading.schemas.StreamRecord;
 
 @SuppressWarnings("rawtypes")
-public final class WaterfallConverter<I extends Schema, O extends Schema> implements SchemaConverter<I, O> {
+public final class WaterfallConverter<I extends StreamRecord, O extends StreamRecord> implements SchemaConverter<I, O> {
 
     private final SchemaConverter[] converters;
 
@@ -18,7 +18,7 @@ public final class WaterfallConverter<I extends Schema, O extends Schema> implem
     @Override
     @SuppressWarnings("unchecked")
     public O convert(I source) {
-        Schema current = source;
+        StreamRecord current = source;
         for (SchemaConverter converter : this.converters) {
             current = converter.convert(current);
             if (current == null) {

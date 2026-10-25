@@ -22,8 +22,7 @@ public final class Mbp1ToBbo1mConverter extends SamplingSchemaConverter<Mbp1Sche
         final var decoder = state.decoder;
         final var encoder = output.encoder;
 
-        encoder.exchangeId(decoder.exchangeId());
-        encoder.securityId(decoder.securityId());
+        encoder.streamId(decoder.streamId());
         encoder.timestampEvent(this.getLastSampleTimeNanos());
         encoder.timestampRecv(decoder.timestampRecv());
 

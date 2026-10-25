@@ -85,8 +85,9 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <executions>
+                    <!-- One execution per family schema: each is its own SBE schema id, versioned on its own. -->
                     <execution>
-                        <id>generate-current</id>
+                        <id>generate-core</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>java</goal>
@@ -111,15 +112,44 @@
                                 </systemProperty>
                             </systemProperties>
                             <arguments>
-                                <argument>${project.build.resources[0].directory}/schema.xml</argument>
+                                <argument>${project.build.resources[0].directory}/core.xml</argument>
                             </arguments>
                         </configuration>
                     </execution>
-                    <!-- Codecs for each archived schema version, for tests only: they write data the way
-                         that version stored it. Migration itself reads the archived XML, not codecs.
-                         One execution per file in src/main/resources/schemas/. -->
                     <execution>
-                        <id>generate-v0-for-tests</id>
+                        <id>generate-book</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>sbe.output.dir</key>
+                                    <value>${project.build.directory}/generated-sources/java</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.stop.on.error</key>
+                                    <value>true</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.warnings.fatal</key>
+                                    <value>false</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.xsd</key>
+                                    <value>${project.build.resources[0].directory}/sbe.xsd</value>
+                                </systemProperty>
+                            </systemProperties>
+                            <arguments>
+                                <argument>${project.build.resources[0].directory}/book.xml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!-- Codecs for archived schema versions, for tests only: they write data the way that
+                         version stored it. Migration itself reads the archived XML, not codecs. -->
+                    <execution>
+                        <id>generate-core-v0-for-tests</id>
                         <phase>generate-test-sources</phase>
                         <goals>
                             <goal>java</goal>
@@ -144,7 +174,37 @@
                                 </systemProperty>
                             </systemProperties>
                             <arguments>
-                                <argument>${project.build.resources[0].directory}/schemas/schema-v0.xml</argument>
+                                <argument>${project.build.resources[0].directory}/schemas/core-v0.xml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-core-v1-for-tests</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>sbe.output.dir</key>
+                                    <value>${project.build.directory}/generated-test-sources/java</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.stop.on.error</key>
+                                    <value>true</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.warnings.fatal</key>
+                                    <value>false</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.xsd</key>
+                                    <value>${project.build.resources[0].directory}/sbe.xsd</value>
+                                </systemProperty>
+                            </systemProperties>
+                            <arguments>
+                                <argument>${project.build.resources[0].directory}/schemas/core-v1.xml</argument>
                             </arguments>
                         </configuration>
                     </execution>

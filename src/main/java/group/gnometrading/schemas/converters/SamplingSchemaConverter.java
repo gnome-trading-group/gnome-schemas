@@ -1,9 +1,10 @@
 package group.gnometrading.schemas.converters;
 
-import group.gnometrading.schemas.Schema;
+import group.gnometrading.schemas.StreamRecord;
 import java.time.Duration;
 
-public abstract class SamplingSchemaConverter<I extends Schema, O extends Schema> implements SchemaConverter<I, O> {
+public abstract class SamplingSchemaConverter<I extends StreamRecord, O extends StreamRecord>
+        implements SchemaConverter<I, O> {
 
     private final long sampleIntervalNanos;
 

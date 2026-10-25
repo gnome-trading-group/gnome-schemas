@@ -16,8 +16,7 @@ public final class Mbp10ToMbp1Converter implements SchemaConverter<Mbp10Schema, 
     @Override
     public Mbp1Schema convert(Mbp10Schema source) {
         final var encoder = output.encoder;
-        encoder.exchangeId(source.decoder.exchangeId());
-        encoder.securityId(source.decoder.securityId());
+        encoder.streamId(source.decoder.streamId());
         encoder.timestampEvent(source.decoder.timestampEvent());
         encoder.timestampSent(source.decoder.timestampSent());
         encoder.timestampRecv(source.decoder.timestampRecv());

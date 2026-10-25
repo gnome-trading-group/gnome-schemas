@@ -40,7 +40,6 @@ class TradesToOhlcv1sConverterTest {
         assertEquals(schema.decoder.low(), low);
         assertEquals(schema.decoder.close(), close);
         assertEquals(schema.decoder.volume(), volume);
-        assertEquals(schema.decoder.exchangeId(), EXCHANGE_ID);
-        assertEquals(schema.decoder.securityId(), SECURITY_ID);
+        assertEquals(schema.decoder.streamId(), STREAM_ID);
     }
 }
