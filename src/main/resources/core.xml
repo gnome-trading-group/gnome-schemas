@@ -95,6 +95,9 @@
             <validValue name="SELF_TRADE">10</validValue>
             <!-- The venue refused the order because the market is closed, paused or no longer trading. -->
             <validValue name="MARKET_CLOSED">11</validValue>
+            <!-- Our OMS refused the order because the listing's book is flagged bad data (a gap, resync or lost
+                 feed): no new orders until a good book arrives. Resting orders stay. -->
+            <validValue name="MARKET_DATA_BAD">12</validValue>
         </enum>
         <!-- A metric row's packed column values, and the names streams and columns are declared with. -->
         <composite name="metricValues">
