@@ -100,6 +100,10 @@
             <validValue name="MARKET_DATA_BAD">12</validValue>
         </enum>
         <!-- A metric row's packed column values, and the names streams and columns are declared with. -->
+        <composite name="groupSizeEncoding" description="A repeating group's entry length and count.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
         <composite name="metricValues">
             <type name="length" primitiveType="uint16"/>
             <type name="varData" primitiveType="uint8" length="0"/>
@@ -193,5 +197,19 @@
         <field name="columnIndex" id="2" type="uint16"/>
         <field name="columnType" id="3" type="MetricColumnType"/>
         <data name="name" id="4" type="metricName"/>
+    </sbe:message>
+    <!-- Not journaled: a shard sends it every second to the sessions reading its streams over Aeron. Added
+         to v2 in place: it changes no other message, and nothing records it. -->
+    <sbe:message name="ShardStatus" id="18" description="A shard's liveness and, per stream it publishes, its state and publication position">
+        <field name="sentNanos" id="1" type="int64" description="When the shard sent it, epoch nanoseconds"/>
+        <field name="generation" id="2" type="int64" description="The assignment generation the shard last applied"/>
+        <group name="streams" id="3" dimensionType="groupSizeEncoding">
+            <field name="streamId" id="4" type="int32"/>
+            <field name="state" id="5" type="uint8" description="The stream's SubjectState ordinal; 255 before its market is placed"/>
+            <field name="position" id="6" type="int64" description="The stream's Aeron publication position; a session behind it has stalled"/>
+            <field name="publicationSessionId" id="7" type="int32" description="The Aeron session id of that publication, so a position is only compared with an image of the same publication"/>
+            <field name="dropped" id="8" type="int64" description="Records the shard couldn't send since the publication opened; a session sees a rise as lost data"/>
+            <field name="reconnecting" id="9" type="uint8" description="1 while the shard's book for the stream isn't trusted (resyncing, disconnected); 0 otherwise, including a market with no book yet"/>
+        </group>
     </sbe:message>
 </sbe:messageSchema>

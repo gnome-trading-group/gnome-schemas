@@ -26,6 +26,7 @@ class MessageSchemaTest {
         MetricRowDecoder.TEMPLATE_ID,
         MetricStreamDecoder.TEMPLATE_ID,
         MetricColumnDecoder.TEMPLATE_ID,
+        ShardStatusDecoder.TEMPLATE_ID,
     };
 
     private static final int[] BOOK_TEMPLATES = {
