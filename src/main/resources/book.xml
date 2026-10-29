@@ -9,7 +9,7 @@
     <!-- Every stream record, in every family, starts with the same five fields at the same offsets (streamId,
          timestampEvent, timestampRecv, sequence, flags), so code that moves, stores or checks records reads them
          without knowing the family. Template ids 100-199 belong to this family; other families have their own
-         hundred, so a template id alone names a record in a ring slot or journal. -->
+         block (MessageSchema), so a template id alone names a record in a ring slot or journal. -->
     <types>
         <composite name="messageHeader" description="Message identifiers and length of message root.">
             <type name="blockLength" primitiveType="uint16"/>

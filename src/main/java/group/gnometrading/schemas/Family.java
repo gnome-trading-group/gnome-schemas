@@ -1,7 +1,7 @@
 package group.gnometrading.schemas;
 
 /**
- * A family of stream records: one SBE schema, versioned on its own, whose template ids sit in their own hundred
+ * A family of stream records: one SBE schema, versioned on its own, whose template ids sit in their own block ({@link MessageSchema})
  * so a template id alone names a record wherever records of several families mix.
  */
 public enum Family {
