@@ -146,6 +146,36 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>generate-gateway</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>sbe.output.dir</key>
+                                    <value>${project.build.directory}/generated-sources/java</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.stop.on.error</key>
+                                    <value>true</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.warnings.fatal</key>
+                                    <value>false</value>
+                                </systemProperty>
+                                <systemProperty>
+                                    <key>sbe.validation.xsd</key>
+                                    <value>${project.build.resources[0].directory}/sbe.xsd</value>
+                                </systemProperty>
+                            </systemProperties>
+                            <arguments>
+                                <argument>${project.build.resources[0].directory}/gateway.xml</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                     <!-- Codecs for archived schema versions, for tests only: they write data the way that
                          version stored it. Migration itself reads the archived XML, not codecs. -->
                     <execution>

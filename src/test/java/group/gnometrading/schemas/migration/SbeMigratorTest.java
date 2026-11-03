@@ -69,6 +69,8 @@ class SbeMigratorTest {
         final SchemaLayout book = SchemaLayout.fromResource(MigrationStep.current(SbeMigrator.BOOK));
         core.messages().keySet().forEach(id -> assertTrue(id > 0 && id < 100, "core template " + id));
         book.messages().keySet().forEach(id -> assertTrue(id >= 100 && id < 200, "book template " + id));
+        final SchemaLayout gateway = SchemaLayout.fromResource(MigrationStep.current(SbeMigrator.GATEWAY));
+        gateway.messages().keySet().forEach(id -> assertTrue(id >= 200 && id < 300, "gateway template " + id));
     }
 
     @Test

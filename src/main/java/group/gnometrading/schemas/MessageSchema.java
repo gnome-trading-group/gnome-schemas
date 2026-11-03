@@ -9,8 +9,7 @@ package group.gnometrading.schemas;
 public enum MessageSchema {
     CORE(group.gnometrading.schemas.MessageHeaderDecoder.SCHEMA_ID, 0, 100),
     BOOK(group.gnometrading.schemas.book.MessageHeaderDecoder.SCHEMA_ID, 100, 100),
-    /** Reserved for the order gateway's session protocol, {@code gateway.xml}. */
-    GATEWAY(3, 200, 100),
+    GATEWAY(group.gnometrading.schemas.gateway.MessageHeaderDecoder.SCHEMA_ID, 200, 100),
     /** Reserved for the esports family: many record types, so three hundred ids. */
     ESPORTS(4, 300, 300);
 

@@ -7,15 +7,16 @@ import org.agrona.MutableDirectBuffer;
 /**
  * Brings stored SBE messages written by an older version of their schema up to its current one.
  *
- * <p>Each of Gnome's schemas (core, and each record family) versions on its own, so each has its own chain; a
- * message's header names its schema, and that schema's chain migrates it. Every step registers here at class load
- * (see {@link MigrationSteps}), planned from the archived schema XML, so no reader can forget one.
+ * <p>Each of Gnome's schemas (core, the gateway protocol, and each record family) versions on its own, so each has
+ * its own chain; a message's header names its schema, and that schema's chain migrates it. Every step registers here
+ * at class load (see {@link MigrationSteps}), planned from the archived schema XML, so no reader can forget one.
  */
 public final class SbeMigrator {
 
     static final String CORE = "core";
     static final String BOOK = "book";
-    static final String[] SCHEMAS = {CORE, BOOK};
+    static final String GATEWAY = "gateway";
+    static final String[] SCHEMAS = {CORE, BOOK, GATEWAY};
 
     private static final MigrationChain[] CHAINS = new MigrationChain[SCHEMAS.length];
 

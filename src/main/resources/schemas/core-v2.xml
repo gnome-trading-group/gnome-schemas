@@ -98,6 +98,23 @@
             <!-- Our OMS refused the order because the listing's book is flagged bad data (a gap, resync or lost
                  feed): no new orders until a good book arrives. Resting orders stay. -->
             <validValue name="MARKET_DATA_BAD">12</validValue>
+            <!-- The session's link to the order gateway is down: nothing was sent, and the session holds cancels
+                 until the gateway is back. -->
+            <validValue name="GATEWAY_UNAVAILABLE">13</validValue>
+            <!-- The order gateway is starting or rebuilding after a restart and takes no orders yet. -->
+            <validValue name="GATEWAY_NOT_READY">14</validValue>
+            <!-- The order gateway's account stream is down or catching up, so it takes no new orders or amends on
+                 that account; cancels still go out. -->
+            <validValue name="GATEWAY_DEGRADED">15</validValue>
+            <!-- The order gateway has no live registration for the session: it never said hello, was evicted, or
+                 timed out. -->
+            <validValue name="SESSION_NOT_REGISTERED">16</validValue>
+            <!-- The order gateway refused an order on a listing the session holds no lease on. -->
+            <validValue name="LISTING_NOT_LEASED">17</validValue>
+            <!-- The order gateway refused an order past the session's open-order or order-rate cap. -->
+            <validValue name="SESSION_CAP">18</validValue>
+            <!-- A cancel or modify named an order the order gateway doesn't know, so there is nothing to change. -->
+            <validValue name="UNKNOWN_ORDER">19</validValue>
         </enum>
         <!-- A metric row's packed column values, and the names streams and columns are declared with. -->
         <composite name="groupSizeEncoding" description="A repeating group's entry length and count.">

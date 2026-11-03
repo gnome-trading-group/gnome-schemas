@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   package="group.gnometrading.schemas.gateway"
+                   id="3"
+                   version="0"
+                   semanticVersion="5.2"
+                   description="The order gateway's session protocol: what a session and the gateway that holds its venue account say to each other beside core's orders and execution reports"
+                   byteOrder="littleEndian">
+    <!-- Template ids 200-299 (MessageSchema.GATEWAY). Kept out of core so the handshake can change with the gateway
+         and its client without moving core's version. Every message has a fixed size, groups included at their caps
+         in GatewayMessageLimits, so each one fits a 1 KB ring slot and a single Aeron frame. The gateway journals
+         them, so a layout change needs a version bump and a migration step like core's. -->
+    <types>
+        <composite name="messageHeader" description="Message identifiers and length of message root.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+        <composite name="groupSizeEncoding" description="A repeating group's entry length and count.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
+
+        <type name="price" primitiveType="int64" nullValue="-9223372036854775808" presence="optional"/>
+        <type name="size" primitiveType="int64" nullValue="-9223372036854775808" presence="optional"/>
+        <type name="sessionId" primitiveType="char" length="36" characterEncoding="US-ASCII" description="The registry's session id, a UUID"/>
+        <type name="exchangeOrderId" primitiveType="char" length="66" characterEncoding="US-ASCII" presence="optional" description="The id the session and gateway match venue events by, as core's exchangeOrderId: a Kalshi client_order_id, a Polymarket Intl order hash or a Polymarket US stamp"/>
+        <type name="venueOrderId" primitiveType="char" length="40" characterEncoding="US-ASCII" presence="optional" description="The venue's own id for the order (Kalshi's order_id, Polymarket US's id), needed to cancel or look it up. Empty until the venue acknowledges the order."/>
+
+        <enum name="Mode" encodingType="uint8">
+            <validValue name="PAPER">0</validValue>
+            <validValue name="LIVE">1</validValue>
+        </enum>
+        <enum name="Side" encodingType="char">
+            <validValue name="Ask">A</validValue>
+            <validValue name="Bid">B</validValue>
+        </enum>
+        <enum name="OrderState" encodingType="uint8">
+            <!-- Sent to the gateway, no answer yet: the venue may or may not have it. -->
+            <validValue name="PENDING_NEW">0</validValue>
+            <validValue name="NEW">1</validValue>
+            <validValue name="PARTIALLY_FILLED">2</validValue>
+            <validValue name="PENDING_MODIFY">3</validValue>
+            <validValue name="PENDING_CANCEL">4</validValue>
+            <validValue name="FILLED">5</validValue>
+            <validValue name="CANCELED">6</validValue>
+            <validValue name="REJECTED">7</validValue>
+            <validValue name="EXPIRED">8</validValue>
+        </enum>
+        <enum name="HelloRefusal" encodingType="uint8">
+            <validValue name="NONE">0</validValue>
+            <!-- Starting or rebuilding: try again once the gateway's heartbeat says READY. -->
+            <validValue name="NOT_READY">1</validValue>
+            <!-- The registry doesn't show the session STARTING or RUNNING. -->
+            <validValue name="SESSION_NOT_RUNNING">2</validValue>
+            <!-- The session isn't bound to the venue account it named, or this gateway doesn't hold that account. -->
+            <validValue name="WRONG_ACCOUNT">3</validValue>
+            <!-- The session holds no lease on a listing it named. -->
+            <validValue name="LISTING_NOT_LEASED">4</validValue>
+            <!-- The session's protocol version is neither the gateway's nor the one before it. -->
+            <validValue name="PROTOCOL_VERSION">5</validValue>
+            <!-- The session was evicted for a message the gateway couldn't decode or validate, and is refused for a while. -->
+            <validValue name="EVICTED">6</validValue>
+            <!-- The registry couldn't be reached and the session isn't in the gateway's validation cache. -->
+            <validValue name="REGISTRY_UNAVAILABLE">7</validValue>
+        </enum>
+        <enum name="GatewayState" encodingType="uint8">
+            <validValue name="STARTING">0</validValue>
+            <validValue name="READY">1</validValue>
+            <!-- At least one account's stream is down or catching up; see the per-account states. -->
+            <validValue name="DEGRADED">2</validValue>
+            <!-- Stopping: cancelling every session's orders, then exiting. -->
+            <validValue name="STOPPING">3</validValue>
+        </enum>
+        <enum name="AccountState" encodingType="uint8">
+            <validValue name="READY">0</validValue>
+            <!-- The account stream reconnected and is fetching what it missed: no new orders or amends, cancels go out. -->
+            <validValue name="CATCHING_UP">1</validValue>
+            <!-- The account stream is down: no new orders or amends, cancels go out. -->
+            <validValue name="DOWN">2</validValue>
+        </enum>
+        <enum name="GoodbyeReason" encodingType="uint8">
+            <!-- The gateway is stopping and has cancelled the session's orders. -->
+            <validValue name="PLANNED_STOP">0</validValue>
+            <!-- The session is exiting and has nothing left working. -->
+            <validValue name="SESSION_EXIT">1</validValue>
+        </enum>
+        <enum name="ReHelloReason" encodingType="uint8">
+            <!-- The session went silent past its cancel-on-disconnect timeout (or stopped echoing the gateway's
+                 heartbeats), and its orders were cancelled. -->
+            <validValue name="COD_FIRED">0</validValue>
+            <validValue name="EVICTED">1</validValue>
+            <!-- The gateway restarted and has no registration for the session. -->
+            <validValue name="GATEWAY_RESTARTED">2</validValue>
+        </enum>
+        <enum name="QueryKind" encodingType="uint8">
+            <!-- Every open order on the listing, whoever owns it. -->
+            <validValue name="OPEN_ORDERS">0</validValue>
+            <!-- One order, by the exchangeOrderId in the query. -->
+            <validValue name="BY_EXCHANGE_ORDER_ID">1</validValue>
+        </enum>
+        <enum name="QueryStatus" encodingType="uint8">
+            <validValue name="OK">0</validValue>
+            <!-- The venue couldn't be asked or didn't answer; the result has no orders. -->
+            <validValue name="FAILED">1</validValue>
+        </enum>
+        <enum name="RequestClass" encodingType="uint8">
+            <validValue name="CANCEL">0</validValue>
+            <validValue name="CATCH_UP">1</validValue>
+            <validValue name="AMEND">2</validValue>
+            <validValue name="NEW">3</validValue>
+            <validValue name="BACKGROUND">4</validValue>
+        </enum>
+        <enum name="AdmissionAction" encodingType="uint8">
+            <validValue name="SENT">0</validValue>
+            <!-- No budget yet: queued in the session's queue, at most order.max.queue.ms. -->
+            <validValue name="HELD">1</validValue>
+            <!-- A queued NEW or AMEND removed unsent by a cancel for the same order. -->
+            <validValue name="DROPPED_CONFLATED">2</validValue>
+            <!-- Held past order.max.queue.ms and refused. -->
+            <validValue name="REJECTED_RATE_LIMITED">3</validValue>
+            <!-- A cancel for an order still on its way to the venue, sent once the venue acknowledges it. -->
+            <validValue name="CANCEL_HELD_UNTIL_ACK">4</validValue>
+        </enum>
+    </types>
+
+    <sbe:message name="SessionHello" id="200" description="A session registering with the gateway; followed by its open orders in SessionHelloOrders pages">
+        <field name="sessionSeq" id="1" type="int64" description="The registry's session_seq: the session's slot, never reused"/>
+        <field name="sessionId" id="2" type="sessionId"/>
+        <field name="strategyId" id="3" type="int32" description="Packed with an order's counter into core's clientOid"/>
+        <field name="mode" id="4" type="Mode"/>
+        <field name="venueAccountId" id="5" type="int32" description="The venue account the session is bound to"/>
+        <field name="protocolVersion" id="6" type="uint16" description="The gateway schema version the session speaks"/>
+        <field name="replyIp" id="7" type="uint32" description="The session host's private IPv4 address, network byte order packed into an int"/>
+        <field name="replyPort" id="8" type="uint16" description="The port the session's reply subscription was given"/>
+        <field name="lastReportSeq" id="9" type="int64" description="The last per-session report sequence the session received; 0 on a first hello"/>
+        <field name="codTimeoutMs" id="10" type="int32" description="Cancel the session's orders after this long without a heartbeat (cod.timeout.ms)"/>
+        <field name="maxQueueMs" id="11" type="int32" description="How long a NEW or AMEND may wait for budget before it is refused (order.max.queue.ms)"/>
+        <field name="openOrderPages" id="12" type="uint16" description="How many SessionHelloOrders pages follow; 0 when the session has no open orders"/>
+        <group name="listings" id="13" dimensionType="groupSizeEncoding">
+            <field name="exchangeId" id="14" type="uint16"/>
+            <field name="securityId" id="15" type="uint32"/>
+        </group>
+    </sbe:message>
+    <sbe:message name="SessionHelloOrders" id="201" description="One page of a session's open orders, sent after its SessionHello">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="page" id="2" type="uint16" description="From 0"/>
+        <field name="last" id="3" type="uint8" description="1 on the final page"/>
+        <group name="orders" id="4" dimensionType="groupSizeEncoding">
+            <field name="clientOidCounter" id="5" type="int64"/>
+            <field name="exchangeId" id="6" type="uint16"/>
+            <field name="securityId" id="7" type="uint32"/>
+            <field name="side" id="8" type="Side"/>
+            <field name="state" id="9" type="OrderState"/>
+            <field name="price" id="10" type="price"/>
+            <field name="size" id="11" type="size"/>
+            <field name="exchangeOrderId" id="12" type="exchangeOrderId"/>
+            <field name="venueOrderId" id="13" type="venueOrderId"/>
+            <field name="cumulativeQty" id="14" type="size"/>
+            <field name="notional" id="15" type="price" description="Filled notional so far"/>
+            <field name="fees" id="16" type="price" description="Fees so far"/>
+        </group>
+    </sbe:message>
+    <sbe:message name="SessionWelcome" id="202" description="The gateway's answer to a hello, sent after its last orders page">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="accepted" id="2" type="uint8" description="1 when the session may trade"/>
+        <field name="refusal" id="3" type="HelloRefusal"/>
+        <field name="gatewayEpoch" id="4" type="int64" description="Changes on every gateway start, so a session can tell a restart from a reconnect"/>
+        <field name="budgetShareBps" id="5" type="uint16" description="The session's guaranteed share of its account's budget, basis points"/>
+    </sbe:message>
+    <sbe:message name="SessionHeartbeat" id="203" description="A session's liveness, every 100 ms">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="sentNanos" id="2" type="int64" description="Epoch nanoseconds"/>
+        <field name="lastGatewayHeartbeatSeq" id="3" type="int64" description="The newest GatewayHeartbeat the session received: when it stops moving, the gateway's replies aren't reaching the session"/>
+        <field name="lastReportSeq" id="4" type="int64"/>
+    </sbe:message>
+    <sbe:message name="GatewayHeartbeat" id="204" description="The gateway's liveness and per-account state, every 100 ms to each session">
+        <field name="gatewayEpoch" id="1" type="int64"/>
+        <field name="heartbeatSeq" id="2" type="int64"/>
+        <field name="sentNanos" id="3" type="int64" description="Epoch nanoseconds"/>
+        <field name="state" id="4" type="GatewayState"/>
+        <group name="accounts" id="5" dimensionType="groupSizeEncoding">
+            <field name="venueAccountId" id="6" type="int32"/>
+            <field name="state" id="7" type="AccountState"/>
+            <field name="budgetUseBps" id="8" type="uint16" description="Share of the account's request budget in use, basis points"/>
+            <field name="queued" id="9" type="uint32" description="Requests waiting for budget across all sessions"/>
+        </group>
+    </sbe:message>
+    <sbe:message name="SessionGoodbye" id="205" description="Either side ending the session's registration on purpose">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="reason" id="2" type="GoodbyeReason"/>
+    </sbe:message>
+    <sbe:message name="ReHelloRequired" id="206" description="The gateway no longer has a registration for a session it heard from; the session must hello again before trading">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="reason" id="2" type="ReHelloReason"/>
+    </sbe:message>
+    <sbe:message name="OrderStatus" id="207" description="One order's cumulative state, sent when replay can't fill a gap; the session applies the difference from what it holds">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="reportSeq" id="2" type="int64"/>
+        <field name="clientOidCounter" id="3" type="int64"/>
+        <field name="exchangeId" id="4" type="uint16"/>
+        <field name="securityId" id="5" type="uint32"/>
+        <field name="state" id="6" type="OrderState"/>
+        <field name="venueOrderId" id="7" type="venueOrderId"/>
+        <field name="cumulativeQty" id="8" type="size"/>
+        <field name="leavesQty" id="9" type="size"/>
+        <field name="notional" id="10" type="price"/>
+        <field name="fees" id="11" type="price"/>
+    </sbe:message>
+    <sbe:message name="VenueQuery" id="208" description="A session asking the venue, through the gateway, for orders (startup recovery)">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="queryId" id="2" type="int64" description="Echoed on every result page"/>
+        <field name="kind" id="3" type="QueryKind"/>
+        <field name="exchangeId" id="4" type="uint16"/>
+        <field name="securityId" id="5" type="uint32"/>
+        <field name="exchangeOrderId" id="6" type="exchangeOrderId" description="For BY_EXCHANGE_ORDER_ID; empty otherwise"/>
+    </sbe:message>
+    <sbe:message name="VenueQueryResult" id="209" description="One page of a VenueQuery's answer, with each order's owner from the gateway's ownership log">
+        <field name="queryId" id="1" type="int64"/>
+        <field name="page" id="2" type="uint16" description="From 0"/>
+        <field name="last" id="3" type="uint8" description="1 on the final page"/>
+        <field name="status" id="4" type="QueryStatus"/>
+        <group name="orders" id="5" dimensionType="groupSizeEncoding">
+            <field name="ownerSessionSeq" id="6" type="int64" description="0 when the gateway knows no owner"/>
+            <field name="clientOidCounter" id="7" type="int64" description="0 when the gateway knows no owner"/>
+            <field name="exchangeId" id="8" type="uint16"/>
+            <field name="securityId" id="9" type="uint32"/>
+            <field name="side" id="10" type="Side"/>
+            <field name="state" id="11" type="OrderState"/>
+            <field name="price" id="12" type="price"/>
+            <field name="size" id="13" type="size"/>
+            <field name="cumulativeQty" id="14" type="size"/>
+            <field name="exchangeOrderId" id="15" type="exchangeOrderId"/>
+            <field name="venueOrderId" id="16" type="venueOrderId"/>
+        </group>
+    </sbe:message>
+    <sbe:message name="AdmissionRecord" id="210" description="Journal only: what the gateway's scheduler did with one request">
+        <field name="venueAccountId" id="1" type="int32"/>
+        <field name="sessionSeq" id="2" type="int64"/>
+        <field name="clientOidCounter" id="3" type="int64"/>
+        <field name="requestClass" id="4" type="RequestClass"/>
+        <field name="action" id="5" type="AdmissionAction"/>
+        <field name="queuedNanos" id="6" type="int64" description="How long the request waited for budget"/>
+        <field name="tokensLeft" id="7" type="int64" description="The account bucket's tokens after this decision, scaled by the scheduler"/>
+    </sbe:message>
+</sbe:messageSchema>

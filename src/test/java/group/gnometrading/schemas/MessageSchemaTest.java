@@ -13,6 +13,17 @@ import group.gnometrading.schemas.book.Ohlcv1hDecoder;
 import group.gnometrading.schemas.book.Ohlcv1mDecoder;
 import group.gnometrading.schemas.book.Ohlcv1sDecoder;
 import group.gnometrading.schemas.book.TradesDecoder;
+import group.gnometrading.schemas.gateway.AdmissionRecordDecoder;
+import group.gnometrading.schemas.gateway.GatewayHeartbeatDecoder;
+import group.gnometrading.schemas.gateway.OrderStatusDecoder;
+import group.gnometrading.schemas.gateway.ReHelloRequiredDecoder;
+import group.gnometrading.schemas.gateway.SessionGoodbyeDecoder;
+import group.gnometrading.schemas.gateway.SessionHeartbeatDecoder;
+import group.gnometrading.schemas.gateway.SessionHelloDecoder;
+import group.gnometrading.schemas.gateway.SessionHelloOrdersDecoder;
+import group.gnometrading.schemas.gateway.SessionWelcomeDecoder;
+import group.gnometrading.schemas.gateway.VenueQueryDecoder;
+import group.gnometrading.schemas.gateway.VenueQueryResultDecoder;
 import org.junit.jupiter.api.Test;
 
 class MessageSchemaTest {
@@ -41,6 +52,20 @@ class MessageSchemaTest {
         Ohlcv1hDecoder.TEMPLATE_ID,
     };
 
+    private static final int[] GATEWAY_TEMPLATES = {
+        SessionHelloDecoder.TEMPLATE_ID,
+        SessionHelloOrdersDecoder.TEMPLATE_ID,
+        SessionWelcomeDecoder.TEMPLATE_ID,
+        SessionHeartbeatDecoder.TEMPLATE_ID,
+        GatewayHeartbeatDecoder.TEMPLATE_ID,
+        SessionGoodbyeDecoder.TEMPLATE_ID,
+        ReHelloRequiredDecoder.TEMPLATE_ID,
+        OrderStatusDecoder.TEMPLATE_ID,
+        VenueQueryDecoder.TEMPLATE_ID,
+        VenueQueryResultDecoder.TEMPLATE_ID,
+        AdmissionRecordDecoder.TEMPLATE_ID,
+    };
+
     @Test
     void everyCoreMessageSitsInCoresBlock() {
         for (final int templateId : CORE_TEMPLATES) {
@@ -55,6 +80,15 @@ class MessageSchemaTest {
             assertEquals(MessageSchema.BOOK, MessageSchema.forTemplateId(templateId), "template " + templateId);
         }
         assertEquals(MessageSchema.BOOK.schemaId(), group.gnometrading.schemas.book.MessageHeaderDecoder.SCHEMA_ID);
+    }
+
+    @Test
+    void everyGatewayMessageSitsInGatewaysBlock() {
+        for (final int templateId : GATEWAY_TEMPLATES) {
+            assertEquals(MessageSchema.GATEWAY, MessageSchema.forTemplateId(templateId), "template " + templateId);
+        }
+        assertEquals(
+                MessageSchema.GATEWAY.schemaId(), group.gnometrading.schemas.gateway.MessageHeaderDecoder.SCHEMA_ID);
     }
 
     @Test
@@ -73,10 +107,7 @@ class MessageSchemaTest {
     }
 
     @Test
-    void theGatewayAndEsportsBlocksAreReserved() {
-        assertEquals(MessageSchema.GATEWAY, MessageSchema.forTemplateId(200));
-        assertEquals(MessageSchema.GATEWAY, MessageSchema.forTemplateId(299));
-        assertEquals(3, MessageSchema.GATEWAY.schemaId());
+    void theEsportsBlockIsReserved() {
         assertEquals(MessageSchema.ESPORTS, MessageSchema.forTemplateId(300));
         assertEquals(MessageSchema.ESPORTS, MessageSchema.forTemplateId(599));
         assertEquals(4, MessageSchema.ESPORTS.schemaId());
