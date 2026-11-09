@@ -141,6 +141,8 @@
         <field name="maxQueueMs" id="11" type="int32" description="How long a NEW or AMEND may wait for budget before it is refused (order.max.queue.ms)"/>
         <field name="openOrderPages" id="12" type="uint16" description="How many SessionHelloOrders pages follow; 0 when the session has no open orders"/>
         <field name="lastReportEpoch" id="16" type="int64" description="The gatewayEpoch lastReportSeq was numbered under; a gateway with another epoch can't resume from it and sends each open order's status instead"/>
+        <field name="maxOpenOrders" id="17" type="int32" description="Orders the session asks to hold at once at most (order.gateway.max.open.orders); 0, or more than the gateway allows, gets the gateway's cap"/>
+        <field name="maxNewPerSecond" id="18" type="int32" description="New orders a second the session asks to send at most (order.gateway.max.new.per.second); 0, or more than the gateway allows, gets the gateway's cap"/>
         <group name="listings" id="13" dimensionType="groupSizeEncoding">
             <field name="exchangeId" id="14" type="uint16"/>
             <field name="securityId" id="15" type="uint32"/>

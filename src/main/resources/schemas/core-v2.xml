@@ -82,8 +82,10 @@
             <validValue name="POST_ONLY_WOULD_CROSS">5</validValue>
             <!-- Our gateway refused the order and sent nothing, as opposed to the venue refusing it. -->
             <validValue name="GATEWAY_REJECTED">6</validValue>
-            <!-- The strategy, session or listing is killed or latched, or risk data is stale: every order is
-                 refused until that clears, as opposed to RISK_LIMIT_EXCEEDED, where this order broke a limit. -->
+            <!-- The strategy, session or listing is killed or latched, or risk data is stale (the OMS), or a kill
+                 covers the order's strategy, session, listing, exchange or venue account (the order gateway): every
+                 order is refused until that clears, as opposed to RISK_LIMIT_EXCEEDED, where this order broke a
+                 limit. -->
             <validValue name="HALTED">7</validValue>
             <!-- The venue's request budget is spent, ours or the venue's own 429: nothing was placed, and the same
                  order can be sent again once the budget refills. -->
@@ -91,7 +93,8 @@
             <!-- The venue refused the order because the account can't pay for it: not enough cash, collateral or tokens
                  to sell. -->
             <validValue name="INSUFFICIENT_FUNDS">9</validValue>
-            <!-- The venue refused the order because it would have traded against one of the account's own orders. -->
+            <!-- The order would have traded against another of our orders: refused by the venue within one account,
+                 or by the order gateway before sending, against another session's order on any account. -->
             <validValue name="SELF_TRADE">10</validValue>
             <!-- The venue refused the order because the market is closed, paused or no longer trading. -->
             <validValue name="MARKET_CLOSED">11</validValue>
