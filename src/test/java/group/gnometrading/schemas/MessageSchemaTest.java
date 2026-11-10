@@ -14,6 +14,7 @@ import group.gnometrading.schemas.book.Ohlcv1mDecoder;
 import group.gnometrading.schemas.book.Ohlcv1sDecoder;
 import group.gnometrading.schemas.book.TradesDecoder;
 import group.gnometrading.schemas.gateway.AdmissionRecordDecoder;
+import group.gnometrading.schemas.gateway.CancelEndedDecoder;
 import group.gnometrading.schemas.gateway.GatewayHeartbeatDecoder;
 import group.gnometrading.schemas.gateway.OrderStatusDecoder;
 import group.gnometrading.schemas.gateway.ReHelloRequiredDecoder;
@@ -64,6 +65,7 @@ class MessageSchemaTest {
         VenueQueryDecoder.TEMPLATE_ID,
         VenueQueryResultDecoder.TEMPLATE_ID,
         AdmissionRecordDecoder.TEMPLATE_ID,
+        CancelEndedDecoder.TEMPLATE_ID,
     };
 
     @Test

@@ -45,6 +45,7 @@ class GatewayMessageLimitsTest {
                         + GatewayMessageLimits.QUERY_ORDERS_PER_PAGE
                                 * VenueQueryResultEncoder.OrdersEncoder.sbeBlockLength());
         assertFits("AdmissionRecord", AdmissionRecordEncoder.BLOCK_LENGTH);
+        assertFits("CancelEnded", CancelEndedEncoder.BLOCK_LENGTH);
     }
 
     @Test

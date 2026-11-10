@@ -14,7 +14,7 @@ public final class GatewayMessageLimits {
     public static final int HELLO_ORDERS_PER_PAGE = 6;
 
     /** Orders per {@code VenueQueryResult} page. */
-    public static final int QUERY_ORDERS_PER_PAGE = 6;
+    public static final int QUERY_ORDERS_PER_PAGE = 5;
 
     /** Listings a {@code SessionHello} can name. */
     public static final int MAX_HELLO_LISTINGS = 128;

@@ -106,6 +106,9 @@
             <validValue name="OK">0</validValue>
             <!-- The venue couldn't be asked or didn't answer; the result has no orders. -->
             <validValue name="FAILED">1</validValue>
+            <!-- Not allowed: a CancelEnded for an order not of an ended session of the same strategy, or a query while the
+                 session already has one in flight. The result has no orders. -->
+            <validValue name="REFUSED">2</validValue>
         </enum>
         <enum name="RequestClass" encodingType="uint8">
             <validValue name="CANCEL">0</validValue>
@@ -231,13 +234,15 @@
             <field name="clientOidCounter" id="7" type="int64" description="0 when the gateway knows no owner"/>
             <field name="exchangeId" id="8" type="uint16"/>
             <field name="securityId" id="9" type="uint32"/>
-            <field name="side" id="10" type="Side"/>
-            <field name="state" id="11" type="OrderState"/>
-            <field name="price" id="12" type="price"/>
-            <field name="size" id="13" type="size"/>
+            <field name="side" id="10" type="Side" description="NULL_VAL when the venue's lookup doesn't give it"/>
+            <field name="state" id="11" type="OrderState" description="NEW while the order can still fill, CANCELED once it can't: a lookup doesn't tell a filled order from a cancelled one, cumulativeQty does"/>
+            <field name="price" id="12" type="price" description="Null when the venue's lookup doesn't give it"/>
+            <field name="size" id="13" type="size" description="Null when the venue's lookup doesn't give it"/>
             <field name="cumulativeQty" id="14" type="size"/>
             <field name="exchangeOrderId" id="15" type="exchangeOrderId"/>
             <field name="venueOrderId" id="16" type="venueOrderId"/>
+            <field name="cumulativeNotional" id="17" type="price" description="What the order's fills cost, for settling one whose reports no session received"/>
+            <field name="fees" id="18" type="price"/>
         </group>
     </sbe:message>
     <sbe:message name="AdmissionRecord" id="210" description="Journal only: what the gateway's scheduler did with one request">
@@ -248,5 +253,12 @@
         <field name="action" id="5" type="AdmissionAction"/>
         <field name="queuedNanos" id="6" type="int64" description="How long the request waited for budget"/>
         <field name="tokensLeft" id="7" type="int64" description="The account bucket's tokens after this decision, scaled by the scheduler"/>
+    </sbe:message>
+    <sbe:message name="CancelEnded" id="211" description="A session cancelling, through the gateway, an order of an ended session of the same strategy (startup recovery); answered with one VenueQueryResult of the order's state after">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="queryId" id="2" type="int64" description="Echoed on the result"/>
+        <field name="exchangeId" id="3" type="uint16"/>
+        <field name="securityId" id="4" type="uint32"/>
+        <field name="exchangeOrderId" id="5" type="exchangeOrderId"/>
     </sbe:message>
 </sbe:messageSchema>
