@@ -5,7 +5,9 @@ package group.gnometrading.schemas.migration;
  * ...) means bumping its version to N+1, archiving it as {@code resources/schemas/{schema}-v{N+1}.xml}, and adding
  * {@code MigrationStep.from(schema, N)} here, with {@code .message(...)} rules for anything the defaults refuse. A
  * test fails the build when a schema drifts from its archived version, since data written by an unbumped layout
- * would be read with the wrong offsets.
+ * would be read with the wrong offsets. A message with a repeating group can't be migrated (the step refuses it): drop
+ * it if no stored data holds it. Gateway messages have groups, so shipping the gateway journal needs group support
+ * here before gateway.xml's next version.
  */
 final class MigrationSteps {
 
@@ -29,5 +31,14 @@ final class MigrationSteps {
                 .dropMessage("Ohlcv1s")
                 .dropMessage("Ohlcv1m")
                 .dropMessage("Ohlcv1h"));
+        // core v2 → v3: intents and orders carry what they were a reaction to. Older ones recorded none; the new
+        // sequences and timestamps default to null, and the kind is NONE. ShardStatus is never journaled, so no stored
+        // one exists, and migration can't carry its repeating group: dropped rather than planned.
+        SbeMigrator.register(MigrationStep.from(SbeMigrator.CORE, 2)
+                .dropMessage("ShardStatus")
+                .message("Intent", rules -> rules.fillEnum("triggerKind", "NONE"))
+                .message("Order", rules -> rules.fillEnum("triggerKind", "NONE"))
+                .message("ModifyOrder", rules -> rules.fillEnum("triggerKind", "NONE"))
+                .message("CancelOrder", rules -> rules.fillEnum("triggerKind", "NONE")));
     }
 }

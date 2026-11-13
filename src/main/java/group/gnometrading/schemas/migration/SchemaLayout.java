@@ -68,7 +68,12 @@ public final class SchemaLayout {
             messages.put(
                     (int) begin.id(),
                     new MessageLayout(
-                            begin.name(), (int) begin.id(), begin.encodedLength(), fields(tokens), varData(tokens)));
+                            begin.name(),
+                            (int) begin.id(),
+                            begin.encodedLength(),
+                            fields(tokens),
+                            varData(tokens),
+                            groups(tokens)));
         }
         return new SchemaLayout(ir.id(), ir.version(), Collections.unmodifiableMap(messages));
     }
@@ -105,6 +110,16 @@ public final class SchemaLayout {
             }
         }
         return Collections.unmodifiableMap(fields);
+    }
+
+    private static List<String> groups(final List<Token> tokens) {
+        final List<String> names = new ArrayList<>();
+        for (int index = 1; index < tokens.size(); index++) {
+            if (tokens.get(index).signal() == Signal.BEGIN_GROUP) {
+                names.add(tokens.get(index).name());
+            }
+        }
+        return Collections.unmodifiableList(names);
     }
 
     /**

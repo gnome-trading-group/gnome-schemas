@@ -16,6 +16,7 @@ import group.gnometrading.schemas.MessageHeaderEncoder;
 import group.gnometrading.schemas.MetricRowDecoder;
 import group.gnometrading.schemas.OrderExecutionReportDecoder;
 import group.gnometrading.schemas.SbeMessage;
+import group.gnometrading.schemas.TriggerKind;
 import group.gnometrading.schemas.book.Mbp10Decoder;
 import group.gnometrading.schemas.book.TradesDecoder;
 import group.gnometrading.schemas.book.TradesEncoder;
@@ -109,23 +110,47 @@ class SbeMigratorTest {
 
     @Test
     void unchangedLayoutsOnlyGetANewVersion() {
-        final byte[] v0 = new byte[HEADER + group.gnometrading.schemas.v0.CancelOrderEncoder.BLOCK_LENGTH];
-        new group.gnometrading.schemas.v0.CancelOrderEncoder()
-                .wrapAndApplyHeader(new UnsafeBuffer(v0), 0, new group.gnometrading.schemas.v0.MessageHeaderEncoder())
+        final byte[] v2 = new byte[HEADER + group.gnometrading.schemas.v2.OrderExecutionReportEncoder.BLOCK_LENGTH];
+        new group.gnometrading.schemas.v2.OrderExecutionReportEncoder()
+                .wrapAndApplyHeader(new UnsafeBuffer(v2), 0, new group.gnometrading.schemas.v2.MessageHeaderEncoder())
                 .exchangeId(3)
-                .securityId(9);
+                .securityId(9)
+                .execType(group.gnometrading.schemas.v2.ExecType.FILL);
 
-        final byte[] migrated = SbeMigrator.migrateStream(v0);
+        final byte[] migrated = SbeMigrator.migrateStream(v2);
 
-        assertEquals(v0.length, migrated.length);
+        assertEquals(v2.length, migrated.length);
         assertEquals(SbeMigrator.currentVersion(CORE), migrated[6]);
         assertArrayEquals(
-                Arrays.copyOfRange(v0, HEADER, v0.length), Arrays.copyOfRange(migrated, HEADER, migrated.length));
-        assertEquals(
-                9,
-                new CancelOrderDecoder()
-                        .wrapAndApplyHeader(new UnsafeBuffer(migrated), 0, new MessageHeaderDecoder())
-                        .securityId());
+                Arrays.copyOfRange(v2, HEADER, v2.length), Arrays.copyOfRange(migrated, HEADER, migrated.length));
+        final OrderExecutionReportDecoder report = new OrderExecutionReportDecoder()
+                .wrapAndApplyHeader(new UnsafeBuffer(migrated), 0, new MessageHeaderDecoder());
+        assertEquals(9, report.securityId());
+        assertEquals(ExecType.FILL, report.execType());
+    }
+
+    @Test
+    void ordersFromBeforeTriggersMigrateWithNone() {
+        final byte[] v2 = new byte[HEADER + group.gnometrading.schemas.v2.CancelOrderEncoder.BLOCK_LENGTH];
+        new group.gnometrading.schemas.v2.CancelOrderEncoder()
+                .wrapAndApplyHeader(new UnsafeBuffer(v2), 0, new group.gnometrading.schemas.v2.MessageHeaderEncoder())
+                .exchangeId(3)
+                .securityId(9)
+                .timestampSend(1_234);
+
+        final byte[] migrated = SbeMigrator.migrateStream(v2);
+
+        assertEquals(HEADER + CancelOrderDecoder.BLOCK_LENGTH, migrated.length);
+        final CancelOrderDecoder cancel =
+                new CancelOrderDecoder().wrapAndApplyHeader(new UnsafeBuffer(migrated), 0, new MessageHeaderDecoder());
+        assertEquals(3, cancel.exchangeId());
+        assertEquals(9, cancel.securityId());
+        assertEquals(1_234, cancel.timestampSend());
+        assertEquals(CancelOrderDecoder.intentSequenceNullValue(), cancel.intentSequence());
+        assertEquals(CancelOrderDecoder.triggerSequenceNullValue(), cancel.triggerSequence());
+        assertEquals(TriggerKind.NONE, cancel.triggerKind());
+        assertEquals(CancelOrderDecoder.triggerTimestampNullValue(), cancel.triggerTimestamp());
+        assertEquals(CancelOrderDecoder.triggerOriginTimestampNullValue(), cancel.triggerOriginTimestamp());
     }
 
     @Test

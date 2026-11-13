@@ -92,6 +92,13 @@ public final class MigrationStep {
                 converters.put(from.templateId(), new Dropped(from.blockLength()));
                 continue;
             }
+            if (!from.groups().isEmpty()) {
+                // Converters rewrite one fixed block and copy what follows it; a repeating group's entries each have
+                // a block of their own, which nothing here walks.
+                throw new IllegalStateException("Template " + from.name() + " has repeating groups " + from.groups()
+                        + ", which migration can't carry; dropMessage it if no stored data holds it, or give a"
+                        + " changed version a new template");
+            }
             final MessageLayout to = this.target.message(from.templateId());
             if (to == null) {
                 throw new IllegalStateException("Template " + from.name() + " is gone in v" + toVersion()

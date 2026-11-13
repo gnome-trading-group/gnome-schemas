@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   xmlns:xi="http://www.w3.org/2001/XInclude"
+                   package="group.gnometrading.schemas.v3"
+                   id="1"
+                   version="3"
+                   semanticVersion="5.3"
+                   description="Gnome's core trading messages: orders, intents, execution reports and metrics. Market data lives in its own family schemas (book.xml)."
+                   byteOrder="littleEndian">
+    <types>
+        <!-- Common types across all SBE schemas  -->
+        <composite name="messageHeader" description="Message identifiers and length of message root.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+
+        <!-- User-defined types -->
+        <!-- Presence optional is needed so null values are generated correctly -->
+        <type name="timestamp" primitiveType="uint64" nullValue="0" presence="optional" />
+        <type name="price" primitiveType="int64" nullValue="-9223372036854775808" presence="optional" />
+        <type name="size" primitiveType="int64" nullValue="-9223372036854775808" presence="optional" />
+        <!-- A session's global sequence: they start at 1, so 0 is none. -->
+        <type name="sequence" primitiveType="uint64" nullValue="0" presence="optional" />
+
+        <type name="clientOid" primitiveType="uint8" length="16" presence="optional" description="128-bit client order ID"/>
+        <type name="exchangeOrderId" primitiveType="char" length="66" characterEncoding="US-ASCII" presence="optional" description="The ID the venue knows an order by: a Kalshi client_order_id, or a Polymarket 0x-prefixed order hash. Empty until the venue acknowledges the order."/>
+
+        <enum name="Side" encodingType="char">
+            <validValue name="Ask">A</validValue>
+            <validValue name="Bid">B</validValue>
+            <validValue name="None">N</validValue>
+        </enum>
+
+        <enum name="OrderType" encodingType="uint8">
+            <validValue name="LIMIT">0</validValue>
+            <validValue name="MARKET">1</validValue>
+<!--            <validValue name="STOP_LIMIT">2</validValue>-->
+<!--            <validValue name="STOP_MARKET">3</validValue>-->
+        </enum>
+
+        <enum name="TimeInForce" encodingType="uint8">
+            <validValue name="GOOD_TILL_CANCELED">0</validValue>
+            <validValue name="IMMEDIATE_OR_CANCELED">1</validValue>
+            <validValue name="FILL_OR_KILL">2</validValue>
+        </enum>
+
+        <!-- What an intent, and every order made for it, was a reaction to: the session event the strategy was handling
+             when it published, or the OMS when it acted on its own. NONE: from before triggers were recorded. -->
+        <enum name="TriggerKind" encodingType="uint8">
+            <validValue name="NONE">0</validValue>
+            <validValue name="MARKET_DATA">1</validValue>
+            <validValue name="EXEC_REPORT">2</validValue>
+            <validValue name="STREAM">3</validValue>
+            <validValue name="RISK">4</validValue>
+            <validValue name="OTHER">5</validValue>
+        </enum>
+
+        <set name="OrderFlags" encodingType="uint8">
+            <choice name="postOnly">0</choice>
+        </set>
+
+        <type name="liquidityEncoding" primitiveType="uint8" nullValue="0" presence="optional"/>
+        <enum name="Liquidity" encodingType="liquidityEncoding" description="Whether a fill added or removed liquidity (FIX LastLiquidityInd). Null on non-fill reports.">
+            <validValue name="MAKER">1</validValue>
+            <validValue name="TAKER">2</validValue>
+        </enum>
+
+        <enum name="ExecType" encodingType="uint8">
+            <validValue name="NEW">0</validValue>
+            <validValue name="CANCEL">1</validValue>
+            <validValue name="FILL">2</validValue>
+            <validValue name="PARTIAL_FILL">3</validValue>
+            <validValue name="REJECT">4</validValue>
+            <validValue name="CANCEL_REJECT">5</validValue>
+            <validValue name="EXPIRE">6</validValue>
+        </enum>
+
+        <enum name="OrderStatus" encodingType="uint8">
+            <validValue name="NEW">0</validValue>
+            <validValue name="PARTIALLY_FILLED">1</validValue>
+            <validValue name="FILLED">2</validValue>
+            <validValue name="CANCELED">3</validValue>
+            <validValue name="REJECTED">4</validValue>
+            <validValue name="EXPIRED">5</validValue>
+        </enum>
+
+        <enum name="RejectReason" encodingType="uint8">
+            <validValue name="UNKNOWN">0</validValue>
+            <validValue name="INVALID_PRICE">1</validValue>
+            <validValue name="INVALID_SIZE">2</validValue>
+            <validValue name="RISK_LIMIT_EXCEEDED">3</validValue>
+            <validValue name="EXCHANGE_REJECTED">4</validValue>
+            <validValue name="POST_ONLY_WOULD_CROSS">5</validValue>
+            <!-- Our gateway refused the order and sent nothing, as opposed to the venue refusing it. -->
+            <validValue name="GATEWAY_REJECTED">6</validValue>
+            <!-- The strategy, session or listing is killed or latched, or risk data is stale (the OMS), or a kill
+                 covers the order's strategy, session, listing, exchange or venue account (the order gateway): every
+                 order is refused until that clears, as opposed to RISK_LIMIT_EXCEEDED, where this order broke a
+                 limit. -->
+            <validValue name="HALTED">7</validValue>
+            <!-- The venue's request budget is spent, ours or the venue's own 429: nothing was placed, and the same
+                 order can be sent again once the budget refills. -->
+            <validValue name="RATE_LIMITED">8</validValue>
+            <!-- The venue refused the order because the account can't pay for it: not enough cash, collateral or tokens
+                 to sell. -->
+            <validValue name="INSUFFICIENT_FUNDS">9</validValue>
+            <!-- The order would have traded against another of our orders: refused by the venue within one account,
+                 or by the order gateway before sending, against another session's order on any account. -->
+            <validValue name="SELF_TRADE">10</validValue>
+            <!-- The venue refused the order because the market is closed, paused or no longer trading. -->
+            <validValue name="MARKET_CLOSED">11</validValue>
+            <!-- Our OMS refused the order because the listing's book is flagged bad data (a gap, resync or lost
+                 feed): no new orders until a good book arrives. Resting orders stay. -->
+            <validValue name="MARKET_DATA_BAD">12</validValue>
+            <!-- The session's link to the order gateway is down: nothing was sent, and the session holds cancels
+                 until the gateway is back. -->
+            <validValue name="GATEWAY_UNAVAILABLE">13</validValue>
+            <!-- The order gateway is starting or rebuilding after a restart and takes no orders yet. -->
+            <validValue name="GATEWAY_NOT_READY">14</validValue>
+            <!-- The order gateway's account stream is down or catching up, so it takes no new orders or amends on
+                 that account; cancels still go out. -->
+            <validValue name="GATEWAY_DEGRADED">15</validValue>
+            <!-- The order gateway has no live registration for the session: it never said hello, was evicted, or
+                 timed out. -->
+            <validValue name="SESSION_NOT_REGISTERED">16</validValue>
+            <!-- The order gateway refused an order on a listing the session holds no lease on. -->
+            <validValue name="LISTING_NOT_LEASED">17</validValue>
+            <!-- The order gateway refused an order past the session's open-order or order-rate cap. -->
+            <validValue name="SESSION_CAP">18</validValue>
+            <!-- A cancel or modify named an order the order gateway doesn't know, so there is nothing to change. -->
+            <validValue name="UNKNOWN_ORDER">19</validValue>
+        </enum>
+        <!-- A metric row's packed column values, and the names streams and columns are declared with. -->
+        <composite name="groupSizeEncoding" description="A repeating group's entry length and count.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
+        <composite name="metricValues">
+            <type name="length" primitiveType="uint16"/>
+            <type name="varData" primitiveType="uint8" length="0"/>
+        </composite>
+        <composite name="metricName">
+            <type name="length" primitiveType="uint16"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="US-ASCII"/>
+        </composite>
+
+        <enum name="MetricColumnType" encodingType="uint8">
+            <validValue name="LONG">0</validValue>
+            <validValue name="DOUBLE">1</validValue>
+            <validValue name="INT">2</validValue>
+        </enum>
+    </types>
+    <sbe:message name="OrderExecutionReport" id="10" description="Execution report for order updates such as ACK, FILL, CANCEL, REJECT, etc.">
+        <field name="exchangeId" id="1" type="uint16"/>
+        <field name="securityId" id="2" type="uint32"/>
+        <field name="exchangeOrderId" id="3" type="exchangeOrderId"/>
+        <field name="clientOid" id="4" type="clientOid"/>
+        <field name="execType" id="6" type="ExecType"/>
+        <field name="orderStatus" id="7" type="OrderStatus"/>
+        <field name="filledQty" id="8" type="size"/>
+        <field name="fillPrice" id="9" type="price"/>
+        <field name="cumulativeQty" id="10" type="size"/>
+        <field name="leavesQty" id="11" type="size"/>
+        <field name="timestampEvent" id="12" type="timestamp"/>
+        <field name="timestampRecv" id="13" type="timestamp"/>
+        <field name="flags" id="14" type="OrderFlags" presence="optional"/>
+        <field name="rejectReason" id="15" type="RejectReason" presence="optional"/>
+        <field name="fee" id="16" type="price" presence="optional"/>
+        <field name="liquidity" id="17" type="Liquidity" presence="optional"/>
+    </sbe:message>
+    <sbe:message name="Order" id="11" description="Outgoing order submitted to an exchange">
+        <field name="exchangeId" id="1" type="uint16" />
+        <field name="securityId" id="2" type="uint32" />
+        <field name="timestampSend" id="3" type="timestamp" />
+        <field name="clientOid" id="4" type="clientOid" />
+        <field name="price" id="5" type="price" />
+        <field name="size" id="6" type="size" />
+        <field name="side" id="7" type="Side" />
+        <field name="flags" id="8" type="OrderFlags" />
+        <field name="orderType" id="9" type="OrderType" />
+        <field name="timeInForce" id="10" type="TimeInForce" />
+        <!-- Why it was sent: the intent it serves (none for the OMS's own actions) and that intent's trigger. -->
+        <field name="intentSequence" id="11" type="sequence" />
+        <field name="triggerSequence" id="12" type="sequence" />
+        <field name="triggerKind" id="13" type="TriggerKind" />
+        <field name="triggerTimestamp" id="14" type="timestamp" />
+        <field name="triggerOriginTimestamp" id="15" type="timestamp" />
+    </sbe:message>
+    <sbe:message name="ModifyOrder" id="12" description="Modify request for a previously sent order">
+        <field name="exchangeId" id="1" type="uint16" />
+        <field name="securityId" id="2" type="uint32" />
+        <field name="timestampSend" id="3" type="timestamp" />
+        <field name="clientOid" id="4" type="clientOid" />
+        <field name="price" id="5" type="price" presence="optional"/>
+        <field name="size" id="6" type="size" presence="optional"/>
+        <field name="flags" id="7" type="OrderFlags" presence="optional"/>
+        <field name="orderType" id="8" type="OrderType" />
+        <field name="timeInForce" id="9" type="TimeInForce" presence="optional"/>
+        <!-- Why it was sent: the intent it serves (none for the OMS's own actions) and that intent's trigger. -->
+        <field name="intentSequence" id="10" type="sequence" />
+        <field name="triggerSequence" id="11" type="sequence" />
+        <field name="triggerKind" id="12" type="TriggerKind" />
+        <field name="triggerTimestamp" id="13" type="timestamp" />
+        <field name="triggerOriginTimestamp" id="14" type="timestamp" />
+    </sbe:message>
+    <sbe:message name="CancelOrder" id="13" description="Cancel request for a previously sent order">
+        <field name="exchangeId" id="1" type="uint16" />
+        <field name="securityId" id="2" type="uint32" />
+        <field name="timestampSend" id="3" type="timestamp" />
+        <field name="clientOid" id="4" type="clientOid" />
+        <!-- Why it was sent: the intent it serves (none for the OMS's own actions) and that intent's trigger. -->
+        <field name="intentSequence" id="5" type="sequence" />
+        <field name="triggerSequence" id="6" type="sequence" />
+        <field name="triggerKind" id="7" type="TriggerKind" />
+        <field name="triggerTimestamp" id="8" type="timestamp" />
+        <field name="triggerOriginTimestamp" id="9" type="timestamp" />
+    </sbe:message>
+    <sbe:message name="Intent" id="14" description="Intent generated by signals for quoting and taking">
+        <field name="exchangeId" id="1" type="uint16"/>
+        <field name="securityId" id="2" type="uint32"/>
+        <field name="strategyId" id="3" type="uint16"/>
+        <field name="timestampSend" id="4" type="timestamp" />
+        <field name="bidPrice" id="5" type="price" presence="optional"/>
+        <field name="bidSize" id="6" type="size" presence="optional"/>
+        <field name="askPrice" id="7" type="price" presence="optional"/>
+        <field name="askSize" id="9" type="size" presence="optional"/>
+        <field name="takeSide" id="10" type="Side" presence="optional"/>
+        <field name="takeSize" id="11" type="size" presence="optional"/>
+        <field name="takeOrderType" id="12" type="OrderType" presence="optional"/>
+        <field name="takeLimitPrice" id="13" type="price" presence="optional"/>
+        <field name="flags" id="14" type="OrderFlags" presence="optional"/>
+        <!-- The session event the strategy was handling when it published: its global sequence, its kind, when it
+             reached the session's rings, and when it reached the platform (a book record's shard receipt, a report's
+             gateway receipt); and when the strategy began handling it. -->
+        <field name="triggerSequence" id="15" type="sequence" />
+        <field name="triggerKind" id="16" type="TriggerKind" />
+        <field name="triggerTimestamp" id="17" type="timestamp" />
+        <field name="triggerOriginTimestamp" id="18" type="timestamp" />
+        <field name="dispatchTimestamp" id="19" type="timestamp" />
+    </sbe:message>
+    <!-- Metric streams are declared at runtime, so their rows carry raw values and the declarations that name them
+         travel in the same journal. Their size never sets the ring slot size: rows and names are capped to fit it. -->
+    <sbe:message name="MetricRow" id="15" description="One row of a declared metric stream: its column values, little-endian, in declaration order">
+        <field name="streamId" id="1" type="uint16"/>
+        <data name="values" id="2" type="metricValues"/>
+    </sbe:message>
+    <sbe:message name="MetricStream" id="16" description="Declares a metric stream ahead of its columns and rows">
+        <field name="streamId" id="1" type="uint16"/>
+        <field name="columnCount" id="2" type="uint16"/>
+        <data name="name" id="3" type="metricName"/>
+    </sbe:message>
+    <sbe:message name="MetricColumn" id="17" description="Declares one column of a metric stream">
+        <field name="streamId" id="1" type="uint16"/>
+        <field name="columnIndex" id="2" type="uint16"/>
+        <field name="columnType" id="3" type="MetricColumnType"/>
+        <data name="name" id="4" type="metricName"/>
+    </sbe:message>
+    <!-- Not journaled: a shard sends it every second to the sessions reading its streams over Aeron. Added
+         to v2 in place: it changes no other message, and nothing records it. -->
+    <sbe:message name="ShardStatus" id="18" description="A shard's liveness and, per stream it publishes, its state and publication position">
+        <field name="sentNanos" id="1" type="int64" description="When the shard sent it, epoch nanoseconds"/>
+        <field name="generation" id="2" type="int64" description="The assignment generation the shard last applied"/>
+        <group name="streams" id="3" dimensionType="groupSizeEncoding">
+            <field name="streamId" id="4" type="int32"/>
+            <field name="state" id="5" type="uint8" description="The stream's SubjectState ordinal; 255 before its market is placed"/>
+            <field name="position" id="6" type="int64" description="The stream's Aeron publication position; a session behind it has stalled"/>
+            <field name="publicationSessionId" id="7" type="int32" description="The Aeron session id of that publication, so a position is only compared with an image of the same publication"/>
+            <field name="dropped" id="8" type="int64" description="Records the shard couldn't send since the publication opened; a session sees a rise as lost data"/>
+            <field name="reconnecting" id="9" type="uint8" description="1 while the shard's book for the stream isn't trusted (resyncing, disconnected); 0 otherwise, including a market with no book yet"/>
+        </group>
+    </sbe:message>
+</sbe:messageSchema>
