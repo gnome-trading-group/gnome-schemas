@@ -128,6 +128,18 @@
             <!-- A cancel for an order still on its way to the venue, sent once the venue acknowledges it. -->
             <validValue name="CANCEL_HELD_UNTIL_ACK">4</validValue>
         </enum>
+        <enum name="TimingOutcome" encodingType="uint8">
+            <!-- The venue answered and took the request. -->
+            <validValue name="ANSWERED">0</validValue>
+            <!-- The venue answered and refused it. -->
+            <validValue name="REJECTED">1</validValue>
+            <!-- The connection failed while it was in flight: the venue may or may not have it. -->
+            <validValue name="TRANSPORT_ERROR">2</validValue>
+            <!-- No answer before the lane's deadline. -->
+            <validValue name="NO_ANSWER">3</validValue>
+            <!-- Never sent: refused by the budget or a cap, or dropped for a later request of the same order. -->
+            <validValue name="NOT_SENT">4</validValue>
+        </enum>
     </types>
 
     <sbe:message name="SessionHello" id="200" description="A session registering with the gateway; followed by its open orders in SessionHelloOrders pages">
@@ -260,5 +272,21 @@
         <field name="exchangeId" id="3" type="uint16"/>
         <field name="securityId" id="4" type="uint32"/>
         <field name="exchangeOrderId" id="5" type="exchangeOrderId"/>
+    </sbe:message>
+    <sbe:message name="OrderTiming" id="212" description="When one request went through the gateway and the venue, sent to its session after the request's report, unnumbered and never replayed. Times are epoch nanoseconds on the gateway host's clock, 0 when the step didn't happen; venue fields are what the venue's answer says of itself, transport-neutral (an HTTP status or a FIX reason is a venueCode alike).">
+        <field name="venueAccountId" id="1" type="int32"/>
+        <field name="sessionSeq" id="2" type="int64"/>
+        <field name="clientOidCounter" id="3" type="int64"/>
+        <field name="requestClass" id="4" type="RequestClass"/>
+        <field name="outcome" id="5" type="TimingOutcome"/>
+        <field name="ingressNanos" id="6" type="int64" description="Ingress read the request off the session's image"/>
+        <field name="takenNanos" id="7" type="int64" description="The account's lane took it off its ring"/>
+        <field name="decidedNanos" id="8" type="int64" description="The lane decided to send it, or refused it"/>
+        <field name="wireSentNanos" id="9" type="int64" description="The socket write carrying it returned"/>
+        <field name="answeredNanos" id="10" type="int64" description="The lane found the venue's whole answer"/>
+        <field name="answerSlackNanos" id="11" type="int64" description="How long before finding the answer the lane last polled that connection: the most answeredNanos can be late; 0 with no answer"/>
+        <field name="venueCode" id="12" type="int32" description="The transport's own result as the venue's class defines it (an HTTP status, a FIX reject reason); 0 if none"/>
+        <field name="venueTsNanos" id="13" type="int64" description="The venue's own time for the request, where its answer gives one (Kalshi ts_ms); 0 if none"/>
+        <field name="venueProcessingMicros" id="14" type="int32" description="How long the venue says it took, where its answer says (Polymarket US x-pm-server-latency, Polymarket Intl server-timing); -1 if not"/>
     </sbe:message>
 </sbe:messageSchema>

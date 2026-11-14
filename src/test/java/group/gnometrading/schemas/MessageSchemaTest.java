@@ -17,6 +17,7 @@ import group.gnometrading.schemas.gateway.AdmissionRecordDecoder;
 import group.gnometrading.schemas.gateway.CancelEndedDecoder;
 import group.gnometrading.schemas.gateway.GatewayHeartbeatDecoder;
 import group.gnometrading.schemas.gateway.OrderStatusDecoder;
+import group.gnometrading.schemas.gateway.OrderTimingDecoder;
 import group.gnometrading.schemas.gateway.ReHelloRequiredDecoder;
 import group.gnometrading.schemas.gateway.SessionGoodbyeDecoder;
 import group.gnometrading.schemas.gateway.SessionHeartbeatDecoder;
@@ -66,6 +67,7 @@ class MessageSchemaTest {
         VenueQueryResultDecoder.TEMPLATE_ID,
         AdmissionRecordDecoder.TEMPLATE_ID,
         CancelEndedDecoder.TEMPLATE_ID,
+        OrderTimingDecoder.TEMPLATE_ID,
     };
 
     @Test
