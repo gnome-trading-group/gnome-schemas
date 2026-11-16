@@ -42,8 +42,8 @@
             <validValue name="None">N</validValue>
         </enum>
 
-        <!-- Bits 0-3 mean the same in every family's flags; bits 4-7 are the family's own. badData: the record may
-             not reflect the source (a gap, a resync, a lost or silent stream) until a snapshot clears it. -->
+        <!-- Bits 0-3 and 7 mean the same in every family's flags; bits 4-6 are the family's own. badData: the record
+             may not reflect the source (a gap, a resync, a lost or silent stream) until a snapshot clears it. -->
         <set name="BookFlags" encodingType="uint8">
             <choice name="badData">0</choice>
             <choice name="snapshot">1</choice>
@@ -51,6 +51,9 @@
             <choice name="badTimestampRecv">3</choice>
             <choice name="marketByPrice">4</choice>
             <choice name="topOfBook">5</choice>
+            <!-- replayed: published late by a connection roll, from what the replacing connection received while it
+                 took over; its receipt time is when it arrived, not when it was published. -->
+            <choice name="replayed">7</choice>
         </set>
     </types>
     <sbe:message name="Mbo" id="100" description="mbo">

@@ -16,12 +16,18 @@ public final class StreamHeader {
     public static final int FLAGS_OFFSET = 28;
     public static final int LENGTH = 29;
 
-    /** Flag bits with the same meaning in every family; bits 4-7 are each family's own. */
+    /** Flag bits with the same meaning in every family (0-3 and 7); bits 4-6 are each family's own. */
     public static final int BAD_DATA_BIT = 0;
 
     public static final int SNAPSHOT_BIT = 1;
     public static final int LAST_MESSAGE_BIT = 2;
     public static final int BAD_TIMESTAMP_RECV_BIT = 3;
+
+    /**
+     * A record a connection roll published late, from what the replacing connection received while it took over. Its
+     * receive time is when it arrived, so the time until it was published was spent waiting for the roll.
+     */
+    public static final int REPLAYED_BIT = 7;
 
     private static final int BYTE_MASK = 0xFF;
 

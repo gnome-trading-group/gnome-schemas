@@ -42,6 +42,7 @@ class StreamHeaderLayoutTest {
                 assertEquals((long) StreamHeader.SNAPSHOT_BIT, bits.get("snapshot"), message.name());
                 assertEquals((long) StreamHeader.LAST_MESSAGE_BIT, bits.get("lastMessage"), message.name());
                 assertEquals((long) StreamHeader.BAD_TIMESTAMP_RECV_BIT, bits.get("badTimestampRecv"), message.name());
+                assertEquals((long) StreamHeader.REPLAYED_BIT, bits.get("replayed"), message.name());
             }
         }
     }
