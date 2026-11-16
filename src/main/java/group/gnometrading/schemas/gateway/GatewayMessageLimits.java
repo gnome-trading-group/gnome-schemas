@@ -16,8 +16,11 @@ public final class GatewayMessageLimits {
     /** Orders per {@code VenueQueryResult} page. */
     public static final int QUERY_ORDERS_PER_PAGE = 5;
 
-    /** Listings a {@code SessionHello} can name. */
+    /** Listings a {@code SessionHello} can name; a session trading more sends them all in listing pages instead. */
     public static final int MAX_HELLO_LISTINGS = 128;
+
+    /** Listings per {@code SessionHelloListings} page. */
+    public static final int HELLO_LISTINGS_PER_PAGE = 166;
 
     /** Accounts a {@code GatewayHeartbeat} can report: one gateway's accounts on its venue. */
     public static final int MAX_HEARTBEAT_ACCOUNTS = 64;

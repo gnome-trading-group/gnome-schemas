@@ -26,6 +26,12 @@ class GatewayMessageLimitsTest {
                         + GROUP_HEADER
                         + GatewayMessageLimits.HELLO_ORDERS_PER_PAGE
                                 * SessionHelloOrdersEncoder.OrdersEncoder.sbeBlockLength());
+        assertFits(
+                "SessionHelloListings",
+                SessionHelloListingsEncoder.BLOCK_LENGTH
+                        + GROUP_HEADER
+                        + GatewayMessageLimits.HELLO_LISTINGS_PER_PAGE
+                                * SessionHelloListingsEncoder.ListingsEncoder.sbeBlockLength());
         assertFits("SessionWelcome", SessionWelcomeEncoder.BLOCK_LENGTH);
         assertFits("SessionHeartbeat", SessionHeartbeatEncoder.BLOCK_LENGTH);
         assertFits(
@@ -51,6 +57,12 @@ class GatewayMessageLimitsTest {
 
     @Test
     void pagesAreAsLargeAsASlotAllows() {
+        assertTrue(HEADER
+                        + SessionHelloListingsEncoder.BLOCK_LENGTH
+                        + GROUP_HEADER
+                        + (GatewayMessageLimits.HELLO_LISTINGS_PER_PAGE + 1)
+                                * SessionHelloListingsEncoder.ListingsEncoder.sbeBlockLength()
+                > GatewayMessageLimits.MAX_MESSAGE_SIZE);
         assertTrue(HEADER
                         + SessionHelloOrdersEncoder.BLOCK_LENGTH
                         + GROUP_HEADER

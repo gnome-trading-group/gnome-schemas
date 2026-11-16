@@ -3,7 +3,7 @@
                    package="group.gnometrading.schemas.gateway"
                    id="3"
                    version="0"
-                   semanticVersion="5.2"
+                   semanticVersion="5.3"
                    description="The order gateway's session protocol: what a session and the gateway that holds its venue account say to each other beside core's orders and execution reports"
                    byteOrder="littleEndian">
     <!-- Template ids 200-299 (MessageSchema.GATEWAY). Kept out of core so the handshake can change with the gateway
@@ -142,7 +142,7 @@
         </enum>
     </types>
 
-    <sbe:message name="SessionHello" id="200" description="A session registering with the gateway; followed by its open orders in SessionHelloOrders pages">
+    <sbe:message name="SessionHello" id="200" description="A session registering with the gateway; followed by its listings in SessionHelloListings pages when they don't fit here, then its open orders in SessionHelloOrders pages">
         <field name="sessionSeq" id="1" type="int64" description="The registry's session_seq: the session's slot, never reused"/>
         <field name="sessionId" id="2" type="sessionId"/>
         <field name="strategyId" id="3" type="int32" description="Packed with an order's counter into core's clientOid"/>
@@ -154,7 +154,7 @@
         <field name="lastReportSeq" id="9" type="int64" description="The last per-session report sequence the session received; 0 on a first hello"/>
         <field name="codTimeoutMs" id="10" type="int32" description="Cancel the session's orders after this long without a heartbeat (cod.timeout.ms)"/>
         <field name="maxQueueMs" id="11" type="int32" description="How long a NEW or AMEND may wait for budget before it is refused (order.max.queue.ms)"/>
-        <field name="openOrderPages" id="12" type="uint16" description="How many SessionHelloOrders pages follow; 0 when the session has no open orders"/>
+        <field name="openOrderPages" id="12" type="uint16" description="How many pages follow, SessionHelloListings then SessionHelloOrders; 0 when the listings fit here and the session has no open orders"/>
         <field name="lastReportEpoch" id="16" type="int64" description="The gatewayEpoch lastReportSeq was numbered under; a gateway with another epoch can't resume from it and sends each open order's status instead"/>
         <field name="maxOpenOrders" id="17" type="int32" description="Orders the session asks to hold at once at most (order.gateway.max.open.orders); 0, or more than the gateway allows, gets the gateway's cap"/>
         <field name="maxNewPerSecond" id="18" type="int32" description="New orders a second the session asks to send at most (order.gateway.max.new.per.second); 0, or more than the gateway allows, gets the gateway's cap"/>
@@ -180,6 +180,15 @@
             <field name="cumulativeQty" id="14" type="size"/>
             <field name="notional" id="15" type="price" description="Filled notional so far"/>
             <field name="fees" id="16" type="price" description="Fees so far"/>
+        </group>
+    </sbe:message>
+    <sbe:message name="SessionHelloListings" id="213" description="One page of the listings a session trades, sent after its SessionHello when they don't all fit in it (the hello then names none); before its open orders' pages">
+        <field name="sessionSeq" id="1" type="int64"/>
+        <field name="page" id="2" type="uint16" description="From 0, among the listing pages"/>
+        <field name="last" id="3" type="uint8" description="1 on the final page of all that follow the hello"/>
+        <group name="listings" id="4" dimensionType="groupSizeEncoding">
+            <field name="exchangeId" id="5" type="uint16"/>
+            <field name="securityId" id="6" type="uint32"/>
         </group>
     </sbe:message>
     <sbe:message name="SessionWelcome" id="202" description="The gateway's answer to a hello, sent after its last orders page">
