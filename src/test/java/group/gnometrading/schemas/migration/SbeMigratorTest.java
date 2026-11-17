@@ -14,7 +14,9 @@ import group.gnometrading.schemas.IntentEncoder;
 import group.gnometrading.schemas.MessageHeaderDecoder;
 import group.gnometrading.schemas.MessageHeaderEncoder;
 import group.gnometrading.schemas.MetricRowDecoder;
+import group.gnometrading.schemas.OrderDecoder;
 import group.gnometrading.schemas.OrderExecutionReportDecoder;
+import group.gnometrading.schemas.OrderRole;
 import group.gnometrading.schemas.SbeMessage;
 import group.gnometrading.schemas.TriggerKind;
 import group.gnometrading.schemas.book.Mbp10Decoder;
@@ -151,6 +153,28 @@ class SbeMigratorTest {
         assertEquals(TriggerKind.NONE, cancel.triggerKind());
         assertEquals(CancelOrderDecoder.triggerTimestampNullValue(), cancel.triggerTimestamp());
         assertEquals(CancelOrderDecoder.triggerOriginTimestampNullValue(), cancel.triggerOriginTimestamp());
+    }
+
+    @Test
+    void ordersFromBeforeRolesMigrateWithNone() {
+        final byte[] v3 = new byte[HEADER + group.gnometrading.schemas.v3.OrderEncoder.BLOCK_LENGTH];
+        new group.gnometrading.schemas.v3.OrderEncoder()
+                .wrapAndApplyHeader(new UnsafeBuffer(v3), 0, new group.gnometrading.schemas.v3.MessageHeaderEncoder())
+                .exchangeId(3)
+                .securityId(9)
+                .price(450_000_000L)
+                .intentSequence(77);
+
+        final byte[] migrated = SbeMigrator.migrateStream(v3);
+
+        assertEquals(HEADER + OrderDecoder.BLOCK_LENGTH, migrated.length);
+        final OrderDecoder order =
+                new OrderDecoder().wrapAndApplyHeader(new UnsafeBuffer(migrated), 0, new MessageHeaderDecoder());
+        assertEquals(9, order.securityId());
+        assertEquals(450_000_000L, order.price());
+        assertEquals(77, order.intentSequence());
+        assertEquals(OrderRole.NONE, order.role());
+        assertEquals(OrderDecoder.episodeIdNullValue(), order.episodeId());
     }
 
     @Test

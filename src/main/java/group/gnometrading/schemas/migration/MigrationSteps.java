@@ -40,5 +40,11 @@ final class MigrationSteps {
                 .message("Order", rules -> rules.fillEnum("triggerKind", "NONE"))
                 .message("ModifyOrder", rules -> rules.fillEnum("triggerKind", "NONE"))
                 .message("CancelOrder", rules -> rules.fillEnum("triggerKind", "NONE")));
+        // core v3 → v4: intents and orders say what they're for in the strategy. Older ones never said, so the role is
+        // NONE and the episode is null. ShardStatus is still never journaled, as in v2 → v3.
+        SbeMigrator.register(MigrationStep.from(SbeMigrator.CORE, 3)
+                .dropMessage("ShardStatus")
+                .message("Intent", rules -> rules.fillEnum("takeRole", "NONE"))
+                .message("Order", rules -> rules.fillEnum("role", "NONE")));
     }
 }
